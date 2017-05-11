@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Android开发之RecyclerView初尝试 | Lei’s Blog | 不忘初心，淡然前行</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="RecyclerView">
+    <meta name="description" content="一、概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
+<meta name="keywords" content="RecyclerView">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发之RecyclerView初尝试">
+<meta property="og:url" content="http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/index.html">
+<meta property="og:site_name" content="Lei’s Blog">
+<meta property="og:description" content="一、概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
+<meta property="og:updated_time" content="2017-03-31T02:33:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发之RecyclerView初尝试">
+<meta name="twitter:description" content="一、概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
+    
+        <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">徐雷</h5>
+          <a href="mailto:18010498185@163.com" title="18010498185@163.com" class="mail">18010498185@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                成长之路
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ShylockXu" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/u/1850954523?topnav=1&wvr=6&topsug=1" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android开发之RecyclerView初尝试</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android开发之RecyclerView初尝试</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-03-28T02:26:00.000Z" itemprop="datePublished" class="page-time">
+  2017-03-28
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一、概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、概述</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二、相关原理与简单实现"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、相关原理与简单实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-添加依赖"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1. 添加依赖</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-在布局中使用"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2. 在布局中使用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-RecyclerView-Adapter"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3. RecyclerView.Adapter</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-LayoutManager"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">4. LayoutManager</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#5-ItemDecoration"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">5. ItemDecoration</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#6-ItemAnimator"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">6. ItemAnimator</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#7-RecyclerView初始化"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">7. RecyclerView初始化</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#三、点击事件与添加删除Item"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、点击事件与添加删除Item</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-Adapter中"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">1. Adapter中</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-Activity中"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">2. Activity中</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#四、瀑布流的实现"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、瀑布流的实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-首先在Activity中设置LayoutManager时选择："><span class="post-toc-number">4.1.</span> <span class="post-toc-text">1. 首先在Activity中设置LayoutManager时选择：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-修改Adapter"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">2. 修改Adapter</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#五、总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Android开发之RecyclerView初尝试"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android开发之RecyclerView初尝试</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-03-28 10:26:00" datetime="2017-03-28T02:26:00.000Z"  itemprop="datePublished">2017-03-28</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h3><p>　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。<br><a id="more"></a>  </p>
+<h3 id="二、相关原理与简单实现"><a href="#二、相关原理与简单实现" class="headerlink" title="二、相关原理与简单实现"></a>二、相关原理与简单实现</h3><h4 id="1-添加依赖"><a href="#1-添加依赖" class="headerlink" title="1. 添加依赖"></a>1. 添加依赖</h4><p>　　在AndroidStudio的build.gradle中添加依赖：  </p>
+<pre><code class="python">dependencies {
+    ...
+    compile <span class="string">'com.android.support:recyclerview-v7:25.3.0'</span>
+}
+</code></pre>
+<h4 id="2-在布局中使用"><a href="#2-在布局中使用" class="headerlink" title="2. 在布局中使用"></a>2. 在布局中使用</h4><p>　　添加完依赖后就可以在布局中使用RecyclerView了：  </p>
+<pre><code class="python">&lt;android.support.v7.widget.RecyclerView
+    android:id=<span class="string">"@+id/main_recyclerview"</span>
+    android:layout_width=<span class="string">"match_parent"</span>
+    android:layout_height=<span class="string">"match_parent"</span> /&gt;
+</code></pre>
+<h4 id="3-RecyclerView-Adapter"><a href="#3-RecyclerView-Adapter" class="headerlink" title="3. RecyclerView.Adapter"></a>3. RecyclerView.Adapter</h4><p>　　RecyclerView封装了一种新型的适配器，与现在使用的适配器大同小异。它强制用户使用RecyclerView提供的ViewHolder，使用时主要需要重写onCreateViewHolder与onBindViewHolder方法。前者用来展现视图及其持有者，且只有真正需要一个新view时才会被回调，不需要检查是否已经被回收。后者用来绑定数据到View上。  </p>
+<pre><code class="python">import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import java.util.List;
+
+public class MyAdapter extends RecyclerView.Adapter&lt;MyAdapter.MyViewHolder&gt; {
+    private Context context;
+    private List&lt;String&gt; list;
+    private LayoutInflater inflater;
+
+    public MyAdapter(Context context, List&lt;String&gt; list) {
+        this.context = context;
+        this.list = list;
+        inflater = LayoutInflater.from(context);
+    }
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = inflater.inflate(R.layout.item_recyclerview, parent, false);
+        MyViewHolder holder = new MyViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        holder.textView.setText(list.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView textView;
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            textView = (TextView) itemView.findViewById(R.id.item_textview);
+        }
+    }
+}
+</code></pre>
+<h4 id="4-LayoutManager"><a href="#4-LayoutManager" class="headerlink" title="4. LayoutManager"></a>4. LayoutManager</h4><p>　　RecyclerView通过布局管理器LayoutManager控制每一个item如何进行排列摆放，何时展示和隐藏。回收或重用一个View时LayoutManager会向适配器请求新的数据来替换旧的数据，这种机制避免了创建过多的View和频繁的调用findViewById方法，目前其自带的主要有以下三种：<br>　　- LinearLayoutManager：ListView样式<br>　　- GridLayoutManager：GridView样式<br>　　- StaggeredGridLayoutManager：瀑布流样式  </p>
+<h4 id="5-ItemDecoration"><a href="#5-ItemDecoration" class="headerlink" title="5. ItemDecoration"></a>5. ItemDecoration</h4><p>　　RecyclerView并不能像ListView一样直接在xml布局中修改item分割线样式。需要在Activity动态设置，当然更推荐在单个条目布局中设置margin或者padding来实现分割线效果，这里提供一个分割线。  </p>
+<pre><code class="python">import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+
+public class DividerItemDecoration extends RecyclerView.ItemDecoration {
+    private static final int[] ATTRS = new int[]{
+            android.R.attr.listDivider
+    };
+    public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
+    public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
+    private Drawable mDivider;
+    private int mOrientation;
+
+    public DividerItemDecoration(Context context, int orientation) {
+        final TypedArray a = context.obtainStyledAttributes(ATTRS);
+        mDivider = a.getDrawable(0);
+        a.recycle();
+        setOrientation(orientation);
+    }
+
+    public void setOrientation(int orientation) {
+        if (orientation != HORIZONTAL_LIST &amp;&amp; orientation != VERTICAL_LIST) {
+            throw new IllegalArgumentException("invalid orientation");
+        }
+        mOrientation = orientation;
+    }
+
+    @Override
+    public void onDraw(Canvas c, RecyclerView parent) {
+        if (mOrientation == VERTICAL_LIST) {
+            drawVertical(c, parent);
+        } else {
+            drawHorizontal(c, parent);
+        }
+    }
+
+    public void drawVertical(Canvas c, RecyclerView parent) {
+        final int left = parent.getPaddingLeft();
+        final int right = parent.getWidth() - parent.getPaddingRight();
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i &lt; childCount; i++) {
+            final View child = parent.getChildAt(i);
+            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
+            final int top = child.getBottom() + params.bottomMargin;
+            final int bottom = top + mDivider.getIntrinsicHeight();
+            mDivider.setBounds(left, top, right, bottom);
+            mDivider.draw(c);
+        }
+    }
+
+    public void drawHorizontal(Canvas c, RecyclerView parent) {
+        final int top = parent.getPaddingTop();
+        final int bottom = parent.getHeight() - parent.getPaddingBottom();
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i &lt; childCount; i++) {
+            final View child = parent.getChildAt(i);
+            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
+            final int left = child.getRight() + params.rightMargin;
+            final int right = left + mDivider.getIntrinsicHeight();
+            mDivider.setBounds(left, top, right, bottom);
+            mDivider.draw(c);
+        }
+    }
+
+    @Override
+    public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
+        if (mOrientation == VERTICAL_LIST) {
+            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
+        } else {
+            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+            }
+    }
+}
+</code></pre>
+<h4 id="6-ItemAnimator"><a href="#6-ItemAnimator" class="headerlink" title="6. ItemAnimator"></a>6. ItemAnimator</h4><p>　　ItemAnimator会根据适配器上收到的通知来动画显示视图组的修改，比如item的添加与删除。DefaultItemAnimator已经能很好的展现动画效果了。  </p>
+<h4 id="7-RecyclerView初始化"><a href="#7-RecyclerView初始化" class="headerlink" title="7. RecyclerView初始化"></a>7. RecyclerView初始化</h4><p>　　若想初始化一个RecyclerView使其进入工作状态，你需要在Activity中做以下的操作：  </p>
+<pre><code class="python">RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view_main);
+MyAdapter adapter = new MyAdapter(this, list);
+//设置RecyclerView保持固定的大小
+recyclerView.setHasFixedSize(true);
+//设置适配器
+recyclerView.setAdapter(adapter);
+//设置RecyclerView ListView样式布局管理
+recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+//设置RecyclerView的Item分割线
+recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+//设置RecyclerView的动画
+recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+//设置RecyclerView GridView样式
+//recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, <span class="number">3</span>));
+//设置RecyclerView 水平GridView样式
+//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(<span class="number">5</span>, StaggeredGridLayoutManager.HORIZONTAL));
+//设置RecyclerView 瀑布流样式
+//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(<span class="number">3</span>,StaggeredGridLayoutManager.VERTICAL));
+</code></pre>
+<h3 id="三、点击事件与添加删除Item"><a href="#三、点击事件与添加删除Item" class="headerlink" title="三、点击事件与添加删除Item"></a>三、点击事件与添加删除Item</h3><p>　　美中不足的是RecyclerView并没有提供像ListView一样的Item点击与Item长点击事件，不提供咱们就自己造，通过接口回调来实现。  </p>
+<h4 id="1-Adapter中"><a href="#1-Adapter中" class="headerlink" title="1. Adapter中"></a>1. Adapter中</h4><pre><code class="python">import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+public class MyAdapter extends RecyclerView.Adapter&lt;MyAdapter.MyViewHolder&gt; {
+    private Context context;
+    private LayoutInflater inflater;
+    protected ArrayList&lt;String&gt; datas;
+    private onItemClickedListener onItemClickedListener;
+
+    public MyAdapter(Context context, ArrayList&lt;String&gt; datas) {
+        this.context = context;
+        this.datas = datas;
+        inflater = LayoutInflater.from(context);
+    }
+
+    public void setOnItemClickedListener(MyAdapter.onItemClickedListener onItemClickedListener) {
+        this.onItemClickedListener = onItemClickedListener;
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        holder.textView.setText(datas.get(position));
+    }
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    View view = inflater.inflate(R.layout.item_recycler_view, parent, false);
+        MyViewHolder myViewHolder = new MyViewHolder(view);
+        return myViewHolder;
+    }
+
+    @Override
+    public int getItemCount() {
+        return datas.size();
+    }
+
+   /**
+    * 添加条目
+    */
+    public void addItem(int position) {
+        datas.add(position, "xulei");
+    //        notifyDataSetChanged();
+        notifyItemInserted(position);//调用这个才有动画效果
+    }
+
+   /**
+    * 移除条目
+    */
+    public void removeItem(int position) {
+        datas.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView textView;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            //初始化控件
+            textView = (TextView) itemView.findViewById(R.id.item_textview);
+            //设置当前条目单击监听
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onItemClickedListener != null)
+                        onItemClickedListener.onClick(view, getAdapterPosition());//可立刻获取到当前position
+//                        onItemClickedListener.onClick(view, getLayoutPosition());//需等当前视图更新完才能获取到当前position，&lt;16ms。
+                }
+            });
+            //设置当前条目长按监听
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (onItemClickedListener != null)
+                        onItemClickedListener.onLongClick(view, getAdapterPosition());
+                    return false;
+                }
+            });
+        }
+    }
+
+   /**
+    * 点击回调的接口
+    */
+    interface onItemClickedListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
+    }
+}
+</code></pre>
+<h4 id="2-Activity中"><a href="#2-Activity中" class="headerlink" title="2. Activity中"></a>2. Activity中</h4><p>　　在Activity中实例化Adapter之后添加如下代码：</p>
+<pre><code class="python">adapter.setOnItemClickedListener(new MyAdapter.onItemClickedListener() {
+<span class="meta">    @Override</span>
+    public void onClick(View view, int position) {
+        adapter.addItem(position);
+        Toast.makeText(MainActivity.this, <span class="string">"点击click:"</span> + position, Toast.LENGTH_SHORT).show();
+    }
+
+<span class="meta">    @Override</span>
+    public void onLongClick(View view, int position) {
+        adapter.removeItem(position);
+        Toast.makeText(MainActivity.this, <span class="string">"长按click:"</span> + position, Toast.LENGTH_SHORT).show();
+    }
+});
+</code></pre>
+<h3 id="四、瀑布流的实现"><a href="#四、瀑布流的实现" class="headerlink" title="四、瀑布流的实现"></a>四、瀑布流的实现</h3><p>　　想实现瀑布流的样式通过使用RecyclerView也很容易就能实现。</p>
+<h4 id="1-首先在Activity中设置LayoutManager时选择："><a href="#1-首先在Activity中设置LayoutManager时选择：" class="headerlink" title="1. 首先在Activity中设置LayoutManager时选择："></a>1. 首先在Activity中设置LayoutManager时选择：</h4><pre><code class="python">recyclerView.setLayoutManager(new StaggeredGridLayoutManager(<span class="number">3</span>,StaggeredGridLayoutManager.VERTICAL));
+</code></pre>
+<h4 id="2-修改Adapter"><a href="#2-修改Adapter" class="headerlink" title="2. 修改Adapter"></a>2. 修改Adapter</h4><p>　　瀑布流自然是每个条目的高度不同才能出现瀑布的效果（水平布局则是宽度不同），那么只需在每个条目绑定数据时动态改变下其高度即可，贴出瀑布流Adapter代码：</p>
+<pre><code class="python">import android.content.Context;
+import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class StaggerAdapter extends MyAdapter {
+    private List&lt;Integer&gt; heights;
+    public StaggerAdapter(Context context, ArrayList&lt;String&gt; datas) {
+        super(context, datas);
+        heights = new ArrayList&lt;&gt;();
+        for (int i = 0; i &lt; datas.size(); i++) {
+            heights.add((int) (100 + Math.random() * 300));
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+        layoutParams.height = heights.get(position);
+//        layoutParams.width = heights.get(position);
+        holder.itemView.setLayoutParams(layoutParams);
+        holder.textView.setText(datas.get(position));
+    }
+}
+</code></pre>
+<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><p>　　通过实践发现RecyclerView相较于ListView与GridView确实强大很多，更加的灵活与方便，提高了开发效率。但也有不足之处，如并未封装点击事件的回调，确实是比较头疼。期待Google的完善。<br>附上GitHub源码：<br><a href="https://github.com/ShylockXu/RecyclerViewDemo" target="_blank" rel="external">RecyclerViewDemo</a><br><a href="https://github.com/ShylockXu/RecyclerViewDevelop" target="_blank" rel="external">RecyclerViewDevelop</a>  </p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2017-03-31T02:33:25.000Z" itemprop="dateUpdated">2017-03-31 10:33:25</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2017/03/28/Android开发之RecyclerView初尝试/" target="_blank" rel="external">http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/</a>
+        
+    </div>
+    <footer>
+        <a href="http://yoursite.com">
+            <img src="/img/avatar.jpg" alt="徐雷">
+            徐雷
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RecyclerView/">RecyclerView</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&source=一、概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发之RecyclerView初尝试》 — Lei’s Blog&url=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Android开发之AlarmManager闹钟+Notification通知</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/img/wechat.jpg" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/img/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>徐雷 &copy; 2015 - 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&source=一、概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发之RecyclerView初尝试》 — Lei’s Blog&url=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2017/03/28/Android开发之RecyclerView初尝试/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACrUlEQVR42u3aQW7cMBAEwP3/p51rAGeV7hlRXgOlkwHLEosGyFFzXq/4+vp2Xf/273van78/+fqeGy48PDy89dDfDTG5M5mU62m6Hmc+Zjw8PLzTvHxR3izu++2nfhceHh7eB/BywPVEXG8q79h4eHh4v5G3KcHvTQ/w8PDwfpbXRrFJydvGED+cteDh4eF1iWu0WH/Oz0fO9/Dw8PDWxWteLucLdz6JN4wWDw8P7wAvX3D3gcLsnvbteHh4eE/y2karfHFvA9k8yIieiYeHh3eMlwxxFrDOnrxpBXu1r8TDw8OLebOSt40V8sU9mYJkzHh4eHjP8GZhax7dzlqp8jaFIvfFw8PDW/PyKCF/wea4Ky/Ko/M9PDw8vGO8ZJOYNQ0kpXP+3iKYwMPDwzvM2wQHebSax7t5c8DbjwE8PDy8Y7x9g1T7t/tgNyru8fDw8A7zNkFtG8ueOyr7R0mNh4eH9wgvD17brWXWlJBsDHXTFR4eHt6Id6IVIC/ENw1eRaiBh4eH9yCvjVM3a3L79iIuwcPDwzvA2xS+syO0Nvwt2gXybwI8PDy8EW9WIucH+fnUtOxoY8DDw8M7wJstuAkpX+LzDWDYQICHh4d3Ky8vZ/PStg1wk6aE9n+Fh4eHd47XDr1tosoB7RTkmxYeHh7eOV7bKpqHFG2uPCvK61nBw8PDO8abHfBvAuJN4xceHh7e87zNx38e5iaF9W3tX3h4eHi38r7Kq22lao//Z2X6fwJcPDw8vFt5+ZUXtW2jwKYxq94D8fDw8G7izQrc/OhrM7tta9ewKwEPDw9vxGsDiNmmMivBVxceHh7ex/DaMvre7LloI8DDw8P7AN71EHNkjl9tJHh4eHjHeO2hVx4fzN6+eQIeHh7ead7siz4Z0KYoPx5S4OHh4U14fwDiMBbb9qquGQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

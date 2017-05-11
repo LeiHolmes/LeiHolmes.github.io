@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>android神器Stetho调试Volley | Lei’s Blog | 不忘初心，淡然前行</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Stetho">
+    <meta name="description" content="Stetho简介Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入Stetho官网。">
+<meta name="keywords" content="Stetho">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android神器Stetho调试Volley">
+<meta property="og:url" content="http://yoursite.com/2016/04/19/volley-stetho/index.html">
+<meta property="og:site_name" content="Lei’s Blog">
+<meta property="og:description" content="Stetho简介Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入Stetho官网。">
+<meta property="og:image" content="http://dongyeforever.qiniudn.com/stetho-all.png">
+<meta property="og:image" content="http://dongyeforever.qiniudn.com/stetho-inspect.png">
+<meta property="og:image" content="http://dongyeforever.qiniudn.com/inspect-network.png">
+<meta property="og:image" content="http://dongyeforever.qiniudn.com/inspect-sharedpreference.png">
+<meta property="og:updated_time" content="2016-04-29T07:40:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="android神器Stetho调试Volley">
+<meta name="twitter:description" content="Stetho简介Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入Stetho官网。">
+<meta name="twitter:image" content="http://dongyeforever.qiniudn.com/stetho-all.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">徐雷</h5>
+          <a href="mailto:18010498185@163.com" title="18010498185@163.com" class="mail">18010498185@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                成长之路
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ShylockXu" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/u/1850954523?topnav=1&wvr=6&topsug=1" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">android神器Stetho调试Volley</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">android神器Stetho调试Volley</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-04-19T04:19:16.000Z" itemprop="datePublished" class="page-time">
+  2016-04-19
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Stetho简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">Stetho简介</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Stetho结合OkHttp使用"><span class="post-toc-number">2.</span> <span class="post-toc-text">Stetho结合OkHttp使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-添加依赖"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">1.添加依赖</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-Stetho初始化配置"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">2.Stetho初始化配置</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Stetho结合Volley使用"><span class="post-toc-number">3.</span> <span class="post-toc-text">Stetho结合Volley使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-添加依赖-1"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">1.添加依赖</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-Stetho初始化配置-1"><span class="post-toc-number">3.0.2.</span> <span class="post-toc-text">2.Stetho初始化配置</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#补充：使用中遇到的坑"><span class="post-toc-number">4.</span> <span class="post-toc-text">补充：使用中遇到的坑</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#我的测试代码和效果图如下："><span class="post-toc-number">5.</span> <span class="post-toc-text">我的测试代码和效果图如下：</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-volley-stetho"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">android神器Stetho调试Volley</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-04-19 12:19:16" datetime="2016-04-19T04:19:16.000Z"  itemprop="datePublished">2016-04-19</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="Stetho简介"><a href="#Stetho简介" class="headerlink" title="Stetho简介"></a>Stetho简介</h3><p>Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入<a href="http://facebook.github.io/stetho/" target="_blank" rel="external">Stetho官网</a>。<br><a id="more"></a></p>
+<h3 id="Stetho结合OkHttp使用"><a href="#Stetho结合OkHttp使用" class="headerlink" title="Stetho结合OkHttp使用"></a>Stetho结合OkHttp使用</h3><h5 id="1-添加依赖"><a href="#1-添加依赖" class="headerlink" title="1.添加依赖"></a>1.添加依赖</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// Gradle dependency on Stetho </div><div class="line">  dependencies &#123; </div><div class="line">    compile 'com.facebook.stetho:stetho:1.1.1' </div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h5 id="2-Stetho初始化配置"><a href="#2-Stetho初始化配置" class="headerlink" title="2.Stetho初始化配置"></a>2.Stetho初始化配置</h5><p>在App的Application中完成初始化。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate();</div><div class="line">    Stetho.initialize(</div><div class="line">      Stetho.newInitializerBuilder(<span class="keyword">this</span>)</div><div class="line">        .enableDumpapp(</div><div class="line">            Stetho.defaultDumperPluginsProvider(<span class="keyword">this</span>))</div><div class="line">        .enableWebKitInspector(</div><div class="line">            Stetho.defaultInspectorModulesProvider(<span class="keyword">this</span>))</div><div class="line">        .build());</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>官网中使用OkHttp为实例，使用如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</div><div class="line">client.networkInterceptors().add(<span class="keyword">new</span> StethoInterceptor());</div></pre></td></tr></table></figure></p>
+<p>然后就可以运行App进行调试，基本上可以满足调试需求了。</p>
+<h3 id="Stetho结合Volley使用"><a href="#Stetho结合Volley使用" class="headerlink" title="Stetho结合Volley使用"></a>Stetho结合Volley使用</h3><p>官网中Stetho是结合OkHttp的使用，如果项目中使用Volley做为网络请求框架，可以做如下修改。还是使用OkHttp做为Volley中HttpStack的实现，我们知道，Volley中网络请求在Android2.3及以上基于HttpURLConnection，2.3以下基于HttpClient实现，通过增加HttpStack的具体实现即可。这里使用<a href="https://gist.github.com/bryanstern/4e8f1cb5a8e14c202750" target="_blank" rel="external">Bryan Stern分享的代码</a>。（网页可能被墙，可以通过VPN访问。需要VPN的可以<a href="http://reftizi.com/?r=bf31aecac9700bac" target="_blank" rel="external">点击这里</a>）</p>
+<h5 id="1-添加依赖-1"><a href="#1-添加依赖-1" class="headerlink" title="1.添加依赖"></a>1.添加依赖</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">compile 'com.facebook.stetho:stetho:1.1.1'</div><div class="line">compile 'com.facebook.stetho:stetho-okhttp:1.1.1'</div><div class="line">compile 'com.squareup.okhttp:okhttp:2.3.0'</div></pre></td></tr></table></figure>
+<h5 id="2-Stetho初始化配置-1"><a href="#2-Stetho初始化配置-1" class="headerlink" title="2.Stetho初始化配置"></a>2.Stetho初始化配置</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</div><div class="line">client.networkInterceptors().add(<span class="keyword">new</span> StethoInterceptor());</div><div class="line">mRequestQueue = Volley.newRequestQueue(getApplicationContext(), <span class="keyword">new</span> OkHttpStack(client));</div></pre></td></tr></table></figure>
+<p>好了，基本上这样就能使用Stetho神器调试你的App了，感觉到强大了么~。</p>
+<h3 id="补充：使用中遇到的坑"><a href="#补充：使用中遇到的坑" class="headerlink" title="补充：使用中遇到的坑"></a>补充：使用中遇到的坑</h3><ul>
+<li><p>Stetho inspect窗口空白 </p>
+<p>如果出现调试窗口空白，先升级下Chrome吧。升级最新版后再试一下（我被这个坑了）。</p>
+</li>
+<li><p>Stetho inspect窗口还是空白 </p>
+<p>如果Chrome是最新版，无论如何刷新都是空白，那么恭喜你你可能被墙了~用VPN试试吧 <a href="!http://reftizi.com/?r=bf31aecac9700bac">可以戳这里哦</a></p>
+</li>
+</ul>
+<h3 id="我的测试代码和效果图如下："><a href="#我的测试代码和效果图如下：" class="headerlink" title="我的测试代码和效果图如下："></a>我的测试代码和效果图如下：</h3><p>自定义Application类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAppliation</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line">	</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">super</span>.onCreate();</div><div class="line">		context = getApplicationContext();</div><div class="line">		instance = <span class="keyword">this</span>;</div><div class="line"></div><div class="line">		Stetho.initialize(</div><div class="line">				Stetho.newInitializerBuilder(<span class="keyword">this</span>)</div><div class="line">						.enableDumpapp(Stetho.defaultDumperPluginsProvider(<span class="keyword">this</span>))</div><div class="line">						.enableWebKitInspector(Stetho.defaultInspectorModulesProvider(<span class="keyword">this</span>))</div><div class="line">						.build());</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line">	 * <span class="doctag">@return</span> The Volley Request queue</div><div class="line">	 */</div><div class="line">	<span class="function"><span class="keyword">public</span> RequestQueue <span class="title">getRequestQueue</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="comment">// lazy initialize the request queue, the queue instance will be</span></div><div class="line">		<span class="comment">// created when it is accessed for the first time</span></div><div class="line">		<span class="keyword">synchronized</span> (App.class) &#123;</div><div class="line">			<span class="keyword">if</span> (mRequestQueue == <span class="keyword">null</span>) &#123;</div><div class="line">				OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</div><div class="line">				client.networkInterceptors().add(<span class="keyword">new</span> StethoInterceptor());</div><div class="line">				mRequestQueue = Volley.newRequestQueue(getApplicationContext(), <span class="keyword">new</span> OkHttpStack(client));</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> mRequestQueue;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Activity类代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> TextView tv;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.layout_main);</div><div class="line">        tv = (TextView)findViewById(R.id.tv);</div><div class="line"></div><div class="line">        RequestQueue queue = App.getInstance().getRequestQueue();</div><div class="line">        String url = <span class="string">"https://publicobject.com/helloworld.txt"</span>;</div><div class="line">        StringRequest request = <span class="keyword">new</span> StringRequest(Request.Method.GET, url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">                LogUtil.d(s);</div><div class="line">                tv.setText(s);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> com.android.volley.Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError volleyError)</span> </span>&#123;</div><div class="line">                LogUtil.e(volleyError.toString());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        queue.add(request);</div><div class="line"></div><div class="line">        SharedPrfUtil.setInt(<span class="string">"uid"</span>,<span class="number">669</span>);</div><div class="line">        SharedPrfUtil.setString(<span class="string">"username"</span>,<span class="string">"dongye"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实现效果如下图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://dongyeforever.qiniudn.com/stetho-all.png" alt="Stetho调试效果图" title="">
+                </div>
+                <div class="image-caption">Stetho调试效果图</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://dongyeforever.qiniudn.com/stetho-inspect.png" alt="调试程序列表" title="">
+                </div>
+                <div class="image-caption">调试程序列表</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://dongyeforever.qiniudn.com/inspect-network.png" alt="调试网络请求" title="">
+                </div>
+                <div class="image-caption">调试网络请求</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://dongyeforever.qiniudn.com/inspect-sharedpreference.png" alt="读取数据存储" title="">
+                </div>
+                <div class="image-caption">读取数据存储</div>
+            </figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2016-04-29T07:40:25.000Z" itemprop="dateUpdated">2016-04-29 15:40:25</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2016/04/19/volley-stetho/" target="_blank" rel="external">http://yoursite.com/2016/04/19/volley-stetho/</a>
+        
+    </div>
+    <footer>
+        <a href="http://yoursite.com">
+            <img src="/img/avatar.jpg" alt="徐雷">
+            徐雷
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Stetho/">Stetho</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2016/04/19/volley-stetho/&title=《android神器Stetho调试Volley》 — Lei’s Blog&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2016/04/19/volley-stetho/&title=《android神器Stetho调试Volley》 — Lei’s Blog&source=Stetho简介Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/04/19/volley-stetho/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《android神器Stetho调试Volley》 — Lei’s Blog&url=http://yoursite.com/2016/04/19/volley-stetho/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2016/04/19/volley-stetho/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/04/29/Retrofit/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Retrofit2.0网络请求框架初尝试</h4>
+      </a>
+    </div>
+  
+
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/img/wechat.jpg" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/img/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>徐雷 &copy; 2015 - 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2016/04/19/volley-stetho/&title=《android神器Stetho调试Volley》 — Lei’s Blog&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2016/04/19/volley-stetho/&title=《android神器Stetho调试Volley》 — Lei’s Blog&source=Stetho简介Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/04/19/volley-stetho/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《android神器Stetho调试Volley》 — Lei’s Blog&url=http://yoursite.com/2016/04/19/volley-stetho/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2016/04/19/volley-stetho/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACOElEQVR42u3ay27CMBAFUP7/p6nUVSVkcq8dKuIcrxCisU8W03n48YjX83e9fvN3vX4/+v3oCaO/PW1hYGBclpE8LjnoiJ0cK3kpB1QMDIwbMPKjzJHyAJ28AgwMDIz3x82Dcv65DdYYGBgYbXqXb/xF/zcwMDAuyMgTuOSg6yXrB2txDAyMCzLawcB/fv7gfAMDA+MijOfyyoedbeutOAMGBsbWjDala8vUnJQkmgcnxMDA2Jrx/qF5UXrub/KxKAYGxh0Ycxskg8y2ZTYZZDEwMLZmzDW/2isX6+H44DkYGBg3YLTXwhJ2PgSda88Nu4YYGBhbM/Jt2msTbUMtD+IYGBh3YORFZpIgzqWGbdA/aLdhYGBsymhbY+1gciUoJztiYGDch9EG2by4zZO8vDFXTGIxMDC2YCShMEndkktj6+XrcBcMDIxNGWeNHueCZnuxY/gEDAyMrRnFmLAsL/Pw+lhYRdcQAwPjsoz26Mkwsm3GrZe+GBgYezPyw+VDxzaIt8UzBgbGnRkrQ8qVA03OMVaGlxgYGBdnzA0J2lQyHyoU+2JgYGzNyBv0yUR0LhFsW2x1IMbAwLgs41mupECdGxsk73v4CjAwMLZmzM08z00Ek2IYAwMDo23fJ1coWlIbcOs7IxgYGFsw2iC70nqbuxB2AMPAwMAIrm21Kd1ZbTsMDAyMpPZtr3DNtdIOwjQGBsYNGOvDgHy0sDI2wMDAuCdjbjCQH6u995GH4xPmGxgYGN/O+AEYeYmH97w/5wAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
