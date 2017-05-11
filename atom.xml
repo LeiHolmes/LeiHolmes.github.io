@@ -4,9 +4,9 @@
   <subtitle>不忘初心，淡然前行</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://www.xulei.tech/"/>
+  <link href="http:/"/>
   <updated>2017-03-31T02:33:25.000Z</updated>
-  <id>http://www.xulei.tech/</id>
+  <id>http:/</id>
   
   <author>
     <name>徐雷</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>Android开发之RecyclerView初尝试</title>
-    <link href="http://www.xulei.tech/2017/03/28/Android%E5%BC%80%E5%8F%91%E4%B9%8BRecyclerView%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
-    <id>http://www.xulei.tech/2017/03/28/Android开发之RecyclerView初尝试/</id>
+    <link href="http:/2017/03/28/Android%E5%BC%80%E5%8F%91%E4%B9%8BRecyclerView%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
+    <id>http:/2017/03/28/Android开发之RecyclerView初尝试/</id>
     <published>2017-03-28T02:26:00.000Z</published>
     <updated>2017-03-31T02:33:25.000Z</updated>
     
@@ -336,17 +336,17 @@ public class StaggerAdapter extends MyAdapter {
     
     </summary>
     
-      <category term="Android" scheme="http://www.xulei.tech/categories/Android/"/>
+      <category term="Android" scheme="http:/categories/Android/"/>
     
     
-      <category term="RecyclerView" scheme="http://www.xulei.tech/tags/RecyclerView/"/>
+      <category term="RecyclerView" scheme="http:/tags/RecyclerView/"/>
     
   </entry>
   
   <entry>
     <title>Android开发之AlarmManager闹钟+Notification通知</title>
-    <link href="http://www.xulei.tech/2016/12/13/Android%E5%BC%80%E5%8F%91%E4%B9%8BAlarmManager%E9%97%B9%E9%92%9F+Notification%E9%80%9A%E7%9F%A5/"/>
-    <id>http://www.xulei.tech/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/</id>
+    <link href="http:/2016/12/13/Android%E5%BC%80%E5%8F%91%E4%B9%8BAlarmManager%E9%97%B9%E9%92%9F+Notification%E9%80%9A%E7%9F%A5/"/>
+    <id>http:/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/</id>
     <published>2016-12-13T03:11:11.000Z</published>
     <updated>2017-03-28T02:53:53.000Z</updated>
     
@@ -378,17 +378,17 @@ public class StaggerAdapter extends MyAdapter {
     
     </summary>
     
-      <category term="Android" scheme="http://www.xulei.tech/categories/Android/"/>
+      <category term="Android" scheme="http:/categories/Android/"/>
     
     
-      <category term="AlarmManager" scheme="http://www.xulei.tech/tags/AlarmManager/"/>
+      <category term="AlarmManager" scheme="http:/tags/AlarmManager/"/>
     
   </entry>
   
   <entry>
     <title>Retrofit2.0网络请求框架初尝试</title>
-    <link href="http://www.xulei.tech/2016/04/29/Retrofit/"/>
-    <id>http://www.xulei.tech/2016/04/29/Retrofit/</id>
+    <link href="http:/2016/04/29/Retrofit/"/>
+    <id>http:/2016/04/29/Retrofit/</id>
     <published>2016-04-29T07:41:00.000Z</published>
     <updated>2016-05-12T03:31:01.000Z</updated>
     
@@ -493,17 +493,17 @@ DataBean bean = call.execute().body();
     
     </summary>
     
-      <category term="Android" scheme="http://www.xulei.tech/categories/Android/"/>
+      <category term="Android" scheme="http:/categories/Android/"/>
     
     
-      <category term="Retrofit" scheme="http://www.xulei.tech/tags/Retrofit/"/>
+      <category term="Retrofit" scheme="http:/tags/Retrofit/"/>
     
   </entry>
   
   <entry>
     <title>android神器Stetho调试Volley</title>
-    <link href="http://www.xulei.tech/2016/04/19/volley-stetho/"/>
-    <id>http://www.xulei.tech/2016/04/19/volley-stetho/</id>
+    <link href="http:/2016/04/19/volley-stetho/"/>
+    <id>http:/2016/04/19/volley-stetho/</id>
     <published>2016-04-19T04:19:16.000Z</published>
     <updated>2016-04-29T07:40:25.000Z</updated>
     
@@ -564,10 +564,10 @@ DataBean bean = call.execute().body();
     
     </summary>
     
-      <category term="Android" scheme="http://www.xulei.tech/categories/Android/"/>
+      <category term="Android" scheme="http:/categories/Android/"/>
     
     
-      <category term="Stetho" scheme="http://www.xulei.tech/tags/Stetho/"/>
+      <category term="Stetho" scheme="http:/tags/Stetho/"/>
     
   </entry>
   
