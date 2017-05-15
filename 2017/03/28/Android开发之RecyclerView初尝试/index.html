@@ -31,17 +31,17 @@ ga('send', 'pageview');
     
     
     <meta name="keywords" content="RecyclerView">
-    <meta name="description" content="概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
+    <meta name="description" content="RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
 <meta name="keywords" content="RecyclerView">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android开发之RecyclerView初尝试">
 <meta property="og:url" content="http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
-<meta property="og:description" content="概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
-<meta property="og:updated_time" content="2017-05-15T02:54:32.000Z">
+<meta property="og:description" content="RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
+<meta property="og:updated_time" content="2017-05-15T03:48:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android开发之RecyclerView初尝试">
-<meta name="twitter:description" content="概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
+<meta name="twitter:description" content="RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
     
         <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
     
@@ -172,7 +172,7 @@ ga('send', 'pageview');
     <aside class="post-widget">
         <nav class="post-toc-wrap" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#相关原理与简单实现"><span class="post-toc-number">2.</span> <span class="post-toc-text">相关原理与简单实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#添加依赖"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">添加依赖</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#在布局中使用"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">在布局中使用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#RecyclerView-Adapter"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">RecyclerView.Adapter</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#LayoutManager"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">LayoutManager</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ItemDecoration"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">ItemDecoration</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ItemAnimator"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">ItemAnimator</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#RecyclerView初始化"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">RecyclerView初始化</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#点击事件与添加删除Item"><span class="post-toc-number">3.</span> <span class="post-toc-text">点击事件与添加删除Item</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Adapter中"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">Adapter中</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Activity中"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">Activity中</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#瀑布流的实现"><span class="post-toc-number">4.</span> <span class="post-toc-text">瀑布流的实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#首先在Activity中设置LayoutManager时选择："><span class="post-toc-number">4.1.</span> <span class="post-toc-text">首先在Activity中设置LayoutManager时选择：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#修改Adapter"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">修改Adapter</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#RecyclerView简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">RecyclerView简介</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#相关原理与简单实现"><span class="post-toc-number">2.</span> <span class="post-toc-text">相关原理与简单实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#添加依赖"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">添加依赖</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#在布局中使用"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">在布局中使用</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#RecyclerView-Adapter"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">RecyclerView.Adapter</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#LayoutManager"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">LayoutManager</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ItemDecoration"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">ItemDecoration</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ItemAnimator"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">ItemAnimator</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#RecyclerView初始化"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">RecyclerView初始化</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#点击事件与添加删除Item"><span class="post-toc-number">3.</span> <span class="post-toc-text">点击事件与添加删除Item</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Adapter中"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">Adapter中</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Activity中"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">Activity中</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#瀑布流的实现"><span class="post-toc-number">4.</span> <span class="post-toc-text">瀑布流的实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#首先在Activity中设置LayoutManager时选择："><span class="post-toc-number">4.1.</span> <span class="post-toc-text">首先在Activity中设置LayoutManager时选择：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#修改Adapter"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">修改Adapter</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li></ol>
         </nav>
     </aside>
     
@@ -199,60 +199,60 @@ ga('send', 'pageview');
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。<br><a id="more"></a>  </p>
+            <h3 id="RecyclerView简介"><a href="#RecyclerView简介" class="headerlink" title="RecyclerView简介"></a>RecyclerView简介</h3><p>　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。<br><a id="more"></a>  </p>
 <h3 id="相关原理与简单实现"><a href="#相关原理与简单实现" class="headerlink" title="相关原理与简单实现"></a>相关原理与简单实现</h3><h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>　　在AndroidStudio的build.gradle中添加依赖：  </p>
-<pre><code class="python">dependencies {
+<pre><code class="xml">dependencies {
     ...
-    compile <span class="string">'com.android.support:recyclerview-v7:25.3.0'</span>
+    compile &#39;com.android.support:recyclerview-v7:25.3.0&#39;
 }
 </code></pre>
 <h4 id="在布局中使用"><a href="#在布局中使用" class="headerlink" title="在布局中使用"></a>在布局中使用</h4><p>　　添加完依赖后就可以在布局中使用RecyclerView了：  </p>
-<pre><code class="python">&lt;android.support.v7.widget.RecyclerView
-    android:id=<span class="string">"@+id/main_recyclerview"</span>
-    android:layout_width=<span class="string">"match_parent"</span>
-    android:layout_height=<span class="string">"match_parent"</span> /&gt;
+<pre><code class="xml"><span class="tag">&lt;<span class="name">android.support.v7.widget.RecyclerView</span>
+    <span class="attr">android:id</span>=<span class="string">"@+id/main_recyclerview"</span>
+    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span>
+    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> /&gt;</span>
 </code></pre>
 <h4 id="RecyclerView-Adapter"><a href="#RecyclerView-Adapter" class="headerlink" title="RecyclerView.Adapter"></a>RecyclerView.Adapter</h4><p>　　RecyclerView封装了一种新型的适配器，与现在使用的适配器大同小异。它强制用户使用RecyclerView提供的ViewHolder，使用时主要需要重写onCreateViewHolder与onBindViewHolder方法。前者用来展现视图及其持有者，且只有真正需要一个新view时才会被回调，不需要检查是否已经被回收。后者用来绑定数据到View上。  </p>
-<pre><code class="python">import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import java.util.List;
+<pre><code class="java"><span class="keyword">import</span> android.content.Context;
+<span class="keyword">import</span> android.support.v7.widget.RecyclerView;
+<span class="keyword">import</span> android.view.LayoutInflater;
+<span class="keyword">import</span> android.view.View;
+<span class="keyword">import</span> android.view.ViewGroup;
+<span class="keyword">import</span> android.widget.TextView;
+<span class="keyword">import</span> java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter&lt;MyAdapter.MyViewHolder&gt; {
-    private Context context;
-    private List&lt;String&gt; list;
-    private LayoutInflater inflater;
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">MyAdapter</span>.<span class="title">MyViewHolder</span>&gt; </span>{
+    <span class="keyword">private</span> Context context;
+    <span class="keyword">private</span> List&lt;String&gt; list;
+    <span class="keyword">private</span> LayoutInflater inflater;
 
-    public MyAdapter(Context context, List&lt;String&gt; list) {
-        this.context = context;
-        this.list = list;
+    <span class="function"><span class="keyword">public</span> <span class="title">MyAdapter</span><span class="params">(Context context, List&lt;String&gt; list)</span> </span>{
+        <span class="keyword">this</span>.context = context;
+        <span class="keyword">this</span>.list = list;
         inflater = LayoutInflater.from(context);
     }
 
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_recyclerview, parent, false);
-        MyViewHolder holder = new MyViewHolder(view);
-        return holder;
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> MyViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>{
+        View view = inflater.inflate(R.layout.item_recyclerview, parent, <span class="keyword">false</span>);
+        MyViewHolder holder = <span class="keyword">new</span> MyViewHolder(view);
+        <span class="keyword">return</span> holder;
     }
 
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>{
         holder.textView.setText(list.get(position));
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> list.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    <span class="class"><span class="keyword">class</span> <span class="title">MyViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>{
         TextView textView;
-        public MyViewHolder(View itemView) {
-            super(itemView);
+        <span class="function"><span class="keyword">public</span> <span class="title">MyViewHolder</span><span class="params">(View itemView)</span> </span>{
+            <span class="keyword">super</span>(itemView);
             textView = (TextView) itemView.findViewById(R.id.item_textview);
         }
     }
@@ -260,245 +260,245 @@ public class MyAdapter extends RecyclerView.Adapter&lt;MyAdapter.MyViewHolder&gt
 </code></pre>
 <h4 id="LayoutManager"><a href="#LayoutManager" class="headerlink" title="LayoutManager"></a>LayoutManager</h4><p>　　RecyclerView通过布局管理器LayoutManager控制每一个item如何进行排列摆放，何时展示和隐藏。回收或重用一个View时LayoutManager会向适配器请求新的数据来替换旧的数据，这种机制避免了创建过多的View和频繁的调用findViewById方法，目前其自带的主要有以下三种：<br>　　- LinearLayoutManager：ListView样式<br>　　- GridLayoutManager：GridView样式<br>　　- StaggeredGridLayoutManager：瀑布流样式  </p>
 <h4 id="ItemDecoration"><a href="#ItemDecoration" class="headerlink" title="ItemDecoration"></a>ItemDecoration</h4><p>　　RecyclerView并不能像ListView一样直接在xml布局中修改item分割线样式。需要在Activity动态设置，当然更推荐在单个条目布局中设置margin或者padding来实现分割线效果，这里提供一个分割线。  </p>
-<pre><code class="python">import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+<pre><code class="java"><span class="keyword">import</span> android.content.Context;
+<span class="keyword">import</span> android.content.res.TypedArray;
+<span class="keyword">import</span> android.graphics.Canvas;
+<span class="keyword">import</span> android.graphics.Rect;
+<span class="keyword">import</span> android.graphics.drawable.Drawable;
+<span class="keyword">import</span> android.support.v7.widget.LinearLayoutManager;
+<span class="keyword">import</span> android.support.v7.widget.RecyclerView;
+<span class="keyword">import</span> android.view.View;
 
-public class DividerItemDecoration extends RecyclerView.ItemDecoration {
-    private static final int[] ATTRS = new int[]{
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DividerItemDecoration</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ItemDecoration</span> </span>{
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span>[] ATTRS = <span class="keyword">new</span> <span class="keyword">int</span>[]{
             android.R.attr.listDivider
     };
-    public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
-    public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
-    private Drawable mDivider;
-    private int mOrientation;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> VERTICAL_LIST = LinearLayoutManager.VERTICAL;
+    <span class="keyword">private</span> Drawable mDivider;
+    <span class="keyword">private</span> <span class="keyword">int</span> mOrientation;
 
-    public DividerItemDecoration(Context context, int orientation) {
-        final TypedArray a = context.obtainStyledAttributes(ATTRS);
-        mDivider = a.getDrawable(0);
+    <span class="function"><span class="keyword">public</span> <span class="title">DividerItemDecoration</span><span class="params">(Context context, <span class="keyword">int</span> orientation)</span> </span>{
+        <span class="keyword">final</span> TypedArray a = context.obtainStyledAttributes(ATTRS);
+        mDivider = a.getDrawable(<span class="number">0</span>);
         a.recycle();
         setOrientation(orientation);
     }
 
-    public void setOrientation(int orientation) {
-        if (orientation != HORIZONTAL_LIST &amp;&amp; orientation != VERTICAL_LIST) {
-            throw new IllegalArgumentException("invalid orientation");
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOrientation</span><span class="params">(<span class="keyword">int</span> orientation)</span> </span>{
+        <span class="keyword">if</span> (orientation != HORIZONTAL_LIST &amp;&amp; orientation != VERTICAL_LIST) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"invalid orientation"</span>);
         }
         mOrientation = orientation;
     }
 
-    @Override
-    public void onDraw(Canvas c, RecyclerView parent) {
-        if (mOrientation == VERTICAL_LIST) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas c, RecyclerView parent)</span> </span>{
+        <span class="keyword">if</span> (mOrientation == VERTICAL_LIST) {
             drawVertical(c, parent);
-        } else {
+        } <span class="keyword">else</span> {
             drawHorizontal(c, parent);
         }
     }
 
-    public void drawVertical(Canvas c, RecyclerView parent) {
-        final int left = parent.getPaddingLeft();
-        final int right = parent.getWidth() - parent.getPaddingRight();
-        final int childCount = parent.getChildCount();
-        for (int i = 0; i &lt; childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
-            final int top = child.getBottom() + params.bottomMargin;
-            final int bottom = top + mDivider.getIntrinsicHeight();
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawVertical</span><span class="params">(Canvas c, RecyclerView parent)</span> </span>{
+        <span class="keyword">final</span> <span class="keyword">int</span> left = parent.getPaddingLeft();
+        <span class="keyword">final</span> <span class="keyword">int</span> right = parent.getWidth() - parent.getPaddingRight();
+        <span class="keyword">final</span> <span class="keyword">int</span> childCount = parent.getChildCount();
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) {
+            <span class="keyword">final</span> View child = parent.getChildAt(i);
+            <span class="keyword">final</span> RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
+            <span class="keyword">final</span> <span class="keyword">int</span> top = child.getBottom() + params.bottomMargin;
+            <span class="keyword">final</span> <span class="keyword">int</span> bottom = top + mDivider.getIntrinsicHeight();
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }
     }
 
-    public void drawHorizontal(Canvas c, RecyclerView parent) {
-        final int top = parent.getPaddingTop();
-        final int bottom = parent.getHeight() - parent.getPaddingBottom();
-        final int childCount = parent.getChildCount();
-        for (int i = 0; i &lt; childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
-            final int left = child.getRight() + params.rightMargin;
-            final int right = left + mDivider.getIntrinsicHeight();
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawHorizontal</span><span class="params">(Canvas c, RecyclerView parent)</span> </span>{
+        <span class="keyword">final</span> <span class="keyword">int</span> top = parent.getPaddingTop();
+        <span class="keyword">final</span> <span class="keyword">int</span> bottom = parent.getHeight() - parent.getPaddingBottom();
+        <span class="keyword">final</span> <span class="keyword">int</span> childCount = parent.getChildCount();
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) {
+            <span class="keyword">final</span> View child = parent.getChildAt(i);
+            <span class="keyword">final</span> RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
+            <span class="keyword">final</span> <span class="keyword">int</span> left = child.getRight() + params.rightMargin;
+            <span class="keyword">final</span> <span class="keyword">int</span> right = left + mDivider.getIntrinsicHeight();
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }
     }
 
-    @Override
-    public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
-        if (mOrientation == VERTICAL_LIST) {
-            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
-        } else {
-            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getItemOffsets</span><span class="params">(Rect outRect, <span class="keyword">int</span> itemPosition, RecyclerView parent)</span> </span>{
+        <span class="keyword">if</span> (mOrientation == VERTICAL_LIST) {
+            outRect.set(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, mDivider.getIntrinsicHeight());
+        } <span class="keyword">else</span> {
+            outRect.set(<span class="number">0</span>, <span class="number">0</span>, mDivider.getIntrinsicWidth(), <span class="number">0</span>);
             }
     }
 }
 </code></pre>
 <h4 id="ItemAnimator"><a href="#ItemAnimator" class="headerlink" title="ItemAnimator"></a>ItemAnimator</h4><p>　　ItemAnimator会根据适配器上收到的通知来动画显示视图组的修改，比如item的添加与删除。DefaultItemAnimator已经能很好的展现动画效果了。  </p>
 <h4 id="RecyclerView初始化"><a href="#RecyclerView初始化" class="headerlink" title="RecyclerView初始化"></a>RecyclerView初始化</h4><p>　　若想初始化一个RecyclerView使其进入工作状态，你需要在Activity中做以下的操作：  </p>
-<pre><code class="python">RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view_main);
-MyAdapter adapter = new MyAdapter(this, list);
-//设置RecyclerView保持固定的大小
-recyclerView.setHasFixedSize(true);
-//设置适配器
+<pre><code class="java">RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view_main);
+MyAdapter adapter = <span class="keyword">new</span> MyAdapter(<span class="keyword">this</span>, list);
+<span class="comment">//设置RecyclerView保持固定的大小</span>
+recyclerView.setHasFixedSize(<span class="keyword">true</span>);
+<span class="comment">//设置适配器</span>
 recyclerView.setAdapter(adapter);
-//设置RecyclerView ListView样式布局管理
-recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-//设置RecyclerView的Item分割线
-recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-//设置RecyclerView的动画
-recyclerView.setItemAnimator(new DefaultItemAnimator());
+<span class="comment">//设置RecyclerView ListView样式布局管理</span>
+recyclerView.setLayoutManager(<span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>, LinearLayoutManager.VERTICAL, <span class="keyword">false</span>));
+<span class="comment">//设置RecyclerView的Item分割线</span>
+recyclerView.addItemDecoration(<span class="keyword">new</span> DividerItemDecoration(<span class="keyword">this</span>, DividerItemDecoration.VERTICAL_LIST));
+<span class="comment">//设置RecyclerView的动画</span>
+recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimator());
 
-//设置RecyclerView GridView样式
-//recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, <span class="number">3</span>));
-//设置RecyclerView 水平GridView样式
-//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(<span class="number">5</span>, StaggeredGridLayoutManager.HORIZONTAL));
-//设置RecyclerView 瀑布流样式
-//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(<span class="number">3</span>,StaggeredGridLayoutManager.VERTICAL));
+<span class="comment">//设置RecyclerView GridView样式</span>
+<span class="comment">//recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 3));</span>
+<span class="comment">//设置RecyclerView 水平GridView样式</span>
+<span class="comment">//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(5, StaggeredGridLayoutManager.HORIZONTAL));</span>
+<span class="comment">//设置RecyclerView 瀑布流样式</span>
+<span class="comment">//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));</span>
 </code></pre>
 <h3 id="点击事件与添加删除Item"><a href="#点击事件与添加删除Item" class="headerlink" title="点击事件与添加删除Item"></a>点击事件与添加删除Item</h3><p>　　美中不足的是RecyclerView并没有提供像ListView一样的Item点击与Item长点击事件，不提供咱们就自己造，通过接口回调来实现。  </p>
-<h4 id="Adapter中"><a href="#Adapter中" class="headerlink" title="Adapter中"></a>Adapter中</h4><pre><code class="python">import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+<h4 id="Adapter中"><a href="#Adapter中" class="headerlink" title="Adapter中"></a>Adapter中</h4><pre><code class="java"><span class="keyword">import</span> android.content.Context;
+<span class="keyword">import</span> android.support.v7.widget.RecyclerView;
+<span class="keyword">import</span> android.view.LayoutInflater;
+<span class="keyword">import</span> android.view.View;
+<span class="keyword">import</span> android.view.ViewGroup;
+<span class="keyword">import</span> android.widget.TextView;
 
-import java.util.ArrayList;
+<span class="keyword">import</span> java.util.ArrayList;
 
-public class MyAdapter extends RecyclerView.Adapter&lt;MyAdapter.MyViewHolder&gt; {
-    private Context context;
-    private LayoutInflater inflater;
-    protected ArrayList&lt;String&gt; datas;
-    private onItemClickedListener onItemClickedListener;
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">MyAdapter</span>.<span class="title">MyViewHolder</span>&gt; </span>{
+    <span class="keyword">private</span> Context context;
+    <span class="keyword">private</span> LayoutInflater inflater;
+    <span class="keyword">protected</span> ArrayList&lt;String&gt; datas;
+    <span class="keyword">private</span> onItemClickedListener onItemClickedListener;
 
-    public MyAdapter(Context context, ArrayList&lt;String&gt; datas) {
-        this.context = context;
-        this.datas = datas;
+    <span class="function"><span class="keyword">public</span> <span class="title">MyAdapter</span><span class="params">(Context context, ArrayList&lt;String&gt; datas)</span> </span>{
+        <span class="keyword">this</span>.context = context;
+        <span class="keyword">this</span>.datas = datas;
         inflater = LayoutInflater.from(context);
     }
 
-    public void setOnItemClickedListener(MyAdapter.onItemClickedListener onItemClickedListener) {
-        this.onItemClickedListener = onItemClickedListener;
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnItemClickedListener</span><span class="params">(MyAdapter.onItemClickedListener onItemClickedListener)</span> </span>{
+        <span class="keyword">this</span>.onItemClickedListener = onItemClickedListener;
     }
 
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>{
         holder.textView.setText(datas.get(position));
     }
 
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = inflater.inflate(R.layout.item_recycler_view, parent, false);
-        MyViewHolder myViewHolder = new MyViewHolder(view);
-        return myViewHolder;
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> MyViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>{
+    View view = inflater.inflate(R.layout.item_recycler_view, parent, <span class="keyword">false</span>);
+        MyViewHolder myViewHolder = <span class="keyword">new</span> MyViewHolder(view);
+        <span class="keyword">return</span> myViewHolder;
     }
 
-    @Override
-    public int getItemCount() {
-        return datas.size();
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> datas.size();
     }
 
-   /**
+   <span class="comment">/**
     * 添加条目
-    */
-    public void addItem(int position) {
-        datas.add(position, "xulei");
-    //        notifyDataSetChanged();
-        notifyItemInserted(position);//调用这个才有动画效果
+    */</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>{
+        datas.add(position, <span class="string">"xulei"</span>);
+    <span class="comment">//        notifyDataSetChanged();</span>
+        notifyItemInserted(position);<span class="comment">//调用这个才有动画效果</span>
     }
 
-   /**
+   <span class="comment">/**
     * 移除条目
-    */
-    public void removeItem(int position) {
+    */</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>{
         datas.remove(position);
         notifyItemRemoved(position);
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    <span class="class"><span class="keyword">class</span> <span class="title">MyViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>{
         TextView textView;
 
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            //初始化控件
+        <span class="function"><span class="keyword">public</span> <span class="title">MyViewHolder</span><span class="params">(View itemView)</span> </span>{
+            <span class="keyword">super</span>(itemView);
+            <span class="comment">//初始化控件</span>
             textView = (TextView) itemView.findViewById(R.id.item_textview);
-            //设置当前条目单击监听
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onItemClickedListener != null)
-                        onItemClickedListener.onClick(view, getAdapterPosition());//可立刻获取到当前position
-//                        onItemClickedListener.onClick(view, getLayoutPosition());//需等当前视图更新完才能获取到当前position，&lt;16ms。
+            <span class="comment">//设置当前条目单击监听</span>
+            itemView.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() {
+                <span class="meta">@Override</span>
+                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>{
+                    <span class="keyword">if</span> (onItemClickedListener != <span class="keyword">null</span>)
+                        onItemClickedListener.onClick(view, getAdapterPosition());<span class="comment">//可立刻获取到当前position</span>
+<span class="comment">//                        onItemClickedListener.onClick(view, getLayoutPosition());//需等当前视图更新完才能获取到当前position，&lt;16ms。</span>
                 }
             });
-            //设置当前条目长按监听
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    if (onItemClickedListener != null)
+            <span class="comment">//设置当前条目长按监听</span>
+            itemView.setOnLongClickListener(<span class="keyword">new</span> View.OnLongClickListener() {
+                <span class="meta">@Override</span>
+                <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onLongClick</span><span class="params">(View view)</span> </span>{
+                    <span class="keyword">if</span> (onItemClickedListener != <span class="keyword">null</span>)
                         onItemClickedListener.onLongClick(view, getAdapterPosition());
-                    return false;
+                    <span class="keyword">return</span> <span class="keyword">false</span>;
                 }
             });
         }
     }
 
-   /**
+   <span class="comment">/**
     * 点击回调的接口
-    */
-    interface onItemClickedListener {
-        void onClick(View view, int position);
+    */</span>
+    <span class="class"><span class="keyword">interface</span> <span class="title">onItemClickedListener</span> </span>{
+        <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span></span>;
 
-        void onLongClick(View view, int position);
+        <span class="function"><span class="keyword">void</span> <span class="title">onLongClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span></span>;
     }
 }
 </code></pre>
 <h4 id="Activity中"><a href="#Activity中" class="headerlink" title="Activity中"></a>Activity中</h4><p>　　在Activity中实例化Adapter之后添加如下代码：</p>
-<pre><code class="python">adapter.setOnItemClickedListener(new MyAdapter.onItemClickedListener() {
-<span class="meta">    @Override</span>
-    public void onClick(View view, int position) {
+<pre><code class="java">adapter.setOnItemClickedListener(<span class="keyword">new</span> MyAdapter.onItemClickedListener() {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span> </span>{
         adapter.addItem(position);
-        Toast.makeText(MainActivity.this, <span class="string">"点击click:"</span> + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"点击click:"</span> + position, Toast.LENGTH_SHORT).show();
     }
 
-<span class="meta">    @Override</span>
-    public void onLongClick(View view, int position) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLongClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span> </span>{
         adapter.removeItem(position);
-        Toast.makeText(MainActivity.this, <span class="string">"长按click:"</span> + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"长按click:"</span> + position, Toast.LENGTH_SHORT).show();
     }
 });
 </code></pre>
 <h3 id="瀑布流的实现"><a href="#瀑布流的实现" class="headerlink" title="瀑布流的实现"></a>瀑布流的实现</h3><p>　　想实现瀑布流的样式通过使用RecyclerView也很容易就能实现。</p>
-<h4 id="首先在Activity中设置LayoutManager时选择："><a href="#首先在Activity中设置LayoutManager时选择：" class="headerlink" title="首先在Activity中设置LayoutManager时选择："></a>首先在Activity中设置LayoutManager时选择：</h4><pre><code class="python">recyclerView.setLayoutManager(new StaggeredGridLayoutManager(<span class="number">3</span>,StaggeredGridLayoutManager.VERTICAL));
+<h4 id="首先在Activity中设置LayoutManager时选择："><a href="#首先在Activity中设置LayoutManager时选择：" class="headerlink" title="首先在Activity中设置LayoutManager时选择："></a>首先在Activity中设置LayoutManager时选择：</h4><pre><code class="java">recyclerView.setLayoutManager(<span class="keyword">new</span> StaggeredGridLayoutManager(<span class="number">3</span>,StaggeredGridLayoutManager.VERTICAL));
 </code></pre>
 <h4 id="修改Adapter"><a href="#修改Adapter" class="headerlink" title="修改Adapter"></a>修改Adapter</h4><p>　　瀑布流自然是每个条目的高度不同才能出现瀑布的效果（水平布局则是宽度不同），那么只需在每个条目绑定数据时动态改变下其高度即可，贴出瀑布流Adapter代码：</p>
-<pre><code class="python">import android.content.Context;
-import android.view.ViewGroup;
+<pre><code class="java"><span class="keyword">import</span> android.content.Context;
+<span class="keyword">import</span> android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+<span class="keyword">import</span> java.util.ArrayList;
+<span class="keyword">import</span> java.util.List;
 
-public class StaggerAdapter extends MyAdapter {
-    private List&lt;Integer&gt; heights;
-    public StaggerAdapter(Context context, ArrayList&lt;String&gt; datas) {
-        super(context, datas);
-        heights = new ArrayList&lt;&gt;();
-        for (int i = 0; i &lt; datas.size(); i++) {
-            heights.add((int) (100 + Math.random() * 300));
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaggerAdapter</span> <span class="keyword">extends</span> <span class="title">MyAdapter</span> </span>{
+    <span class="keyword">private</span> List&lt;Integer&gt; heights;
+    <span class="function"><span class="keyword">public</span> <span class="title">StaggerAdapter</span><span class="params">(Context context, ArrayList&lt;String&gt; datas)</span> </span>{
+        <span class="keyword">super</span>(context, datas);
+        heights = <span class="keyword">new</span> ArrayList&lt;&gt;();
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; datas.size(); i++) {
+            heights.add((<span class="keyword">int</span>) (<span class="number">100</span> + Math.random() * <span class="number">300</span>));
         }
     }
 
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>{
         ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
         layoutParams.height = heights.get(position);
-//        layoutParams.width = heights.get(position);
+<span class="comment">//        layoutParams.width = heights.get(position);</span>
         holder.itemView.setLayoutParams(layoutParams);
         holder.textView.setText(datas.get(position));
     }
@@ -512,7 +512,7 @@ public class StaggerAdapter extends MyAdapter {
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2017-05-15T02:54:32.000Z" itemprop="dateUpdated">2017-05-15 10:54:32</time>
+    Last updated: <time datetime="2017-05-15T03:48:46.000Z" itemprop="dateUpdated">2017-05-15 11:48:46</time>
 </span><br>
 
 
@@ -557,7 +557,7 @@ public class StaggerAdapter extends MyAdapter {
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&source=概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&source=RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和Gri..." data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
@@ -592,7 +592,14 @@ public class StaggerAdapter extends MyAdapter {
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/05/15/Android开发之DataBinding基本实现（一）/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Android开发之DataBinding基本实现（一）</h4>
+      </a>
+    </div>
   
 
   
@@ -720,7 +727,7 @@ public class StaggerAdapter extends MyAdapter {
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&source=概述　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&source=RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和Gri..." data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>

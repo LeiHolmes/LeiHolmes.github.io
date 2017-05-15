@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-05-15T02:54:32.000Z</updated>
+  <updated>2017-05-15T07:51:25.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -16,66 +16,109 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Android开发之DataBinding基本实现（一）</title>
+    <link href="http://LeiHolmes.github.io/2017/05/15/Android%E5%BC%80%E5%8F%91%E4%B9%8BDataBinding%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+    <id>http://LeiHolmes.github.io/2017/05/15/Android开发之DataBinding基本实现（一）/</id>
+    <published>2017-05-15T03:12:18.000Z</published>
+    <updated>2017-05-15T07:51:25.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="DataBinding简介"><a href="#DataBinding简介" class="headerlink" title="DataBinding简介"></a>DataBinding简介</h3><p>　　DataBinding是基于MVVM思想实现数据与UI绑定的框架，有了Data Binding，在Android中也可以很方便的实现MVVM。它于2015年7月由Google在Studio1.3上引入，2016年4月在Studio2.0上得到正式支持。DataBinding是一个support库，最低支持到Android2.1（API Level 7+）。<br><a id="more"></a><br>　　在引入DataBinding之前，我们需要敲很多很鸡肋的代码，如 findViewById()、setText()，setVisibility()，setEnabled() 或 setOnClickListener() 等，通过 DataBinding , 我们可以通过声明式布局以精简的代码来绑定应用程序逻辑和布局，这样就不用编写大量的冗余的代码了。这一节我们来讲一讲DataBinding的基本实现之常量绑定、变量绑定与事件绑定。</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><h4 id="在build-gradle中添加"><a href="#在build-gradle中添加" class="headerlink" title="在build.gradle中添加"></a>在build.gradle中添加</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    dataBinding &#123;</div><div class="line">        enabled = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="在xml文件最外层结构添加"><a href="#在xml文件最外层结构添加" class="headerlink" title="在xml文件最外层结构添加"></a>在xml文件最外层结构添加</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">layout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span>&gt;</div><div class="line">    ......</div><div class="line"><span class="tag">&lt;/<span class="name">layout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>　　即是将最外层标签改为<code>&lt;layout&gt;&lt;/layout&gt;</code>   </p>
+<h4 id="替换原setContentView方法"><a href="#替换原setContentView方法" class="headerlink" title="替换原setContentView方法"></a>替换原setContentView方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ActivityMainBinding binding = DataBindingUtil.setContentView(<span class="keyword">this</span>, R.layout.activity_main);</div></pre></td></tr></table></figure>
+<p>　　<strong>命名规则</strong>：这里的ActivityMainBinding命名由来是其layout名称转换为驼峰形式再加上”Binding得到”。例如activity_main-&gt;ActivityMainBinding。</p>
+<h3 id="开始绑定"><a href="#开始绑定" class="headerlink" title="开始绑定"></a>开始绑定</h3><h4 id="常量绑定"><a href="#常量绑定" class="headerlink" title="常量绑定"></a>常量绑定</h4><p>　　在xml中：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/text_view1"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span> /&gt;</div></pre></td></tr></table></figure></p>
+<p>　　在Activity中：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">binding.textView1.setText(<span class="string">"Helloworld"</span>);</div></pre></td></tr></table></figure></p>
+<p>　　<strong>命名规则</strong>：控件id带下划线时，调用时使用其id的驼峰命名形式 。不带下划线时，调用时与id一致。例如id为text_view1，调用时使用binding.textView1。</p>
+<h4 id="变量绑定"><a href="#变量绑定" class="headerlink" title="变量绑定"></a>变量绑定</h4><p>　　首先创建一个简单的数据来源类MyBean：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.sherlock.databindingdemo;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBean</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyBean</span><span class="params">(String name, <span class="keyword">int</span> age)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">        <span class="keyword">this</span>.age = age;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> age;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.age = age;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>　　然后在xml文件layout标签下添加：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">variable</span></span></div><div class="line">        <span class="attr">name</span>=<span class="string">"mybean"</span></div><div class="line">        <span class="attr">type</span>=<span class="string">"com.sherlock.databindingdemo.MyBean"</span> /&gt; </div><div class="line"><span class="tag">&lt;/<span class="name">data</span>&gt;</span></div><div class="line"><span class="comment">&lt;!--name：提供数据的bean的别名；type：bean的类名--&gt;</span></div></pre></td></tr></table></figure></p>
+<p>　　在控件中设置变量绑定：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/text_view1"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_marginRight</span>=<span class="string">"10dp"</span></div><div class="line">    <span class="attr">android:text</span>=<span class="string">"@&#123;mybean.name&#125;"</span>/&gt;</div></pre></td></tr></table></figure></p>
+<p>　　在Activity中设置数据：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">binding.setMybean(myBean);</div><div class="line"><span class="comment">//binding.setVariable(BR.mybean,myBean);		//另一种方法</span></div></pre></td></tr></table></figure></p>
+<p>　　<strong>注意</strong>：<code>@{mybean.name}</code>中的name必须为String类型，若要绑定别的类型，比如int类型，可以这样<code>@{String.valueOf(mybean.age)}</code>。</p>
+<h4 id="事件绑定"><a href="#事件绑定" class="headerlink" title="事件绑定"></a>事件绑定</h4><p>　　当然我们也可以用DataBinding实现事件绑定，它有两种实现方式。<br>　　<strong>第一种</strong>：首先添加一个事件回调类Presenter，这里演示Click与TextChange事件:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Presenter</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTextChanged</span><span class="params">(CharSequence s, <span class="keyword">int</span> start, <span class="keyword">int</span> before, <span class="keyword">int</span> count)</span> </span>&#123;</div><div class="line">        myBean.setName(s.toString());</div><div class="line">        binding.setMybean(myBean);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span></span>&#123;</div><div class="line">        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"点击成功"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>　　<strong>注意</strong>：使用这种事件绑定方式，Presenter中的方法需和控件监听方法完全一致。<br>　　在xml中：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">variable</span></span></div><div class="line">        <span class="attr">name</span>=<span class="string">"presenter"</span></div><div class="line">        <span class="attr">type</span>=<span class="string">"com.sherlock.databindingdemo.MainActivity.Presenter"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">data</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">EditText</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:onTextChanged</span>=<span class="string">"@&#123;presenter.onTextChanged&#125;"</span> /&gt;</div><div class="line">    <span class="comment">&lt;!--或者@&#123;presenter::onTextChanged&#125;--&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:onClick</span>=<span class="string">"@&#123;presenter.onClick&#125;"</span> /&gt;</div><div class="line">    <span class="comment">&lt;!--或者@&#123;presenter::onClick&#125;--&gt;</span></div></pre></td></tr></table></figure></p>
+<p>　　在Activity中：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">binding.setPresenter(<span class="keyword">new</span> Presenter());</div></pre></td></tr></table></figure></p>
+<p>　　<strong>第二种</strong>：也可以设置自定义的监听器Binding，可回传参数，需要使用Lambda表达式：<br>　　在xml中：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:onClick</span>=<span class="string">"@&#123;() -&gt; presenter.onButtonClick(mybean)&#125;"</span> /&gt;</div><div class="line">    <span class="comment">&lt;!--或者@&#123;(view) -&gt; presenter.onButtonClick(mybean)&#125;--&gt;</span></div></pre></td></tr></table></figure></p>
+<p>　　在Presenter中：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onButtonClick</span><span class="params">(MyBean myBean)</span></span>&#123;</div><div class="line">    Toast.makeText(MainActivity.<span class="keyword">this</span>, myBean.getName(), Toast.LENGTH_SHORT).show();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>　　<strong>注意</strong>：使用这种事件绑定，Presenter中的监听方法就不需要与View的监听方法完全一致了，而且可以获取View在事件中回传的数据。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　这一节到此DataBinding的常量，变量，事件绑定的用法就讲解完毕了，实际操作起来感觉目前AndroidStudio对DataBinding的支持还不够，排错有点费劲，有时会出现找不到DataBinding的错误，这时应先查看下是否由于自己修改了某个类名，而xml调用时没有修改导致。若没有问题则删除app下的build文件夹重新Rebuild下项目试试。<br>　　首次接触DataBinding，可能有写的不对的地方欢迎大神们留言指正，有什么疑惑或者不懂的地方也可以在我Github上DataBindingDemo项目的Issues中提出，我会及时解答。附上DataBindingDemo地址：<br>　　<a href="https://github.com/LeiHolmes/DataBindingDemo" target="_blank" rel="external">DataBindingDemo</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;DataBinding简介&quot;&gt;&lt;a href=&quot;#DataBinding简介&quot; class=&quot;headerlink&quot; title=&quot;DataBinding简介&quot;&gt;&lt;/a&gt;DataBinding简介&lt;/h3&gt;&lt;p&gt;　　DataBinding是基于MVVM思想实现数据与UI绑定的框架，有了Data Binding，在Android中也可以很方便的实现MVVM。它于2015年7月由Google在Studio1.3上引入，2016年4月在Studio2.0上得到正式支持。DataBinding是一个support库，最低支持到Android2.1（API Level 7+）。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="http://LeiHolmes.github.io/categories/Android/"/>
+    
+    
+      <category term="DataBinding" scheme="http://LeiHolmes.github.io/tags/DataBinding/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Android开发之RecyclerView初尝试</title>
     <link href="http://LeiHolmes.github.io/2017/03/28/Android%E5%BC%80%E5%8F%91%E4%B9%8BRecyclerView%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
     <id>http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/</id>
     <published>2017-03-28T02:26:00.000Z</published>
-    <updated>2017-05-15T02:54:32.000Z</updated>
+    <updated>2017-05-15T03:48:46.000Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。<br><a id="more"></a>  </p>
+    <content type="html"><![CDATA[<h3 id="RecyclerView简介"><a href="#RecyclerView简介" class="headerlink" title="RecyclerView简介"></a>RecyclerView简介</h3><p>　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。<br><a id="more"></a>  </p>
 <h3 id="相关原理与简单实现"><a href="#相关原理与简单实现" class="headerlink" title="相关原理与简单实现"></a>相关原理与简单实现</h3><h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>　　在AndroidStudio的build.gradle中添加依赖：  </p>
-<pre><code class="python">dependencies {
+<pre><code class="xml">dependencies {
     ...
-    compile <span class="string">'com.android.support:recyclerview-v7:25.3.0'</span>
+    compile &#39;com.android.support:recyclerview-v7:25.3.0&#39;
 }
 </code></pre>
 <h4 id="在布局中使用"><a href="#在布局中使用" class="headerlink" title="在布局中使用"></a>在布局中使用</h4><p>　　添加完依赖后就可以在布局中使用RecyclerView了：  </p>
-<pre><code class="python">&lt;android.support.v7.widget.RecyclerView
-    android:id=<span class="string">"@+id/main_recyclerview"</span>
-    android:layout_width=<span class="string">"match_parent"</span>
-    android:layout_height=<span class="string">"match_parent"</span> /&gt;
+<pre><code class="xml"><span class="tag">&lt;<span class="name">android.support.v7.widget.RecyclerView</span>
+    <span class="attr">android:id</span>=<span class="string">"@+id/main_recyclerview"</span>
+    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span>
+    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> /&gt;</span>
 </code></pre>
 <h4 id="RecyclerView-Adapter"><a href="#RecyclerView-Adapter" class="headerlink" title="RecyclerView.Adapter"></a>RecyclerView.Adapter</h4><p>　　RecyclerView封装了一种新型的适配器，与现在使用的适配器大同小异。它强制用户使用RecyclerView提供的ViewHolder，使用时主要需要重写onCreateViewHolder与onBindViewHolder方法。前者用来展现视图及其持有者，且只有真正需要一个新view时才会被回调，不需要检查是否已经被回收。后者用来绑定数据到View上。  </p>
-<pre><code class="python">import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import java.util.List;
+<pre><code class="java"><span class="keyword">import</span> android.content.Context;
+<span class="keyword">import</span> android.support.v7.widget.RecyclerView;
+<span class="keyword">import</span> android.view.LayoutInflater;
+<span class="keyword">import</span> android.view.View;
+<span class="keyword">import</span> android.view.ViewGroup;
+<span class="keyword">import</span> android.widget.TextView;
+<span class="keyword">import</span> java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter&lt;MyAdapter.MyViewHolder&gt; {
-    private Context context;
-    private List&lt;String&gt; list;
-    private LayoutInflater inflater;
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">MyAdapter</span>.<span class="title">MyViewHolder</span>&gt; </span>{
+    <span class="keyword">private</span> Context context;
+    <span class="keyword">private</span> List&lt;String&gt; list;
+    <span class="keyword">private</span> LayoutInflater inflater;
 
-    public MyAdapter(Context context, List&lt;String&gt; list) {
-        this.context = context;
-        this.list = list;
+    <span class="function"><span class="keyword">public</span> <span class="title">MyAdapter</span><span class="params">(Context context, List&lt;String&gt; list)</span> </span>{
+        <span class="keyword">this</span>.context = context;
+        <span class="keyword">this</span>.list = list;
         inflater = LayoutInflater.from(context);
     }
 
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_recyclerview, parent, false);
-        MyViewHolder holder = new MyViewHolder(view);
-        return holder;
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> MyViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>{
+        View view = inflater.inflate(R.layout.item_recyclerview, parent, <span class="keyword">false</span>);
+        MyViewHolder holder = <span class="keyword">new</span> MyViewHolder(view);
+        <span class="keyword">return</span> holder;
     }
 
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>{
         holder.textView.setText(list.get(position));
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> list.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    <span class="class"><span class="keyword">class</span> <span class="title">MyViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>{
         TextView textView;
-        public MyViewHolder(View itemView) {
-            super(itemView);
+        <span class="function"><span class="keyword">public</span> <span class="title">MyViewHolder</span><span class="params">(View itemView)</span> </span>{
+            <span class="keyword">super</span>(itemView);
             textView = (TextView) itemView.findViewById(R.id.item_textview);
         }
     }
@@ -83,245 +126,245 @@ public class MyAdapter extends RecyclerView.Adapter&lt;MyAdapter.MyViewHolder&gt
 </code></pre>
 <h4 id="LayoutManager"><a href="#LayoutManager" class="headerlink" title="LayoutManager"></a>LayoutManager</h4><p>　　RecyclerView通过布局管理器LayoutManager控制每一个item如何进行排列摆放，何时展示和隐藏。回收或重用一个View时LayoutManager会向适配器请求新的数据来替换旧的数据，这种机制避免了创建过多的View和频繁的调用findViewById方法，目前其自带的主要有以下三种：<br>　　- LinearLayoutManager：ListView样式<br>　　- GridLayoutManager：GridView样式<br>　　- StaggeredGridLayoutManager：瀑布流样式  </p>
 <h4 id="ItemDecoration"><a href="#ItemDecoration" class="headerlink" title="ItemDecoration"></a>ItemDecoration</h4><p>　　RecyclerView并不能像ListView一样直接在xml布局中修改item分割线样式。需要在Activity动态设置，当然更推荐在单个条目布局中设置margin或者padding来实现分割线效果，这里提供一个分割线。  </p>
-<pre><code class="python">import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+<pre><code class="java"><span class="keyword">import</span> android.content.Context;
+<span class="keyword">import</span> android.content.res.TypedArray;
+<span class="keyword">import</span> android.graphics.Canvas;
+<span class="keyword">import</span> android.graphics.Rect;
+<span class="keyword">import</span> android.graphics.drawable.Drawable;
+<span class="keyword">import</span> android.support.v7.widget.LinearLayoutManager;
+<span class="keyword">import</span> android.support.v7.widget.RecyclerView;
+<span class="keyword">import</span> android.view.View;
 
-public class DividerItemDecoration extends RecyclerView.ItemDecoration {
-    private static final int[] ATTRS = new int[]{
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DividerItemDecoration</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ItemDecoration</span> </span>{
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span>[] ATTRS = <span class="keyword">new</span> <span class="keyword">int</span>[]{
             android.R.attr.listDivider
     };
-    public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
-    public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
-    private Drawable mDivider;
-    private int mOrientation;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> VERTICAL_LIST = LinearLayoutManager.VERTICAL;
+    <span class="keyword">private</span> Drawable mDivider;
+    <span class="keyword">private</span> <span class="keyword">int</span> mOrientation;
 
-    public DividerItemDecoration(Context context, int orientation) {
-        final TypedArray a = context.obtainStyledAttributes(ATTRS);
-        mDivider = a.getDrawable(0);
+    <span class="function"><span class="keyword">public</span> <span class="title">DividerItemDecoration</span><span class="params">(Context context, <span class="keyword">int</span> orientation)</span> </span>{
+        <span class="keyword">final</span> TypedArray a = context.obtainStyledAttributes(ATTRS);
+        mDivider = a.getDrawable(<span class="number">0</span>);
         a.recycle();
         setOrientation(orientation);
     }
 
-    public void setOrientation(int orientation) {
-        if (orientation != HORIZONTAL_LIST &amp;&amp; orientation != VERTICAL_LIST) {
-            throw new IllegalArgumentException("invalid orientation");
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOrientation</span><span class="params">(<span class="keyword">int</span> orientation)</span> </span>{
+        <span class="keyword">if</span> (orientation != HORIZONTAL_LIST &amp;&amp; orientation != VERTICAL_LIST) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"invalid orientation"</span>);
         }
         mOrientation = orientation;
     }
 
-    @Override
-    public void onDraw(Canvas c, RecyclerView parent) {
-        if (mOrientation == VERTICAL_LIST) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas c, RecyclerView parent)</span> </span>{
+        <span class="keyword">if</span> (mOrientation == VERTICAL_LIST) {
             drawVertical(c, parent);
-        } else {
+        } <span class="keyword">else</span> {
             drawHorizontal(c, parent);
         }
     }
 
-    public void drawVertical(Canvas c, RecyclerView parent) {
-        final int left = parent.getPaddingLeft();
-        final int right = parent.getWidth() - parent.getPaddingRight();
-        final int childCount = parent.getChildCount();
-        for (int i = 0; i &lt; childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
-            final int top = child.getBottom() + params.bottomMargin;
-            final int bottom = top + mDivider.getIntrinsicHeight();
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawVertical</span><span class="params">(Canvas c, RecyclerView parent)</span> </span>{
+        <span class="keyword">final</span> <span class="keyword">int</span> left = parent.getPaddingLeft();
+        <span class="keyword">final</span> <span class="keyword">int</span> right = parent.getWidth() - parent.getPaddingRight();
+        <span class="keyword">final</span> <span class="keyword">int</span> childCount = parent.getChildCount();
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) {
+            <span class="keyword">final</span> View child = parent.getChildAt(i);
+            <span class="keyword">final</span> RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
+            <span class="keyword">final</span> <span class="keyword">int</span> top = child.getBottom() + params.bottomMargin;
+            <span class="keyword">final</span> <span class="keyword">int</span> bottom = top + mDivider.getIntrinsicHeight();
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }
     }
 
-    public void drawHorizontal(Canvas c, RecyclerView parent) {
-        final int top = parent.getPaddingTop();
-        final int bottom = parent.getHeight() - parent.getPaddingBottom();
-        final int childCount = parent.getChildCount();
-        for (int i = 0; i &lt; childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
-            final int left = child.getRight() + params.rightMargin;
-            final int right = left + mDivider.getIntrinsicHeight();
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawHorizontal</span><span class="params">(Canvas c, RecyclerView parent)</span> </span>{
+        <span class="keyword">final</span> <span class="keyword">int</span> top = parent.getPaddingTop();
+        <span class="keyword">final</span> <span class="keyword">int</span> bottom = parent.getHeight() - parent.getPaddingBottom();
+        <span class="keyword">final</span> <span class="keyword">int</span> childCount = parent.getChildCount();
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) {
+            <span class="keyword">final</span> View child = parent.getChildAt(i);
+            <span class="keyword">final</span> RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
+            <span class="keyword">final</span> <span class="keyword">int</span> left = child.getRight() + params.rightMargin;
+            <span class="keyword">final</span> <span class="keyword">int</span> right = left + mDivider.getIntrinsicHeight();
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }
     }
 
-    @Override
-    public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
-        if (mOrientation == VERTICAL_LIST) {
-            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
-        } else {
-            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getItemOffsets</span><span class="params">(Rect outRect, <span class="keyword">int</span> itemPosition, RecyclerView parent)</span> </span>{
+        <span class="keyword">if</span> (mOrientation == VERTICAL_LIST) {
+            outRect.set(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, mDivider.getIntrinsicHeight());
+        } <span class="keyword">else</span> {
+            outRect.set(<span class="number">0</span>, <span class="number">0</span>, mDivider.getIntrinsicWidth(), <span class="number">0</span>);
             }
     }
 }
 </code></pre>
 <h4 id="ItemAnimator"><a href="#ItemAnimator" class="headerlink" title="ItemAnimator"></a>ItemAnimator</h4><p>　　ItemAnimator会根据适配器上收到的通知来动画显示视图组的修改，比如item的添加与删除。DefaultItemAnimator已经能很好的展现动画效果了。  </p>
 <h4 id="RecyclerView初始化"><a href="#RecyclerView初始化" class="headerlink" title="RecyclerView初始化"></a>RecyclerView初始化</h4><p>　　若想初始化一个RecyclerView使其进入工作状态，你需要在Activity中做以下的操作：  </p>
-<pre><code class="python">RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view_main);
-MyAdapter adapter = new MyAdapter(this, list);
-//设置RecyclerView保持固定的大小
-recyclerView.setHasFixedSize(true);
-//设置适配器
+<pre><code class="java">RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view_main);
+MyAdapter adapter = <span class="keyword">new</span> MyAdapter(<span class="keyword">this</span>, list);
+<span class="comment">//设置RecyclerView保持固定的大小</span>
+recyclerView.setHasFixedSize(<span class="keyword">true</span>);
+<span class="comment">//设置适配器</span>
 recyclerView.setAdapter(adapter);
-//设置RecyclerView ListView样式布局管理
-recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-//设置RecyclerView的Item分割线
-recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-//设置RecyclerView的动画
-recyclerView.setItemAnimator(new DefaultItemAnimator());
+<span class="comment">//设置RecyclerView ListView样式布局管理</span>
+recyclerView.setLayoutManager(<span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>, LinearLayoutManager.VERTICAL, <span class="keyword">false</span>));
+<span class="comment">//设置RecyclerView的Item分割线</span>
+recyclerView.addItemDecoration(<span class="keyword">new</span> DividerItemDecoration(<span class="keyword">this</span>, DividerItemDecoration.VERTICAL_LIST));
+<span class="comment">//设置RecyclerView的动画</span>
+recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimator());
 
-//设置RecyclerView GridView样式
-//recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, <span class="number">3</span>));
-//设置RecyclerView 水平GridView样式
-//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(<span class="number">5</span>, StaggeredGridLayoutManager.HORIZONTAL));
-//设置RecyclerView 瀑布流样式
-//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(<span class="number">3</span>,StaggeredGridLayoutManager.VERTICAL));
+<span class="comment">//设置RecyclerView GridView样式</span>
+<span class="comment">//recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 3));</span>
+<span class="comment">//设置RecyclerView 水平GridView样式</span>
+<span class="comment">//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(5, StaggeredGridLayoutManager.HORIZONTAL));</span>
+<span class="comment">//设置RecyclerView 瀑布流样式</span>
+<span class="comment">//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));</span>
 </code></pre>
 <h3 id="点击事件与添加删除Item"><a href="#点击事件与添加删除Item" class="headerlink" title="点击事件与添加删除Item"></a>点击事件与添加删除Item</h3><p>　　美中不足的是RecyclerView并没有提供像ListView一样的Item点击与Item长点击事件，不提供咱们就自己造，通过接口回调来实现。  </p>
-<h4 id="Adapter中"><a href="#Adapter中" class="headerlink" title="Adapter中"></a>Adapter中</h4><pre><code class="python">import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+<h4 id="Adapter中"><a href="#Adapter中" class="headerlink" title="Adapter中"></a>Adapter中</h4><pre><code class="java"><span class="keyword">import</span> android.content.Context;
+<span class="keyword">import</span> android.support.v7.widget.RecyclerView;
+<span class="keyword">import</span> android.view.LayoutInflater;
+<span class="keyword">import</span> android.view.View;
+<span class="keyword">import</span> android.view.ViewGroup;
+<span class="keyword">import</span> android.widget.TextView;
 
-import java.util.ArrayList;
+<span class="keyword">import</span> java.util.ArrayList;
 
-public class MyAdapter extends RecyclerView.Adapter&lt;MyAdapter.MyViewHolder&gt; {
-    private Context context;
-    private LayoutInflater inflater;
-    protected ArrayList&lt;String&gt; datas;
-    private onItemClickedListener onItemClickedListener;
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">MyAdapter</span>.<span class="title">MyViewHolder</span>&gt; </span>{
+    <span class="keyword">private</span> Context context;
+    <span class="keyword">private</span> LayoutInflater inflater;
+    <span class="keyword">protected</span> ArrayList&lt;String&gt; datas;
+    <span class="keyword">private</span> onItemClickedListener onItemClickedListener;
 
-    public MyAdapter(Context context, ArrayList&lt;String&gt; datas) {
-        this.context = context;
-        this.datas = datas;
+    <span class="function"><span class="keyword">public</span> <span class="title">MyAdapter</span><span class="params">(Context context, ArrayList&lt;String&gt; datas)</span> </span>{
+        <span class="keyword">this</span>.context = context;
+        <span class="keyword">this</span>.datas = datas;
         inflater = LayoutInflater.from(context);
     }
 
-    public void setOnItemClickedListener(MyAdapter.onItemClickedListener onItemClickedListener) {
-        this.onItemClickedListener = onItemClickedListener;
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnItemClickedListener</span><span class="params">(MyAdapter.onItemClickedListener onItemClickedListener)</span> </span>{
+        <span class="keyword">this</span>.onItemClickedListener = onItemClickedListener;
     }
 
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>{
         holder.textView.setText(datas.get(position));
     }
 
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = inflater.inflate(R.layout.item_recycler_view, parent, false);
-        MyViewHolder myViewHolder = new MyViewHolder(view);
-        return myViewHolder;
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> MyViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>{
+    View view = inflater.inflate(R.layout.item_recycler_view, parent, <span class="keyword">false</span>);
+        MyViewHolder myViewHolder = <span class="keyword">new</span> MyViewHolder(view);
+        <span class="keyword">return</span> myViewHolder;
     }
 
-    @Override
-    public int getItemCount() {
-        return datas.size();
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> datas.size();
     }
 
-   /**
+   <span class="comment">/**
     * 添加条目
-    */
-    public void addItem(int position) {
-        datas.add(position, "xulei");
-    //        notifyDataSetChanged();
-        notifyItemInserted(position);//调用这个才有动画效果
+    */</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>{
+        datas.add(position, <span class="string">"xulei"</span>);
+    <span class="comment">//        notifyDataSetChanged();</span>
+        notifyItemInserted(position);<span class="comment">//调用这个才有动画效果</span>
     }
 
-   /**
+   <span class="comment">/**
     * 移除条目
-    */
-    public void removeItem(int position) {
+    */</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>{
         datas.remove(position);
         notifyItemRemoved(position);
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    <span class="class"><span class="keyword">class</span> <span class="title">MyViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>{
         TextView textView;
 
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            //初始化控件
+        <span class="function"><span class="keyword">public</span> <span class="title">MyViewHolder</span><span class="params">(View itemView)</span> </span>{
+            <span class="keyword">super</span>(itemView);
+            <span class="comment">//初始化控件</span>
             textView = (TextView) itemView.findViewById(R.id.item_textview);
-            //设置当前条目单击监听
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onItemClickedListener != null)
-                        onItemClickedListener.onClick(view, getAdapterPosition());//可立刻获取到当前position
-//                        onItemClickedListener.onClick(view, getLayoutPosition());//需等当前视图更新完才能获取到当前position，&lt;16ms。
+            <span class="comment">//设置当前条目单击监听</span>
+            itemView.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() {
+                <span class="meta">@Override</span>
+                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>{
+                    <span class="keyword">if</span> (onItemClickedListener != <span class="keyword">null</span>)
+                        onItemClickedListener.onClick(view, getAdapterPosition());<span class="comment">//可立刻获取到当前position</span>
+<span class="comment">//                        onItemClickedListener.onClick(view, getLayoutPosition());//需等当前视图更新完才能获取到当前position，&lt;16ms。</span>
                 }
             });
-            //设置当前条目长按监听
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    if (onItemClickedListener != null)
+            <span class="comment">//设置当前条目长按监听</span>
+            itemView.setOnLongClickListener(<span class="keyword">new</span> View.OnLongClickListener() {
+                <span class="meta">@Override</span>
+                <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onLongClick</span><span class="params">(View view)</span> </span>{
+                    <span class="keyword">if</span> (onItemClickedListener != <span class="keyword">null</span>)
                         onItemClickedListener.onLongClick(view, getAdapterPosition());
-                    return false;
+                    <span class="keyword">return</span> <span class="keyword">false</span>;
                 }
             });
         }
     }
 
-   /**
+   <span class="comment">/**
     * 点击回调的接口
-    */
-    interface onItemClickedListener {
-        void onClick(View view, int position);
+    */</span>
+    <span class="class"><span class="keyword">interface</span> <span class="title">onItemClickedListener</span> </span>{
+        <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span></span>;
 
-        void onLongClick(View view, int position);
+        <span class="function"><span class="keyword">void</span> <span class="title">onLongClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span></span>;
     }
 }
 </code></pre>
 <h4 id="Activity中"><a href="#Activity中" class="headerlink" title="Activity中"></a>Activity中</h4><p>　　在Activity中实例化Adapter之后添加如下代码：</p>
-<pre><code class="python">adapter.setOnItemClickedListener(new MyAdapter.onItemClickedListener() {
-<span class="meta">    @Override</span>
-    public void onClick(View view, int position) {
+<pre><code class="java">adapter.setOnItemClickedListener(<span class="keyword">new</span> MyAdapter.onItemClickedListener() {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span> </span>{
         adapter.addItem(position);
-        Toast.makeText(MainActivity.this, <span class="string">"点击click:"</span> + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"点击click:"</span> + position, Toast.LENGTH_SHORT).show();
     }
 
-<span class="meta">    @Override</span>
-    public void onLongClick(View view, int position) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLongClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span> </span>{
         adapter.removeItem(position);
-        Toast.makeText(MainActivity.this, <span class="string">"长按click:"</span> + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"长按click:"</span> + position, Toast.LENGTH_SHORT).show();
     }
 });
 </code></pre>
 <h3 id="瀑布流的实现"><a href="#瀑布流的实现" class="headerlink" title="瀑布流的实现"></a>瀑布流的实现</h3><p>　　想实现瀑布流的样式通过使用RecyclerView也很容易就能实现。</p>
-<h4 id="首先在Activity中设置LayoutManager时选择："><a href="#首先在Activity中设置LayoutManager时选择：" class="headerlink" title="首先在Activity中设置LayoutManager时选择："></a>首先在Activity中设置LayoutManager时选择：</h4><pre><code class="python">recyclerView.setLayoutManager(new StaggeredGridLayoutManager(<span class="number">3</span>,StaggeredGridLayoutManager.VERTICAL));
+<h4 id="首先在Activity中设置LayoutManager时选择："><a href="#首先在Activity中设置LayoutManager时选择：" class="headerlink" title="首先在Activity中设置LayoutManager时选择："></a>首先在Activity中设置LayoutManager时选择：</h4><pre><code class="java">recyclerView.setLayoutManager(<span class="keyword">new</span> StaggeredGridLayoutManager(<span class="number">3</span>,StaggeredGridLayoutManager.VERTICAL));
 </code></pre>
 <h4 id="修改Adapter"><a href="#修改Adapter" class="headerlink" title="修改Adapter"></a>修改Adapter</h4><p>　　瀑布流自然是每个条目的高度不同才能出现瀑布的效果（水平布局则是宽度不同），那么只需在每个条目绑定数据时动态改变下其高度即可，贴出瀑布流Adapter代码：</p>
-<pre><code class="python">import android.content.Context;
-import android.view.ViewGroup;
+<pre><code class="java"><span class="keyword">import</span> android.content.Context;
+<span class="keyword">import</span> android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+<span class="keyword">import</span> java.util.ArrayList;
+<span class="keyword">import</span> java.util.List;
 
-public class StaggerAdapter extends MyAdapter {
-    private List&lt;Integer&gt; heights;
-    public StaggerAdapter(Context context, ArrayList&lt;String&gt; datas) {
-        super(context, datas);
-        heights = new ArrayList&lt;&gt;();
-        for (int i = 0; i &lt; datas.size(); i++) {
-            heights.add((int) (100 + Math.random() * 300));
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaggerAdapter</span> <span class="keyword">extends</span> <span class="title">MyAdapter</span> </span>{
+    <span class="keyword">private</span> List&lt;Integer&gt; heights;
+    <span class="function"><span class="keyword">public</span> <span class="title">StaggerAdapter</span><span class="params">(Context context, ArrayList&lt;String&gt; datas)</span> </span>{
+        <span class="keyword">super</span>(context, datas);
+        heights = <span class="keyword">new</span> ArrayList&lt;&gt;();
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; datas.size(); i++) {
+            heights.add((<span class="keyword">int</span>) (<span class="number">100</span> + Math.random() * <span class="number">300</span>));
         }
     }
 
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>{
         ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
         layoutParams.height = heights.get(position);
-//        layoutParams.width = heights.get(position);
+<span class="comment">//        layoutParams.width = heights.get(position);</span>
         holder.itemView.setLayoutParams(layoutParams);
         holder.textView.setText(datas.get(position));
     }
@@ -332,7 +375,7 @@ public class StaggerAdapter extends MyAdapter {
     
     <summary type="html">
     
-      &lt;h3 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h3&gt;&lt;p&gt;　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。&lt;br&gt;
+      &lt;h3 id=&quot;RecyclerView简介&quot;&gt;&lt;a href=&quot;#RecyclerView简介&quot; class=&quot;headerlink&quot; title=&quot;RecyclerView简介&quot;&gt;&lt;/a&gt;RecyclerView简介&lt;/h3&gt;&lt;p&gt;　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。&lt;br&gt;
     
     </summary>
     
@@ -348,33 +391,33 @@ public class StaggerAdapter extends MyAdapter {
     <link href="http://LeiHolmes.github.io/2016/12/13/Android%E5%BC%80%E5%8F%91%E4%B9%8BAlarmManager%E9%97%B9%E9%92%9F+Notification%E9%80%9A%E7%9F%A5/"/>
     <id>http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/</id>
     <published>2016-12-13T03:11:11.000Z</published>
-    <updated>2017-05-15T02:54:38.000Z</updated>
+    <updated>2017-05-15T03:49:38.000Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它组件（包括Activity,Service,BroadcastReceiver）。本文将讲解一下如何使用AlarmManager实现定时提醒功能。<br><a id="more"></a></p>
-<h3 id="闹钟配置"><a href="#闹钟配置" class="headerlink" title="闹钟配置"></a>闹钟配置</h3><h4 id="周期闹钟"><a href="#周期闹钟" class="headerlink" title="周期闹钟"></a>周期闹钟</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent intent = new Intent();</div><div class="line">intent.setAction(GlobalValues.TIMER_ACTION_REPEATING);</div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, intent, <span class="number">0</span>);</div><div class="line">AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + <span class="number">5</span> * <span class="number">1000</span>, <span class="number">3</span> * <span class="number">1000</span>, sender);</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setRepeating(int type,long startTime,long intervalTime,PendingIntent pi)</div></pre></td></tr></table></figure>
-<p>　　该方法用于设置周期性执行的定时服务。type：闹钟类型，startTime：闹钟首次执行时间，intervalTime：闹钟两次执行的间隔时间，pi：闹钟响应动作。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setInexactRepeating(int type,long startTime,long intervalTime,PendingIntent pi)</div></pre></td></tr></table></figure></p>
+    <content type="html"><![CDATA[<h3 id="AlarmManager简介"><a href="#AlarmManager简介" class="headerlink" title="AlarmManager简介"></a>AlarmManager简介</h3><p>　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它组件（包括Activity,Service,BroadcastReceiver）。本文将讲解一下如何使用AlarmManager实现定时提醒功能。<br><a id="more"></a></p>
+<h3 id="闹钟配置"><a href="#闹钟配置" class="headerlink" title="闹钟配置"></a>闹钟配置</h3><h4 id="周期闹钟"><a href="#周期闹钟" class="headerlink" title="周期闹钟"></a>周期闹钟</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent intent = <span class="keyword">new</span> Intent();</div><div class="line">intent.setAction(GlobalValues.TIMER_ACTION_REPEATING);</div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, intent, <span class="number">0</span>);</div><div class="line">AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + <span class="number">5</span> * <span class="number">1000</span>, <span class="number">3</span> * <span class="number">1000</span>, sender);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setRepeating(<span class="keyword">int</span> type,<span class="keyword">long</span> startTime,<span class="keyword">long</span> intervalTime,PendingIntent pi)</div></pre></td></tr></table></figure>
+<p>　　该方法用于设置周期性执行的定时服务。type：闹钟类型，startTime：闹钟首次执行时间，intervalTime：闹钟两次执行的间隔时间，pi：闹钟响应动作。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setInexactRepeating(<span class="keyword">int</span> type,<span class="keyword">long</span> startTime,<span class="keyword">long</span> intervalTime,PendingIntent pi)</div></pre></td></tr></table></figure></p>
 <p>　　该方法也用于设置周期定式服务，与上一种类似。不过其两个闹钟执行的间隔时间不是固定的。它相对而言更省电一些，因为系统可能会将几个差不多的闹钟合并为一个来执行，减少设备的唤醒次数。  </p>
 <h5 id="intervalTime内置变量"><a href="#intervalTime内置变量" class="headerlink" title="intervalTime内置变量"></a>intervalTime内置变量</h5><p>间隔一天： 　　INTERVAL_DAY<br>间隔半天： 　　INTERVAL_HALF_DAY<br>间隔15分钟： 　INTERVAL_FIFTEEN_MINUTES<br>间隔半个小时： INTERVAL_HALF_HOUR<br>间隔一个小时： INTERVAL_HOUR  </p>
-<h4 id="定时闹钟"><a href="#定时闹钟" class="headerlink" title="定时闹钟"></a>定时闹钟</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//获得系统提供的AlarmManager服务的对象</div><div class="line">AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">//Intent设置要启动的组件，这里启动广播</div><div class="line">Intent myIntent = new Intent();</div><div class="line">myIntent.setAction(GlobalValues.TIMER_ACTION);</div><div class="line">//PendingIntent对象设置动作,启动的是Activity还是Service,或广播!</div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, myIntent,<span class="number">0</span>);</div><div class="line">//注册闹钟</div><div class="line">alarm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + <span class="number">5</span> * <span class="number">1000</span>, sender);</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">set(int type,long startTime,PendingIntent pi)</div></pre></td></tr></table></figure>
+<h4 id="定时闹钟"><a href="#定时闹钟" class="headerlink" title="定时闹钟"></a>定时闹钟</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获得系统提供的AlarmManager服务的对象</span></div><div class="line">AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line"><span class="comment">//Intent设置要启动的组件，这里启动广播</span></div><div class="line">Intent myIntent = <span class="keyword">new</span> Intent();</div><div class="line">myIntent.setAction(GlobalValues.TIMER_ACTION);</div><div class="line"><span class="comment">//PendingIntent对象设置动作,启动的是Activity还是Service,或广播!</span></div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, myIntent,<span class="number">0</span>);</div><div class="line"><span class="comment">//注册闹钟</span></div><div class="line">alarm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + <span class="number">5</span> * <span class="number">1000</span>, sender);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">set(<span class="keyword">int</span> type,<span class="keyword">long</span> startTime,PendingIntent pi)</div></pre></td></tr></table></figure>
 <p>　　该方法用于设置一次性定时服务。type：闹钟类型，startTime：闹钟执行时间，pi：闹钟响应动作。  </p>
-<h4 id="取消闹钟"><a href="#取消闹钟" class="headerlink" title="取消闹钟"></a>取消闹钟</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Intent myIntent = new Intent();</div><div class="line">myIntent.setAction(GlobalValues.TIMER_ACTION);</div><div class="line">//myIntent.setAction(GlobalValues.TIMER_ACTION_REPEATING);</div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, myIntent,<span class="number">0</span>);</div><div class="line">AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">alarm.cancel(sender);</div></pre></td></tr></table></figure>
-<h4 id="设置多个闹钟："><a href="#设置多个闹钟：" class="headerlink" title="设置多个闹钟："></a>设置多个闹钟：</h4><p>　　若连续设置多个闹钟，则只有最后一个闹钟会生效，那么这种情况我们怎么处理呢？其实很简单。我们可以给每个闹钟设置唯一的id，传入getBroadcast()第二个参数。在这里我是每设置一个id则自增1存入Shareprefrence里，保证id唯一性。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"> //给每个闹钟设置不同ID防止覆盖</div><div class="line">int alarmId = SharedPreUtils.getInteger(context, <span class="string">"alarm_id"</span>, <span class="number">0</span>);</div><div class="line">SharedPreUtils.setInteger(context, <span class="string">"alarm_id"</span>, ++alarmId);</div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, alarmId, myIntent, <span class="number">0</span>);</div></pre></td></tr></table></figure></p>
+<h4 id="取消闹钟"><a href="#取消闹钟" class="headerlink" title="取消闹钟"></a>取消闹钟</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Intent myIntent = <span class="keyword">new</span> Intent();</div><div class="line">myIntent.setAction(GlobalValues.TIMER_ACTION);</div><div class="line"><span class="comment">//myIntent.setAction(GlobalValues.TIMER_ACTION_REPEATING);</span></div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, myIntent,<span class="number">0</span>);</div><div class="line">AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">alarm.cancel(sender);</div></pre></td></tr></table></figure>
+<h4 id="设置多个闹钟："><a href="#设置多个闹钟：" class="headerlink" title="设置多个闹钟："></a>设置多个闹钟：</h4><p>　　若连续设置多个闹钟，则只有最后一个闹钟会生效，那么这种情况我们怎么处理呢？其实很简单。我们可以给每个闹钟设置唯一的id，传入getBroadcast()第二个参数。在这里我是每设置一个id则自增1存入Shareprefrence里，保证id唯一性。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">//给每个闹钟设置不同ID防止覆盖</span></div><div class="line"><span class="keyword">int</span> alarmId = SharedPreUtils.getInteger(context, <span class="string">"alarm_id"</span>, <span class="number">0</span>);</div><div class="line">SharedPreUtils.setInteger(context, <span class="string">"alarm_id"</span>, ++alarmId);</div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, alarmId, myIntent, <span class="number">0</span>);</div></pre></td></tr></table></figure></p>
 <p>　　在取消闹钟时我们也可以根据这个id关闭不同的闹钟。  </p>
 <h4 id="参数详解"><a href="#参数详解" class="headerlink" title="参数详解"></a>参数详解</h4><h5 id="type：闹钟类型"><a href="#type：闹钟类型" class="headerlink" title="type：闹钟类型"></a>type：闹钟类型</h5><p>ELAPSED_REALTIME：<br>　　在指定的延时过后，发送广播，但不唤醒设备（闹钟在睡眠状态下不可用）。如果在系统休眠时闹钟触发，它将不会被传递，直到下一次设备唤醒。<br>ELAPSED_REALTIME_WAKEUP：<br>　　在指定的延时过后，发送广播，并唤醒设备（即使关机也会执行operation所对应的组件） 。延时是要把系统启动的时间<code>SystemClock.elapsedRealtime()</code>算进去的。<br>RTC：<br>　　指定当系统调用<code>System.currentTimeMillis()</code>方法返回的值与triggerAtTime相等时启动operation所对应的设备（在指定的时刻，发送广播，但不唤醒设备）。如果在系统休眠时闹钟触发，它将不会被传递，直到下一次设备唤醒（闹钟在睡眠状态下不可用）。<br>RTC_WAKEUP：<br>　　指定当系统调用<code>System.currentTimeMillis()</code>方法返回的值与triggerAtTime相等时启动operation所对应的设备（在指定的时刻，发送广播，并唤醒设备）。即使系统关机也会执行operation所对应的组件。<br>POWER_OFF_WAKEUP：<br>　　表示闹钟在手机关机状态下也能正常进行提示功能，所以是5个状态中用的最多的状态之一，该状态下闹钟也是用绝对时间，状态值为4；不过本状态好像受SDK版本影响，某些版本并不支持。  </p>
 <h5 id="long-intervalTime：执行时间"><a href="#long-intervalTime：执行时间" class="headerlink" title="long intervalTime：执行时间"></a>long intervalTime：执行时间</h5><p>　　闹钟的第一次执行时间，以毫秒为单位，可以自定义时间，不过一般使用当前时间。需要注意的是，本属性与第一个属性（type）密切相关，如果第一个参数对应的闹钟使用的是相对时间（ELAPSED_REALTIME和ELAPSED_REALTIME_WAKEUP），那么本属性就得使用相对时间（相对于系统启动时间来说），比如当前时间就表示为：<code>SystemClock.elapsedRealtime();</code>如果第一个参数对应的闹钟使用的是绝对时间（RTC、RTC_WAKEUP、POWER_OFF_WAKEUP），那么本属性就得使用绝对时间，比如当前时间就表示为：<code>System.currentTimeMillis()</code>  </p>
 <h5 id="long-startTime：间隔时间"><a href="#long-startTime：间隔时间" class="headerlink" title="long startTime：间隔时间"></a>long startTime：间隔时间</h5><p>　　对于周期定时方式来说，存在本属性，表示两次闹钟执行的间隔时间，也是以毫秒为单位。</p>
 <h5 id="PendingIntent-pi：执行动作"><a href="#PendingIntent-pi：执行动作" class="headerlink" title="PendingIntent pi：执行动作"></a>PendingIntent pi：执行动作</h5><p>　　是闹钟的执行动作，比如发送一个广播、给出提示等等。PendingIntent是Intent的封装类。需要注意的是，如果是通过启动服务来实现闹钟提示的话，PendingIntent对象的获取就应该采用<code>Pending.getService(Context c,int i,Intent intent,int j)</code>方法；如果是通过广播来实现闹钟提示的话，PendingIntent对象的获取就应该采<code>用PendingIntent.getBroadcast(Context c,int i,Intent intent,int j)</code>方法；如果是采用Activity的方式来实现闹钟提示的话，PendingIntent对象的获取就应该采用<code>PendingIntent.getActivity(Context c,int i,Intent intent,int j)</code>方法。如果这三种方法错用了的话，虽然不会报错，但是看不到闹钟提示效果。。</p>
-<h3 id="广播配置"><a href="#广播配置" class="headerlink" title="广播配置"></a>广播配置</h3><h4 id="新建闹钟BroadCastReceiver："><a href="#新建闹钟BroadCastReceiver：" class="headerlink" title="新建闹钟BroadCastReceiver："></a>新建闹钟BroadCastReceiver：</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">public class AlarmReceiver extends BroadcastReceiver &#123;</div><div class="line">    private NotificationManager m_notificationMgr = null;</div><div class="line">    private static final int NOTIFICATION_FLAG = 3;</div><div class="line">    @Override</div><div class="line">    public void onReceive(Context context, Intent intent) &#123;</div><div class="line">        m_notificationMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVIC</div><div class="line">        if (intent.getAction().equals(GlobalValues.TIMER_ACTION_REPEATING)) &#123;</div><div class="line">            Log.e("alarm_receiver", "周期闹钟");</div><div class="line">        &#125; else if (intent.getAction().equals(GlobalValues.TIMER_ACTION)) &#123;</div><div class="line">            Log.e("alarm_receiver", "定时闹钟");</div><div class="line">                        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);</div><div class="line">            Intent intent1 = new Intent(context, WriteDiaryActivity.class);</div><div class="line">            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);</div><div class="line">            Notification notify = new Notification.Builder(context)</div><div class="line">                    .setSmallIcon(R.drawable.logo) // 设置状态栏中的小图片，尺寸一般建议在24×24</div><div class="line">                    .setLargeIcon(bitmap) // 这里也可以设置大图标</div><div class="line">                    .setTicker("亲情日历") // 设置显示的提示文字</div><div class="line">                    .setContentTitle("亲情日历") // 设置显示的标题</div><div class="line">                    .setContentText("您有日记提醒哦") // 消息的详细内容</div><div class="line">                    .setContentIntent(pendingIntent) // 关联PendingIntent</div><div class="line">                    .setNumber(1) // 在TextView的右方显示的数字，可以在外部定义一个变量，点击累加setNumber(count),这时显示的和</div><div class="line">                    .getNotification(); // 需要注意build()是在API level16及之后增加的，在API11中可以使用getNotificatin()来</div><div class="line">            notify.flags |= Notification.FLAG_AUTO_CANCEL;</div><div class="line">            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIF</div><div class="line">            manager.notify(NOTIFICATION_FLAG, notify);</div><div class="line">            bitmap.recycle(); //回收bitmap</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="注册BroadCastReceiver："><a href="#注册BroadCastReceiver：" class="headerlink" title="注册BroadCastReceiver："></a>注册BroadCastReceiver：</h4><p>　　最后别忘了在清单里注册广播。<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;!--闹钟接收广播--&gt;</div><div class="line">&lt;receiver android:name=".util.service.AlarmReceiver"&gt;</div><div class="line">    &lt;intent-filter&gt;</div><div class="line">        &lt;action android:name="com.e_eduspace.TIMER_ACTION_REPEATING" /&gt;</div><div class="line">        &lt;action android:name="com.e_eduspace.TIMER_ACTION" /&gt;</div><div class="line">    &lt;/intent-filter&gt;</div><div class="line">&lt;/receiver&gt;</div></pre></td></tr></table></figure></p>
-<h3 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h3><h4 id="常量："><a href="#常量：" class="headerlink" title="常量："></a>常量：</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public class GlobalValues &#123;</div><div class="line">    // 周期性的闹钟</div><div class="line">    public final static String TIMER_ACTION_REPEATING = "com.e_eduspace.TIMER_ACTION_REPEATING";</div><div class="line">    // 定时闹钟</div><div class="line">    public final static String TIMER_ACTION = "com.e_eduspace.TIMER_ACTION";</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="工具类"><a href="#工具类" class="headerlink" title="工具类"></a>工具类</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line">package com.e_eduspace.familycalendar.util;</div><div class="line"></div><div class="line">import android.app.AlarmManager;</div><div class="line">import android.app.PendingIntent;</div><div class="line">import android.content.Context;</div><div class="line">import android.content.Intent;</div><div class="line"></div><div class="line">import com.prolificinteractive.materialcalendarview.CalendarDay;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 闹钟定时工具类</div><div class="line"> *</div><div class="line"> * @author xulei</div><div class="line"> * @time 2016/12/13 10:03</div><div class="line"> */</div><div class="line"></div><div class="line">public class AlarmTimer &#123;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 设置周期性闹钟</div><div class="line">     *</div><div class="line">     * @param context</div><div class="line">     * @param firstTime</div><div class="line">     * @param cycTime</div><div class="line">     * @param action</div><div class="line">     * @param AlarmManagerType 闹钟的类型，常用的有5个值：AlarmManager.ELAPSED_REALTIME、</div><div class="line">     *                         AlarmManager.ELAPSED_REALTIME_WAKEUP、AlarmManager.RTC、</div><div class="line">     *                         AlarmManager.RTC_WAKEUP、AlarmManager.POWER_OFF_WAKEUP</div><div class="line">     */</div><div class="line">    public static void setRepeatingAlarmTimer(Context context, long firstTime,</div><div class="line">                                              long cycTime, String action, int AlarmManagerType) &#123;</div><div class="line">        Intent myIntent = new Intent();</div><div class="line">        myIntent.setAction(action);</div><div class="line">        PendingIntent sender = PendingIntent.getBroadcast(context, 0, myIntent, 0);</div><div class="line">        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">        alarm.setRepeating(AlarmManagerType, firstTime, cycTime, sender);</div><div class="line">        //param1：闹钟类型，param1：闹钟首次执行时间，param1：闹钟两次执行的间隔时间，param1：闹钟响应动作。</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 设置定时闹钟</div><div class="line">     *</div><div class="line">     * @param context</div><div class="line">     * @param cycTime</div><div class="line">     * @param action</div><div class="line">     * @param AlarmManagerType 闹钟的类型，常用的有5个值：AlarmManager.ELAPSED_REALTIME、</div><div class="line">     *                         AlarmManager.ELAPSED_REALTIME_WAKEUP、AlarmManager.RTC、</div><div class="line">     *                         AlarmManager.RTC_WAKEUP、AlarmManager.POWER_OFF_WAKEUP</div><div class="line">     */</div><div class="line">    public static void setAlarmTimer(Context context, long cycTime,</div><div class="line">                                     String action, int AlarmManagerType, CalendarDay date) &#123;</div><div class="line">        Intent myIntent = new Intent();</div><div class="line">        //传递定时日期</div><div class="line">        myIntent.putExtra("date", date);</div><div class="line">        myIntent.setAction(action);</div><div class="line">        //给每个闹钟设置不同ID防止覆盖</div><div class="line">        int alarmId = SharedPreUtils.getInteger(context, "alarm_id", 0);</div><div class="line">        SharedPreUtils.setInteger(context, "alarm_id", ++alarmId);</div><div class="line">        PendingIntent sender = PendingIntent.getBroadcast(context, alarmId, myIntent, 0);</div><div class="line">        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">        alarm.set(AlarmManagerType, cycTime, sender);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 取消闹钟</div><div class="line">     *</div><div class="line">     * @param context</div><div class="line">     * @param action</div><div class="line">     */</div><div class="line">    public static void cancelAlarmTimer(Context context, String action) &#123;</div><div class="line">        Intent myIntent = new Intent();</div><div class="line">        myIntent.setAction(action);</div><div class="line">        PendingIntent sender = PendingIntent.getBroadcast(context, 0, myIntent,0);</div><div class="line">        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">        alarm.cancel(sender);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="广播配置"><a href="#广播配置" class="headerlink" title="广播配置"></a>广播配置</h3><h4 id="新建闹钟BroadCastReceiver："><a href="#新建闹钟BroadCastReceiver：" class="headerlink" title="新建闹钟BroadCastReceiver："></a>新建闹钟BroadCastReceiver：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AlarmReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> NotificationManager m_notificationMgr = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NOTIFICATION_FLAG = <span class="number">3</span>;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</div><div class="line">        m_notificationMgr = (NotificationManager) context.getSystemService(Context.<span class="function">NOTIFICATION_SERVIC</span></div><div class="line">        <span class="title">if</span> <span class="params">(intent.getAction()</span>.<span class="title">equals</span><span class="params">(GlobalValues.TIMER_ACTION_REPEATING)</span>) &#123;</div><div class="line">            Log.e(<span class="string">"alarm_receiver"</span>, <span class="string">"周期闹钟"</span>);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (intent.getAction().equals(GlobalValues.TIMER_ACTION)) &#123;</div><div class="line">            Log.e(<span class="string">"alarm_receiver"</span>, <span class="string">"定时闹钟"</span>);</div><div class="line">                        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);</div><div class="line">            Intent intent1 = <span class="keyword">new</span> Intent(context, WriteDiaryActivity.class);</div><div class="line">            PendingIntent pendingIntent = PendingIntent.getActivity(context, <span class="number">0</span>, intent1, <span class="number">0</span>);</div><div class="line">            Notification notify = <span class="keyword">new</span> Notification.Builder(context)</div><div class="line">                    .setSmallIcon(R.drawable.logo) <span class="comment">// 设置状态栏中的小图片，尺寸一般建议在24×24</span></div><div class="line">                    .setLargeIcon(bitmap) <span class="comment">// 这里也可以设置大图标</span></div><div class="line">                    .setTicker(<span class="string">"亲情日历"</span>) <span class="comment">// 设置显示的提示文字</span></div><div class="line">                    .setContentTitle(<span class="string">"亲情日历"</span>) <span class="comment">// 设置显示的标题</span></div><div class="line">                    .setContentText(<span class="string">"您有日记提醒哦"</span>) <span class="comment">// 消息的详细内容</span></div><div class="line">                    .setContentIntent(pendingIntent) <span class="comment">// 关联PendingIntent</span></div><div class="line">                    .setNumber(<span class="number">1</span>) <span class="comment">// 在TextView的右方显示的数字，可以在外部定义一个变量，点击累加setNumber(count),这时显示的和</span></div><div class="line">                    .getNotification(); <span class="comment">// 需要注意build()是在API level16及之后增加的，在API11中可以使用getNotificatin()来</span></div><div class="line">            notify.flags |= Notification.FLAG_AUTO_CANCEL;</div><div class="line">            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIF</div><div class="line">            manager.notify(NOTIFICATION_FLAG, notify);</div><div class="line">            bitmap.recycle(); <span class="comment">//回收bitmap</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="注册BroadCastReceiver："><a href="#注册BroadCastReceiver：" class="headerlink" title="注册BroadCastReceiver："></a>注册BroadCastReceiver：</h4><p>　　最后别忘了在清单里注册广播。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!--闹钟接收广播--&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".util.service.AlarmReceiver"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"com.e_eduspace.TIMER_ACTION_REPEATING"</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"com.e_eduspace.TIMER_ACTION"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h3 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h3><h4 id="常量："><a href="#常量：" class="headerlink" title="常量："></a>常量：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalValues</span> </span>&#123;</div><div class="line">    <span class="comment">// 周期性的闹钟</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String TIMER_ACTION_REPEATING = <span class="string">"com.e_eduspace.TIMER_ACTION_REPEATING"</span>;</div><div class="line">    <span class="comment">// 定时闹钟</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String TIMER_ACTION = <span class="string">"com.e_eduspace.TIMER_ACTION"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="工具类"><a href="#工具类" class="headerlink" title="工具类"></a>工具类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.e_eduspace.familycalendar.util;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.AlarmManager;</div><div class="line"><span class="keyword">import</span> android.app.PendingIntent;</div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.content.Intent;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.prolificinteractive.materialcalendarview.CalendarDay;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 闹钟定时工具类</div><div class="line"> *</div><div class="line"> * <span class="doctag">@author</span> xulei</div><div class="line"> * <span class="doctag">@time</span> 2016/12/13 10:03</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AlarmTimer</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 设置周期性闹钟</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> context</div><div class="line">     * <span class="doctag">@param</span> firstTime</div><div class="line">     * <span class="doctag">@param</span> cycTime</div><div class="line">     * <span class="doctag">@param</span> action</div><div class="line">     * <span class="doctag">@param</span> AlarmManagerType 闹钟的类型，常用的有5个值：AlarmManager.ELAPSED_REALTIME、</div><div class="line">     *                         AlarmManager.ELAPSED_REALTIME_WAKEUP、AlarmManager.RTC、</div><div class="line">     *                         AlarmManager.RTC_WAKEUP、AlarmManager.POWER_OFF_WAKEUP</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setRepeatingAlarmTimer</span><span class="params">(Context context, <span class="keyword">long</span> firstTime,</span></span></div><div class="line">                                              <span class="keyword">long</span> cycTime, String action, <span class="keyword">int</span> AlarmManagerType) &#123;</div><div class="line">        Intent myIntent = <span class="keyword">new</span> Intent();</div><div class="line">        myIntent.setAction(action);</div><div class="line">        PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, myIntent, <span class="number">0</span>);</div><div class="line">        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">        alarm.setRepeating(AlarmManagerType, firstTime, cycTime, sender);</div><div class="line">        <span class="comment">//param1：闹钟类型，param1：闹钟首次执行时间，param1：闹钟两次执行的间隔时间，param1：闹钟响应动作。</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 设置定时闹钟</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> context</div><div class="line">     * <span class="doctag">@param</span> cycTime</div><div class="line">     * <span class="doctag">@param</span> action</div><div class="line">     * <span class="doctag">@param</span> AlarmManagerType 闹钟的类型，常用的有5个值：AlarmManager.ELAPSED_REALTIME、</div><div class="line">     *                         AlarmManager.ELAPSED_REALTIME_WAKEUP、AlarmManager.RTC、</div><div class="line">     *                         AlarmManager.RTC_WAKEUP、AlarmManager.POWER_OFF_WAKEUP</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setAlarmTimer</span><span class="params">(Context context, <span class="keyword">long</span> cycTime,</span></span></div><div class="line">                                     String action, <span class="keyword">int</span> AlarmManagerType, CalendarDay date) &#123;</div><div class="line">        Intent myIntent = <span class="keyword">new</span> Intent();</div><div class="line">        <span class="comment">//传递定时日期</span></div><div class="line">        myIntent.putExtra(<span class="string">"date"</span>, date);</div><div class="line">        myIntent.setAction(action);</div><div class="line">        <span class="comment">//给每个闹钟设置不同ID防止覆盖</span></div><div class="line">        <span class="keyword">int</span> alarmId = SharedPreUtils.getInteger(context, <span class="string">"alarm_id"</span>, <span class="number">0</span>);</div><div class="line">        SharedPreUtils.setInteger(context, <span class="string">"alarm_id"</span>, ++alarmId);</div><div class="line">        PendingIntent sender = PendingIntent.getBroadcast(context, alarmId, myIntent, <span class="number">0</span>);</div><div class="line">        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">        alarm.set(AlarmManagerType, cycTime, sender);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 取消闹钟</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> context</div><div class="line">     * <span class="doctag">@param</span> action</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">cancelAlarmTimer</span><span class="params">(Context context, String action)</span> </span>&#123;</div><div class="line">        Intent myIntent = <span class="keyword">new</span> Intent();</div><div class="line">        myIntent.setAction(action);</div><div class="line">        PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, myIntent,<span class="number">0</span>);</div><div class="line">        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">        alarm.cancel(sender);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h3 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h3&gt;&lt;p&gt;　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它组件（包括Activity,Service,BroadcastReceiver）。本文将讲解一下如何使用AlarmManager实现定时提醒功能。&lt;br&gt;
+      &lt;h3 id=&quot;AlarmManager简介&quot;&gt;&lt;a href=&quot;#AlarmManager简介&quot; class=&quot;headerlink&quot; title=&quot;AlarmManager简介&quot;&gt;&lt;/a&gt;AlarmManager简介&lt;/h3&gt;&lt;p&gt;　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它组件（包括Activity,Service,BroadcastReceiver）。本文将讲解一下如何使用AlarmManager实现定时提醒功能。&lt;br&gt;
     
     </summary>
     
@@ -390,7 +433,7 @@ public class StaggerAdapter extends MyAdapter {
     <link href="http://LeiHolmes.github.io/2016/04/29/Android%E5%BC%80%E5%8F%91%E4%B9%8BRetrofit%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
     <id>http://LeiHolmes.github.io/2016/04/29/Android开发之Retrofit初尝试/</id>
     <published>2016-04-29T07:41:00.000Z</published>
-    <updated>2017-05-15T02:54:25.000Z</updated>
+    <updated>2017-05-15T03:47:46.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Retrofit2-0简介"><a href="#Retrofit2-0简介" class="headerlink" title="Retrofit2.0简介"></a>Retrofit2.0简介</h3><p>　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:</p>
 <blockquote>
@@ -505,9 +548,9 @@ DataBean bean = call.execute().body();
     <link href="http://LeiHolmes.github.io/2016/04/19/Android%E5%BC%80%E5%8F%91%E4%B9%8B%E7%A5%9E%E5%99%A8Stetho%E8%B0%83%E8%AF%95Volley/"/>
     <id>http://LeiHolmes.github.io/2016/04/19/Android开发之神器Stetho调试Volley/</id>
     <published>2016-04-19T04:19:16.000Z</published>
-    <updated>2017-05-15T02:54:00.000Z</updated>
+    <updated>2017-05-15T03:49:52.000Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="Stetho简介"><a href="#Stetho简介" class="headerlink" title="Stetho简介"></a>Stetho简介</h3><p>Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入<a href="http://facebook.github.io/stetho/" target="_blank" rel="external">Stetho官网</a>。<br><a id="more"></a></p>
+    <content type="html"><![CDATA[<h3 id="Stetho简介"><a href="#Stetho简介" class="headerlink" title="Stetho简介"></a>Stetho简介</h3><p>　　Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入<a href="http://facebook.github.io/stetho/" target="_blank" rel="external">Stetho官网</a>。<br><a id="more"></a></p>
 <h3 id="Stetho结合OkHttp使用"><a href="#Stetho结合OkHttp使用" class="headerlink" title="Stetho结合OkHttp使用"></a>Stetho结合OkHttp使用</h3><h5 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// Gradle dependency on Stetho </div><div class="line">  dependencies &#123; </div><div class="line">    compile 'com.facebook.stetho:stetho:1.1.1' </div><div class="line">  &#125;</div></pre></td></tr></table></figure>
 <h5 id="Stetho初始化配置"><a href="#Stetho初始化配置" class="headerlink" title="Stetho初始化配置"></a>Stetho初始化配置</h5><p>在App的Application中完成初始化。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate();</div><div class="line">    Stetho.initialize(</div><div class="line">      Stetho.newInitializerBuilder(<span class="keyword">this</span>)</div><div class="line">        .enableDumpapp(</div><div class="line">            Stetho.defaultDumperPluginsProvider(<span class="keyword">this</span>))</div><div class="line">        .enableWebKitInspector(</div><div class="line">            Stetho.defaultInspectorModulesProvider(<span class="keyword">this</span>))</div><div class="line">        .build());</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>官网中使用OkHttp为实例，使用如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</div><div class="line">client.networkInterceptors().add(<span class="keyword">new</span> StethoInterceptor());</div></pre></td></tr></table></figure></p>
@@ -560,7 +603,7 @@ DataBean bean = call.execute().body();
     
     <summary type="html">
     
-      &lt;h3 id=&quot;Stetho简介&quot;&gt;&lt;a href=&quot;#Stetho简介&quot; class=&quot;headerlink&quot; title=&quot;Stetho简介&quot;&gt;&lt;/a&gt;Stetho简介&lt;/h3&gt;&lt;p&gt;Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入&lt;a href=&quot;http://facebook.github.io/stetho/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Stetho官网&lt;/a&gt;。&lt;br&gt;
+      &lt;h3 id=&quot;Stetho简介&quot;&gt;&lt;a href=&quot;#Stetho简介&quot; class=&quot;headerlink&quot; title=&quot;Stetho简介&quot;&gt;&lt;/a&gt;Stetho简介&lt;/h3&gt;&lt;p&gt;　　Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入&lt;a href=&quot;http://facebook.github.io/stetho/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Stetho官网&lt;/a&gt;。&lt;br&gt;
     
     </summary>
     
