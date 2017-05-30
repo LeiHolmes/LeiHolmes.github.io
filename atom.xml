@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-05-15T07:51:25.000Z</updated>
+  <updated>2017-05-30T10:01:43.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Android开发之DataBinding基本实现（一）</title>
-    <link href="http://LeiHolmes.github.io/2017/05/15/Android%E5%BC%80%E5%8F%91%E4%B9%8BDataBinding%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%EF%BC%88%E4%B8%80%EF%BC%89/"/>
-    <id>http://LeiHolmes.github.io/2017/05/15/Android开发之DataBinding基本实现（一）/</id>
+    <title>Android开发之DataBinding基本实现</title>
+    <link href="http://LeiHolmes.github.io/2017/05/15/Android%E5%BC%80%E5%8F%91%E4%B9%8BDataBinding%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0/"/>
+    <id>http://LeiHolmes.github.io/2017/05/15/Android开发之DataBinding基本实现/</id>
     <published>2017-05-15T03:12:18.000Z</published>
-    <updated>2017-05-15T07:51:25.000Z</updated>
+    <updated>2017-05-30T10:01:43.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="DataBinding简介"><a href="#DataBinding简介" class="headerlink" title="DataBinding简介"></a>DataBinding简介</h3><p>　　DataBinding是基于MVVM思想实现数据与UI绑定的框架，有了Data Binding，在Android中也可以很方便的实现MVVM。它于2015年7月由Google在Studio1.3上引入，2016年4月在Studio2.0上得到正式支持。DataBinding是一个support库，最低支持到Android2.1（API Level 7+）。<br><a id="more"></a><br>　　在引入DataBinding之前，我们需要敲很多很鸡肋的代码，如 findViewById()、setText()，setVisibility()，setEnabled() 或 setOnClickListener() 等，通过 DataBinding , 我们可以通过声明式布局以精简的代码来绑定应用程序逻辑和布局，这样就不用编写大量的冗余的代码了。这一节我们来讲一讲DataBinding的基本实现之常量绑定、变量绑定与事件绑定。</p>
 <h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><h4 id="在build-gradle中添加"><a href="#在build-gradle中添加" class="headerlink" title="在build.gradle中添加"></a>在build.gradle中添加</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    dataBinding &#123;</div><div class="line">        enabled = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
