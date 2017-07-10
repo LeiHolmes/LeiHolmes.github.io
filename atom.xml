@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-05-30T10:01:43.000Z</updated>
+  <updated>2017-07-10T07:00:35.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -16,11 +16,126 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Android开发数据库框架之GreenDao3.0使用详解</title>
+    <link href="http://LeiHolmes.github.io/2017/07/10/Android%E5%BC%80%E5%8F%91%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/</id>
+    <published>2017-07-09T16:00:00.000Z</published>
+    <updated>2017-07-10T07:00:35.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Retrofit2-0简介"><a href="#Retrofit2-0简介" class="headerlink" title="Retrofit2.0简介"></a>Retrofit2.0简介</h3><p>　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:</p>
+<blockquote>
+<p>A type-safe REST client for Android and Java</p>
+</blockquote>
+<p>　　现已更新到2.0的版本，与1.0版本的使用上还是不小的差别，我也是第一次用，这里主要和大家研究研究2.0版本简单使用。也可参详<a href="http://square.github.io/retrofit/" target="_blank" rel="external">官方示例</a>。<br><a id="more"></a>  </p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h4 id="添加权限"><a href="#添加权限" class="headerlink" title="添加权限"></a>添加权限</h4><p>首先添加网络请求权限  </p>
+<pre><code class="xml"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.INTERNET"</span>/&gt;</span>
+</code></pre>
+<h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>Retrofit2.0版本后只支持okhttp请求，也已经封装好了，就不需要添加okhttp的依赖了。  </p>
+<pre><code class="xml">dependencies {
+    compile &#39;com.squareup.retrofit2:retrofit:2.0.2&#39;
+    compile &#39;com.squareup.retrofit2:converter-gson:2.0.0-beta3&#39;
+}
+</code></pre>
+<h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><p>接下来瞧一瞧Retrofit初始化以及如何请求数据。</p>
+<h4 id="初始化Retrofit对象"><a href="#初始化Retrofit对象" class="headerlink" title="初始化Retrofit对象"></a>初始化Retrofit对象</h4><pre><code class="java"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BASE_URL = <span class="string">"https://api.github.com/"</span>;
+Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build();
+</code></pre>
+<p>BASE_URL就是你请求的Server地址。  </p>
+<pre><code class="java">.addConverterFactory(GsonConverterFactory.create())
+</code></pre>
+<p>Retrofit2.0不提供返回JSON数据的默认解析方式，需要手动指定，支持Jackson等多种解析方式。需要哪种就添加相应的依赖，这里添加的是Retrofit提供的converter-gson依赖。有点不爽的就是不支持FastJson解析，有需要的话可以自己写一个FastjsonConverterFactory继承Converter.Factory实现。  </p>
+<p>虽然Retrofit2.0后只支持okhttp请求，但你也可以自定义一个okhttp再配置进Retrofit。  </p>
+<pre><code class="java">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();
+client.interceptors().add(<span class="keyword">new</span> Interceptor() {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>{
+            Response response = chain.proceed(chain.request());
+            <span class="comment">// Do anything with response here</span>
+            <span class="keyword">return</span> response;
+        }
+Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(client)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build();
+});
+</code></pre>
+<h4 id="定义请求接口"><a href="#定义请求接口" class="headerlink" title="定义请求接口"></a>定义请求接口</h4><p>实现转换HTTP API为Java接口，Retrofit提供了5种内置的注解：GET、POST、PUT、DELETE和HEAD，在注解中指定的资源的相对URL。  </p>
+<pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">NetWorkService</span> </span>{
+    <span class="meta">@GET</span>(<span class="string">"users/basil2style"</span>)
+    <span class="function">Call&lt;DataBean&gt; <span class="title">getData</span><span class="params">()</span></span>;
+}
+</code></pre>
+<p>使用替换块和参数进行动态更新,替换块是{ and }包围的字母数字组成的字符串，相应的参数必须使用相同的字符串被@Path进行注释。  </p>
+<pre><code class="java"><span class="meta">@GET</span>(<span class="string">"repos/{params1}/{params2}/contributors"</span>)
+Call&lt;List&lt;DataBean2&gt;&gt; getData(
+        <span class="meta">@Path</span>(<span class="string">"params1"</span>) String params1,
+        <span class="meta">@Path</span>(<span class="string">"params2"</span>) String params2,
+);
+</code></pre>
+<p>当我们调用getData()这个方法的时候，Retrofit会创建这个URL。如果我们传入Square和Retrofit字符串，分别作为owner和repo参数。我们就会得到这个URL：<a href="https://api.github.com/repos/square/retrofit/contributors" target="_blank" rel="external">https://api.github.com/repos/square/retrofit/contributors</a>  </p>
+<p>添加查询参数  </p>
+<pre><code class="java"><span class="meta">@GET</span>(<span class="string">"repos/square/{retrofit}/contributors"</span>)
+Call&lt;List&lt;DataBean2&gt;&gt; groupData(<span class="meta">@Path</span>(<span class="string">"retrofit"</span>) String retrofit, <span class="meta">@Query</span>(<span class="string">"sort"</span>) String sort);
+</code></pre>
+<p>当我们调用getData()方法时，传入一个查询参数字符串”ok”,这样我们就能得到URL：<a href="https://api.github.com/repos/square/retrofit/contributors?sort=ok" target="_blank" rel="external">https://api.github.com/repos/square/retrofit/contributors?sort=ok</a></p>
+<p>当然如果查询参数过多，我们也可以使用Map进行组合再传进来。  </p>
+<pre><code class="java"><span class="meta">@GET</span>(<span class="string">"repos/square/{retrofit}/contributors"</span>)
+Call&lt;List&lt;DataBean2&gt;&gt; getData(<span class="meta">@Path</span>(<span class="string">"repos"</span>) String repos, <span class="meta">@QueryMap</span> Map&lt;String, String&gt; parameters);
+</code></pre>
+<h4 id="请求数据"><a href="#请求数据" class="headerlink" title="请求数据"></a>请求数据</h4><p>Retrifot支持同步和异步的请求方式，先使用Retrofit类生成接口NetWorkService的实现。  </p>
+<pre><code class="java">NetWorkService service = retrofit.create(NetWorkService.class);
+</code></pre>
+<h5 id="同步请求"><a href="#同步请求" class="headerlink" title="同步请求"></a>同步请求</h5><pre><code class="java">Call&lt;DataBean&gt; call = service.getData(Square,Retrofit);
+DataBean bean = call.execute().body();
+</code></pre>
+<p>注意同步请求不可在主线程执行，你懂得。且call只能执行execute()方法一次，若要再次请求可通过<code>Call&lt;DataBean&gt; call = call.clone()</code>来再复制一个Call对象。  </p>
+<h5 id="异步请求"><a href="#异步请求" class="headerlink" title="异步请求"></a>异步请求</h5><pre><code class="java">call.enqueue(<span class="keyword">new</span> Callback&lt;DataBean&gt;() {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;DataBean&gt; call, Response&lt;DataBean&gt; response)</span> </span>{
+        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"请求成功"</span>, Toast.LENGTH_SHORT).show();
+        DataBean bean = response.body();
+        tvMain.setText(bean.toString());
+    }
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;DataBean&gt; call, Throwable t)</span> </span>{
+    }
+});
+</code></pre>
+<p>当我们执行的同步或异步加入队列后，可以随时使用call.cancel()方法取消请求。  </p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>注解中参数的写法与BASE_URL的拼接一定要注意，请看以下写法。  </p>
+<h4 id="错误示例1"><a href="#错误示例1" class="headerlink" title="错误示例1"></a>错误示例1</h4><p>BASE_URL：<a href="https://api.github.com/repos/square" target="_blank" rel="external">https://api.github.com/repos/square</a><br>Get注解：　@GET(“/basil2style”)<br>结果URL：　<a href="https://api.github.com/basil2style" target="_blank" rel="external">https://api.github.com/basil2style</a>  </p>
+<h4 id="错误示例2"><a href="#错误示例2" class="headerlink" title="错误示例2"></a>错误示例2</h4><p>BASE_URL：<a href="https://api.github.com/repos/square" target="_blank" rel="external">https://api.github.com/repos/square</a><br>Get注解：　@GET(“basil2style”)<br>结果URL：　<a href="https://api.github.com/repos/basil2style" target="_blank" rel="external">https://api.github.com/repos/basil2style</a>  </p>
+<h4 id="推荐写法"><a href="#推荐写法" class="headerlink" title="推荐写法"></a>推荐写法</h4><p>BASE_URL：<a href="https://api.github.com/repos/square/" target="_blank" rel="external">https://api.github.com/repos/square/</a><br>Get注解：　@GET(“basil2style”)<br>结果URL：　<a href="https://api.github.com/repos/square/basil2style" target="_blank" rel="external">https://api.github.com/repos/square/basil2style</a>  </p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>最简单的Retrofit实现流程完毕，Retrofit+Okhttp+Gson可以算是目前来说相当快的超级网络请求框架了。相比较于Volley都快不少，亲测结果：爽爽爽。小伙伴们赶紧整起来吧！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;Retrofit2-0简介&quot;&gt;&lt;a href=&quot;#Retrofit2-0简介&quot; class=&quot;headerlink&quot; title=&quot;Retrofit2.0简介&quot;&gt;&lt;/a&gt;Retrofit2.0简介&lt;/h3&gt;&lt;p&gt;　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A type-safe REST client for Android and Java&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;　　现已更新到2.0的版本，与1.0版本的使用上还是不小的差别，我也是第一次用，这里主要和大家研究研究2.0版本简单使用。也可参详&lt;a href=&quot;http://square.github.io/retrofit/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;官方示例&lt;/a&gt;。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="http://LeiHolmes.github.io/categories/Android/"/>
+    
+    
+      <category term="GreenDao" scheme="http://LeiHolmes.github.io/tags/GreenDao/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Android开发之DataBinding基本实现</title>
     <link href="http://LeiHolmes.github.io/2017/05/15/Android%E5%BC%80%E5%8F%91%E4%B9%8BDataBinding%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0/"/>
     <id>http://LeiHolmes.github.io/2017/05/15/Android开发之DataBinding基本实现/</id>
-    <published>2017-05-15T03:12:18.000Z</published>
-    <updated>2017-05-30T10:01:43.000Z</updated>
+    <published>2017-05-14T16:00:00.000Z</published>
+    <updated>2017-07-10T07:01:31.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="DataBinding简介"><a href="#DataBinding简介" class="headerlink" title="DataBinding简介"></a>DataBinding简介</h3><p>　　DataBinding是基于MVVM思想实现数据与UI绑定的框架，有了Data Binding，在Android中也可以很方便的实现MVVM。它于2015年7月由Google在Studio1.3上引入，2016年4月在Studio2.0上得到正式支持。DataBinding是一个support库，最低支持到Android2.1（API Level 7+）。<br><a id="more"></a><br>　　在引入DataBinding之前，我们需要敲很多很鸡肋的代码，如 findViewById()、setText()，setVisibility()，setEnabled() 或 setOnClickListener() 等，通过 DataBinding , 我们可以通过声明式布局以精简的代码来绑定应用程序逻辑和布局，这样就不用编写大量的冗余的代码了。这一节我们来讲一讲DataBinding的基本实现之常量绑定、变量绑定与事件绑定。</p>
 <h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><h4 id="在build-gradle中添加"><a href="#在build-gradle中添加" class="headerlink" title="在build.gradle中添加"></a>在build.gradle中添加</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    dataBinding &#123;</div><div class="line">        enabled = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -62,8 +177,8 @@
     <title>Android开发之RecyclerView初尝试</title>
     <link href="http://LeiHolmes.github.io/2017/03/28/Android%E5%BC%80%E5%8F%91%E4%B9%8BRecyclerView%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
     <id>http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/</id>
-    <published>2017-03-28T02:26:00.000Z</published>
-    <updated>2017-05-15T03:48:46.000Z</updated>
+    <published>2017-03-27T16:00:00.000Z</published>
+    <updated>2017-07-10T07:01:37.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="RecyclerView简介"><a href="#RecyclerView简介" class="headerlink" title="RecyclerView简介"></a>RecyclerView简介</h3><p>　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。<br><a id="more"></a>  </p>
 <h3 id="相关原理与简单实现"><a href="#相关原理与简单实现" class="headerlink" title="相关原理与简单实现"></a>相关原理与简单实现</h3><h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>　　在AndroidStudio的build.gradle中添加依赖：  </p>
@@ -390,8 +505,8 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
     <title>Android开发之AlarmManager闹钟+Notification通知</title>
     <link href="http://LeiHolmes.github.io/2016/12/13/Android%E5%BC%80%E5%8F%91%E4%B9%8BAlarmManager%E9%97%B9%E9%92%9F+Notification%E9%80%9A%E7%9F%A5/"/>
     <id>http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/</id>
-    <published>2016-12-13T03:11:11.000Z</published>
-    <updated>2017-05-15T03:49:38.000Z</updated>
+    <published>2016-12-12T16:00:00.000Z</published>
+    <updated>2017-07-10T07:01:23.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="AlarmManager简介"><a href="#AlarmManager简介" class="headerlink" title="AlarmManager简介"></a>AlarmManager简介</h3><p>　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它组件（包括Activity,Service,BroadcastReceiver）。本文将讲解一下如何使用AlarmManager实现定时提醒功能。<br><a id="more"></a></p>
 <h3 id="闹钟配置"><a href="#闹钟配置" class="headerlink" title="闹钟配置"></a>闹钟配置</h3><h4 id="周期闹钟"><a href="#周期闹钟" class="headerlink" title="周期闹钟"></a>周期闹钟</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent intent = <span class="keyword">new</span> Intent();</div><div class="line">intent.setAction(GlobalValues.TIMER_ACTION_REPEATING);</div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, intent, <span class="number">0</span>);</div><div class="line">AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + <span class="number">5</span> * <span class="number">1000</span>, <span class="number">3</span> * <span class="number">1000</span>, sender);</div></pre></td></tr></table></figure>
@@ -429,11 +544,11 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
   </entry>
   
   <entry>
-    <title>Android开发之Retrofit2.0网络请求框架初尝试</title>
-    <link href="http://LeiHolmes.github.io/2016/04/29/Android%E5%BC%80%E5%8F%91%E4%B9%8BRetrofit%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
-    <id>http://LeiHolmes.github.io/2016/04/29/Android开发之Retrofit初尝试/</id>
-    <published>2016-04-29T07:41:00.000Z</published>
-    <updated>2017-05-15T03:47:46.000Z</updated>
+    <title>Android开发网络请求框架之Retrofit2.0初尝试</title>
+    <link href="http://LeiHolmes.github.io/2016/04/29/Android%E5%BC%80%E5%8F%91%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E6%A1%86%E6%9E%B6%E4%B9%8BRetrofit2.0%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
+    <id>http://LeiHolmes.github.io/2016/04/29/Android开发网络请求框架之Retrofit2.0初尝试/</id>
+    <published>2016-04-28T16:00:00.000Z</published>
+    <updated>2017-07-10T07:01:10.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Retrofit2-0简介"><a href="#Retrofit2-0简介" class="headerlink" title="Retrofit2.0简介"></a>Retrofit2.0简介</h3><p>　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:</p>
 <blockquote>
@@ -547,8 +662,8 @@ DataBean bean = call.execute().body();
     <title>Android开发之神器Stetho调试Volley</title>
     <link href="http://LeiHolmes.github.io/2016/04/19/Android%E5%BC%80%E5%8F%91%E4%B9%8B%E7%A5%9E%E5%99%A8Stetho%E8%B0%83%E8%AF%95Volley/"/>
     <id>http://LeiHolmes.github.io/2016/04/19/Android开发之神器Stetho调试Volley/</id>
-    <published>2016-04-19T04:19:16.000Z</published>
-    <updated>2017-05-15T03:49:52.000Z</updated>
+    <published>2016-04-18T16:00:00.000Z</published>
+    <updated>2017-07-10T07:01:16.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Stetho简介"><a href="#Stetho简介" class="headerlink" title="Stetho简介"></a>Stetho简介</h3><p>　　Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入<a href="http://facebook.github.io/stetho/" target="_blank" rel="external">Stetho官网</a>。<br><a id="more"></a></p>
 <h3 id="Stetho结合OkHttp使用"><a href="#Stetho结合OkHttp使用" class="headerlink" title="Stetho结合OkHttp使用"></a>Stetho结合OkHttp使用</h3><h5 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// Gradle dependency on Stetho </div><div class="line">  dependencies &#123; </div><div class="line">    compile 'com.facebook.stetho:stetho:1.1.1' </div><div class="line">  &#125;</div></pre></td></tr></table></figure>

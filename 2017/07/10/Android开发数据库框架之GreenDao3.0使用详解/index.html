@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'true', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="UA-99027890-1">
+    
+    
+    
+    <title>Android开发数据库框架之GreenDao3.0使用详解 | Lei’s Blog | 不忘初心，淡然前行</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="GreenDao">
+    <meta name="description" content="Retrofit2.0简介　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:  A type-safe REST client for Andro">
+<meta name="keywords" content="GreenDao">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发数据库框架之GreenDao3.0使用详解">
+<meta property="og:url" content="http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/index.html">
+<meta property="og:site_name" content="Lei’s Blog">
+<meta property="og:description" content="Retrofit2.0简介　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:  A type-safe REST client for Andro">
+<meta property="og:updated_time" content="2017-07-10T07:00:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发数据库框架之GreenDao3.0使用详解">
+<meta name="twitter:description" content="Retrofit2.0简介　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:  A type-safe REST client for Andro">
+    
+        <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">徐雷</h5>
+          <a href="mailto:18010498185@163.com" title="18010498185@163.com" class="mail">18010498185@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                成长之路
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ShylockXu" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/u/1850954523?topnav=1&wvr=6&topsug=1" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android开发数据库框架之GreenDao3.0使用详解</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android开发数据库框架之GreenDao3.0使用详解</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-09T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-07-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Retrofit2-0简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">Retrofit2.0简介</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#准备工作"><span class="post-toc-number">2.</span> <span class="post-toc-text">准备工作</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#添加权限"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">添加权限</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#添加依赖"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">添加依赖</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#简单使用"><span class="post-toc-number">3.</span> <span class="post-toc-text">简单使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#初始化Retrofit对象"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">初始化Retrofit对象</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#定义请求接口"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">定义请求接口</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#请求数据"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">请求数据</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#同步请求"><span class="post-toc-number">3.3.1.</span> <span class="post-toc-text">同步请求</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#异步请求"><span class="post-toc-number">3.3.2.</span> <span class="post-toc-text">异步请求</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#注意"><span class="post-toc-number">4.</span> <span class="post-toc-text">注意</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#错误示例1"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">错误示例1</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#错误示例2"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">错误示例2</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#推荐写法"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">推荐写法</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Android开发数据库框架之GreenDao3.0使用详解"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android开发数据库框架之GreenDao3.0使用详解</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-10 00:00:00" datetime="2017-07-09T16:00:00.000Z"  itemprop="datePublished">2017-07-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="Retrofit2-0简介"><a href="#Retrofit2-0简介" class="headerlink" title="Retrofit2.0简介"></a>Retrofit2.0简介</h3><p>　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:</p>
+<blockquote>
+<p>A type-safe REST client for Android and Java</p>
+</blockquote>
+<p>　　现已更新到2.0的版本，与1.0版本的使用上还是不小的差别，我也是第一次用，这里主要和大家研究研究2.0版本简单使用。也可参详<a href="http://square.github.io/retrofit/" target="_blank" rel="external">官方示例</a>。<br><a id="more"></a>  </p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h4 id="添加权限"><a href="#添加权限" class="headerlink" title="添加权限"></a>添加权限</h4><p>首先添加网络请求权限  </p>
+<pre><code class="xml"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.INTERNET"</span>/&gt;</span>
+</code></pre>
+<h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>Retrofit2.0版本后只支持okhttp请求，也已经封装好了，就不需要添加okhttp的依赖了。  </p>
+<pre><code class="xml">dependencies {
+    compile &#39;com.squareup.retrofit2:retrofit:2.0.2&#39;
+    compile &#39;com.squareup.retrofit2:converter-gson:2.0.0-beta3&#39;
+}
+</code></pre>
+<h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><p>接下来瞧一瞧Retrofit初始化以及如何请求数据。</p>
+<h4 id="初始化Retrofit对象"><a href="#初始化Retrofit对象" class="headerlink" title="初始化Retrofit对象"></a>初始化Retrofit对象</h4><pre><code class="java"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BASE_URL = <span class="string">"https://api.github.com/"</span>;
+Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build();
+</code></pre>
+<p>BASE_URL就是你请求的Server地址。  </p>
+<pre><code class="java">.addConverterFactory(GsonConverterFactory.create())
+</code></pre>
+<p>Retrofit2.0不提供返回JSON数据的默认解析方式，需要手动指定，支持Jackson等多种解析方式。需要哪种就添加相应的依赖，这里添加的是Retrofit提供的converter-gson依赖。有点不爽的就是不支持FastJson解析，有需要的话可以自己写一个FastjsonConverterFactory继承Converter.Factory实现。  </p>
+<p>虽然Retrofit2.0后只支持okhttp请求，但你也可以自定义一个okhttp再配置进Retrofit。  </p>
+<pre><code class="java">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();
+client.interceptors().add(<span class="keyword">new</span> Interceptor() {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>{
+            Response response = chain.proceed(chain.request());
+            <span class="comment">// Do anything with response here</span>
+            <span class="keyword">return</span> response;
+        }
+Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(client)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build();
+});
+</code></pre>
+<h4 id="定义请求接口"><a href="#定义请求接口" class="headerlink" title="定义请求接口"></a>定义请求接口</h4><p>实现转换HTTP API为Java接口，Retrofit提供了5种内置的注解：GET、POST、PUT、DELETE和HEAD，在注解中指定的资源的相对URL。  </p>
+<pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">NetWorkService</span> </span>{
+    <span class="meta">@GET</span>(<span class="string">"users/basil2style"</span>)
+    <span class="function">Call&lt;DataBean&gt; <span class="title">getData</span><span class="params">()</span></span>;
+}
+</code></pre>
+<p>使用替换块和参数进行动态更新,替换块是{ and }包围的字母数字组成的字符串，相应的参数必须使用相同的字符串被@Path进行注释。  </p>
+<pre><code class="java"><span class="meta">@GET</span>(<span class="string">"repos/{params1}/{params2}/contributors"</span>)
+Call&lt;List&lt;DataBean2&gt;&gt; getData(
+        <span class="meta">@Path</span>(<span class="string">"params1"</span>) String params1,
+        <span class="meta">@Path</span>(<span class="string">"params2"</span>) String params2,
+);
+</code></pre>
+<p>当我们调用getData()这个方法的时候，Retrofit会创建这个URL。如果我们传入Square和Retrofit字符串，分别作为owner和repo参数。我们就会得到这个URL：<a href="https://api.github.com/repos/square/retrofit/contributors" target="_blank" rel="external">https://api.github.com/repos/square/retrofit/contributors</a>  </p>
+<p>添加查询参数  </p>
+<pre><code class="java"><span class="meta">@GET</span>(<span class="string">"repos/square/{retrofit}/contributors"</span>)
+Call&lt;List&lt;DataBean2&gt;&gt; groupData(<span class="meta">@Path</span>(<span class="string">"retrofit"</span>) String retrofit, <span class="meta">@Query</span>(<span class="string">"sort"</span>) String sort);
+</code></pre>
+<p>当我们调用getData()方法时，传入一个查询参数字符串”ok”,这样我们就能得到URL：<a href="https://api.github.com/repos/square/retrofit/contributors?sort=ok" target="_blank" rel="external">https://api.github.com/repos/square/retrofit/contributors?sort=ok</a></p>
+<p>当然如果查询参数过多，我们也可以使用Map进行组合再传进来。  </p>
+<pre><code class="java"><span class="meta">@GET</span>(<span class="string">"repos/square/{retrofit}/contributors"</span>)
+Call&lt;List&lt;DataBean2&gt;&gt; getData(<span class="meta">@Path</span>(<span class="string">"repos"</span>) String repos, <span class="meta">@QueryMap</span> Map&lt;String, String&gt; parameters);
+</code></pre>
+<h4 id="请求数据"><a href="#请求数据" class="headerlink" title="请求数据"></a>请求数据</h4><p>Retrifot支持同步和异步的请求方式，先使用Retrofit类生成接口NetWorkService的实现。  </p>
+<pre><code class="java">NetWorkService service = retrofit.create(NetWorkService.class);
+</code></pre>
+<h5 id="同步请求"><a href="#同步请求" class="headerlink" title="同步请求"></a>同步请求</h5><pre><code class="java">Call&lt;DataBean&gt; call = service.getData(Square,Retrofit);
+DataBean bean = call.execute().body();
+</code></pre>
+<p>注意同步请求不可在主线程执行，你懂得。且call只能执行execute()方法一次，若要再次请求可通过<code>Call&lt;DataBean&gt; call = call.clone()</code>来再复制一个Call对象。  </p>
+<h5 id="异步请求"><a href="#异步请求" class="headerlink" title="异步请求"></a>异步请求</h5><pre><code class="java">call.enqueue(<span class="keyword">new</span> Callback&lt;DataBean&gt;() {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;DataBean&gt; call, Response&lt;DataBean&gt; response)</span> </span>{
+        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"请求成功"</span>, Toast.LENGTH_SHORT).show();
+        DataBean bean = response.body();
+        tvMain.setText(bean.toString());
+    }
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;DataBean&gt; call, Throwable t)</span> </span>{
+    }
+});
+</code></pre>
+<p>当我们执行的同步或异步加入队列后，可以随时使用call.cancel()方法取消请求。  </p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>注解中参数的写法与BASE_URL的拼接一定要注意，请看以下写法。  </p>
+<h4 id="错误示例1"><a href="#错误示例1" class="headerlink" title="错误示例1"></a>错误示例1</h4><p>BASE_URL：<a href="https://api.github.com/repos/square" target="_blank" rel="external">https://api.github.com/repos/square</a><br>Get注解：　@GET(“/basil2style”)<br>结果URL：　<a href="https://api.github.com/basil2style" target="_blank" rel="external">https://api.github.com/basil2style</a>  </p>
+<h4 id="错误示例2"><a href="#错误示例2" class="headerlink" title="错误示例2"></a>错误示例2</h4><p>BASE_URL：<a href="https://api.github.com/repos/square" target="_blank" rel="external">https://api.github.com/repos/square</a><br>Get注解：　@GET(“basil2style”)<br>结果URL：　<a href="https://api.github.com/repos/basil2style" target="_blank" rel="external">https://api.github.com/repos/basil2style</a>  </p>
+<h4 id="推荐写法"><a href="#推荐写法" class="headerlink" title="推荐写法"></a>推荐写法</h4><p>BASE_URL：<a href="https://api.github.com/repos/square/" target="_blank" rel="external">https://api.github.com/repos/square/</a><br>Get注解：　@GET(“basil2style”)<br>结果URL：　<a href="https://api.github.com/repos/square/basil2style" target="_blank" rel="external">https://api.github.com/repos/square/basil2style</a>  </p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>最简单的Retrofit实现流程完毕，Retrofit+Okhttp+Gson可以算是目前来说相当快的超级网络请求框架了。相比较于Volley都快不少，亲测结果：爽爽爽。小伙伴们赶紧整起来吧！</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2017-07-10T07:00:35.000Z" itemprop="dateUpdated">2017-07-10 15:00:35</time>
+</span><br>
+
+
+        
+        进阶中的程序猿一枚，若发现有不正确的地方或者疑问欢迎各位留言指正。QQ：781751723
+        
+    </div>
+    <footer>
+        <a href="http://LeiHolmes.github.io">
+            <img src="/img/avatar.jpg" alt="徐雷">
+            徐雷
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GreenDao/">GreenDao</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/&title=《Android开发数据库框架之GreenDao3.0使用详解》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/&title=《Android开发数据库框架之GreenDao3.0使用详解》 — Lei’s Blog&source=Retrofit2.0简介　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Pl..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发数据库框架之GreenDao3.0使用详解》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/05/15/Android开发之DataBinding基本实现/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Android开发之DataBinding基本实现</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
+    <script>
+    var cloudTieConfig = {
+        url: 'http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/index.html',
+        sourceId: 'Android开发数据库框架之GreenDao3.0使用详解',
+        productKey: 'a49afc3603394502bd2ba8121a4284d9',
+        target: 'cloud-tie-wrapper',
+        pcFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/pc.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/pc.min.js',
+        ],
+        mobileFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/mobile.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/mobile.min.js'
+        ]
+    };
+    </script>
+    <script src="//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/loader.min.js"></script>
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/img/wechat.jpg" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/img/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>徐雷 &copy; 2015 - 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/&title=《Android开发数据库框架之GreenDao3.0使用详解》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/&title=《Android开发数据库框架之GreenDao3.0使用详解》 — Lei’s Blog&source=Retrofit2.0简介　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Pl..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发数据库框架之GreenDao3.0使用详解》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADOUlEQVR42u3a0W4iMQwFUP7/p+nrVmjCtT1UJHvmCSE6kxOkGvvm8Yiv5z/X6/tXn5m8fr3n1bNe/+q2CxsbG3sT9nN5rUnrx6/vkADWW7l+yputwcbGxj6OffUfvlpm1vfMC+T6DuuvZ23BxsbGxq4+ft0wTEpUdZ3Y2NjY2NWBTq/xqG4HNjY2NnY+VJqHB/nWJCv8o1kaNjY29tez86HP97/+SL6NjY2N/cXsZ/HKH9P7fG84VVZgY2NjH8TuLasaAPQGRnc99/KT2NjY2Aex1w+YhATJsKk3PEo2NCqi2NjY2Eew85/781YkbyfyryT/K2xsbOzz2L2QtXpA5xP4alH89RobGxv7UHb1pknbkL9TbWaSVV2+j42NjX0cuxfx5sWpWrp6MXAhPMDGxsY+iF2ORYNF9BqGSdGqxsPY2NjYp7InzUZ1m6qtxaN1leNebGxs7IPY1R/9eZmZb1P19ZtVYWNjY2/OrhaV/EBPb/Sf/23v7E1577GxsbE3Yec/63tHZCYBQ36IJyljlyeVsLGxsbdl5+P+ZHBTbS3ycph/JYXmBBsbG/sIdm9sdO+BnslIK/8MNjY29qnsyZimWvzyzcoLWK/oYmNjY5/H7rUEvTHTvKWpxsxvqjc2Njb2Eexq8/CXI/5yU1GMqLGxsbHPYCdLrG5EsvQqoLeJhVQEGxsbe0P2fFjfK0j5SKgXORSSbWxsbOzN2dXRz71lbx5LTEodNjY29nns3iA+KYfV0phsYr7mZjHDxsbG3oTdO/KSD/Q/0dg0J2fY2NjYh7KTGDV/Jyk/+WGaPAwYHdbBxsbGPpR9VyRQLWP52GhS3rCxsbH/N/bkMfPGJi9vSQF704pgY2Njb86uhq/V8X21mZlH0W+KGTY2NvYR7Gfxmh+mqQa01bJaOJqDjY2NfQR7UvfyAzRJ85C0HL1N75VYbGxs7L3Yk3ggiWPzdiIfJ/UGTLelItjY2Nhfyf5Ek5BsTS8eqI6usLGxsbEnx3fuDQl6yGYqgo2NjX00u3c0JymHvZj5I/k2NjY29lbsybHL6ii/uqH5QKow0sLGxsY+iN37oZ8HA3mJmgTD9xY8bGxs7E3YPyUnXclCUv/rAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
