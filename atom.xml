@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-07-10T07:00:35.000Z</updated>
+  <updated>2017-07-11T08:15:43.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -16,110 +16,70 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Android开发数据库框架之GreenDao3.0使用详解</title>
-    <link href="http://LeiHolmes.github.io/2017/07/10/Android%E5%BC%80%E5%8F%91%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://LeiHolmes.github.io/2017/07/10/Android开发数据库框架之GreenDao3.0使用详解/</id>
+    <title>Android开发ORM框架之GreenDao3.0集成与注解</title>
+    <link href="http://LeiHolmes.github.io/2017/07/10/Android%E5%BC%80%E5%8F%91ORM%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E9%9B%86%E6%88%90%E4%B8%8E%E6%B3%A8%E8%A7%A3/"/>
+    <id>http://LeiHolmes.github.io/2017/07/10/Android开发ORM框架之GreenDao3.0集成与注解/</id>
     <published>2017-07-09T16:00:00.000Z</published>
-    <updated>2017-07-10T07:00:35.000Z</updated>
+    <updated>2017-07-11T08:15:43.000Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="Retrofit2-0简介"><a href="#Retrofit2-0简介" class="headerlink" title="Retrofit2.0简介"></a>Retrofit2.0简介</h3><p>　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:</p>
-<blockquote>
-<p>A type-safe REST client for Android and Java</p>
-</blockquote>
-<p>　　现已更新到2.0的版本，与1.0版本的使用上还是不小的差别，我也是第一次用，这里主要和大家研究研究2.0版本简单使用。也可参详<a href="http://square.github.io/retrofit/" target="_blank" rel="external">官方示例</a>。<br><a id="more"></a>  </p>
-<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h4 id="添加权限"><a href="#添加权限" class="headerlink" title="添加权限"></a>添加权限</h4><p>首先添加网络请求权限  </p>
-<pre><code class="xml"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.INTERNET"</span>/&gt;</span>
-</code></pre>
-<h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>Retrofit2.0版本后只支持okhttp请求，也已经封装好了，就不需要添加okhttp的依赖了。  </p>
-<pre><code class="xml">dependencies {
-    compile &#39;com.squareup.retrofit2:retrofit:2.0.2&#39;
-    compile &#39;com.squareup.retrofit2:converter-gson:2.0.0-beta3&#39;
-}
-</code></pre>
-<h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><p>接下来瞧一瞧Retrofit初始化以及如何请求数据。</p>
-<h4 id="初始化Retrofit对象"><a href="#初始化Retrofit对象" class="headerlink" title="初始化Retrofit对象"></a>初始化Retrofit对象</h4><pre><code class="java"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BASE_URL = <span class="string">"https://api.github.com/"</span>;
-Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build();
-</code></pre>
-<p>BASE_URL就是你请求的Server地址。  </p>
-<pre><code class="java">.addConverterFactory(GsonConverterFactory.create())
-</code></pre>
-<p>Retrofit2.0不提供返回JSON数据的默认解析方式，需要手动指定，支持Jackson等多种解析方式。需要哪种就添加相应的依赖，这里添加的是Retrofit提供的converter-gson依赖。有点不爽的就是不支持FastJson解析，有需要的话可以自己写一个FastjsonConverterFactory继承Converter.Factory实现。  </p>
-<p>虽然Retrofit2.0后只支持okhttp请求，但你也可以自定义一个okhttp再配置进Retrofit。  </p>
-<pre><code class="java">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();
-client.interceptors().add(<span class="keyword">new</span> Interceptor() {
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>{
-            Response response = chain.proceed(chain.request());
-            <span class="comment">// Do anything with response here</span>
-            <span class="keyword">return</span> response;
-        }
-Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build();
-});
-</code></pre>
-<h4 id="定义请求接口"><a href="#定义请求接口" class="headerlink" title="定义请求接口"></a>定义请求接口</h4><p>实现转换HTTP API为Java接口，Retrofit提供了5种内置的注解：GET、POST、PUT、DELETE和HEAD，在注解中指定的资源的相对URL。  </p>
-<pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">NetWorkService</span> </span>{
-    <span class="meta">@GET</span>(<span class="string">"users/basil2style"</span>)
-    <span class="function">Call&lt;DataBean&gt; <span class="title">getData</span><span class="params">()</span></span>;
-}
-</code></pre>
-<p>使用替换块和参数进行动态更新,替换块是{ and }包围的字母数字组成的字符串，相应的参数必须使用相同的字符串被@Path进行注释。  </p>
-<pre><code class="java"><span class="meta">@GET</span>(<span class="string">"repos/{params1}/{params2}/contributors"</span>)
-Call&lt;List&lt;DataBean2&gt;&gt; getData(
-        <span class="meta">@Path</span>(<span class="string">"params1"</span>) String params1,
-        <span class="meta">@Path</span>(<span class="string">"params2"</span>) String params2,
-);
-</code></pre>
-<p>当我们调用getData()这个方法的时候，Retrofit会创建这个URL。如果我们传入Square和Retrofit字符串，分别作为owner和repo参数。我们就会得到这个URL：<a href="https://api.github.com/repos/square/retrofit/contributors" target="_blank" rel="external">https://api.github.com/repos/square/retrofit/contributors</a>  </p>
-<p>添加查询参数  </p>
-<pre><code class="java"><span class="meta">@GET</span>(<span class="string">"repos/square/{retrofit}/contributors"</span>)
-Call&lt;List&lt;DataBean2&gt;&gt; groupData(<span class="meta">@Path</span>(<span class="string">"retrofit"</span>) String retrofit, <span class="meta">@Query</span>(<span class="string">"sort"</span>) String sort);
-</code></pre>
-<p>当我们调用getData()方法时，传入一个查询参数字符串”ok”,这样我们就能得到URL：<a href="https://api.github.com/repos/square/retrofit/contributors?sort=ok" target="_blank" rel="external">https://api.github.com/repos/square/retrofit/contributors?sort=ok</a></p>
-<p>当然如果查询参数过多，我们也可以使用Map进行组合再传进来。  </p>
-<pre><code class="java"><span class="meta">@GET</span>(<span class="string">"repos/square/{retrofit}/contributors"</span>)
-Call&lt;List&lt;DataBean2&gt;&gt; getData(<span class="meta">@Path</span>(<span class="string">"repos"</span>) String repos, <span class="meta">@QueryMap</span> Map&lt;String, String&gt; parameters);
-</code></pre>
-<h4 id="请求数据"><a href="#请求数据" class="headerlink" title="请求数据"></a>请求数据</h4><p>Retrifot支持同步和异步的请求方式，先使用Retrofit类生成接口NetWorkService的实现。  </p>
-<pre><code class="java">NetWorkService service = retrofit.create(NetWorkService.class);
-</code></pre>
-<h5 id="同步请求"><a href="#同步请求" class="headerlink" title="同步请求"></a>同步请求</h5><pre><code class="java">Call&lt;DataBean&gt; call = service.getData(Square,Retrofit);
-DataBean bean = call.execute().body();
-</code></pre>
-<p>注意同步请求不可在主线程执行，你懂得。且call只能执行execute()方法一次，若要再次请求可通过<code>Call&lt;DataBean&gt; call = call.clone()</code>来再复制一个Call对象。  </p>
-<h5 id="异步请求"><a href="#异步请求" class="headerlink" title="异步请求"></a>异步请求</h5><pre><code class="java">call.enqueue(<span class="keyword">new</span> Callback&lt;DataBean&gt;() {
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;DataBean&gt; call, Response&lt;DataBean&gt; response)</span> </span>{
-        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"请求成功"</span>, Toast.LENGTH_SHORT).show();
-        DataBean bean = response.body();
-        tvMain.setText(bean.toString());
-    }
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;DataBean&gt; call, Throwable t)</span> </span>{
-    }
-});
-</code></pre>
-<p>当我们执行的同步或异步加入队列后，可以随时使用call.cancel()方法取消请求。  </p>
-<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>注解中参数的写法与BASE_URL的拼接一定要注意，请看以下写法。  </p>
-<h4 id="错误示例1"><a href="#错误示例1" class="headerlink" title="错误示例1"></a>错误示例1</h4><p>BASE_URL：<a href="https://api.github.com/repos/square" target="_blank" rel="external">https://api.github.com/repos/square</a><br>Get注解：　@GET(“/basil2style”)<br>结果URL：　<a href="https://api.github.com/basil2style" target="_blank" rel="external">https://api.github.com/basil2style</a>  </p>
-<h4 id="错误示例2"><a href="#错误示例2" class="headerlink" title="错误示例2"></a>错误示例2</h4><p>BASE_URL：<a href="https://api.github.com/repos/square" target="_blank" rel="external">https://api.github.com/repos/square</a><br>Get注解：　@GET(“basil2style”)<br>结果URL：　<a href="https://api.github.com/repos/basil2style" target="_blank" rel="external">https://api.github.com/repos/basil2style</a>  </p>
-<h4 id="推荐写法"><a href="#推荐写法" class="headerlink" title="推荐写法"></a>推荐写法</h4><p>BASE_URL：<a href="https://api.github.com/repos/square/" target="_blank" rel="external">https://api.github.com/repos/square/</a><br>Get注解：　@GET(“basil2style”)<br>结果URL：　<a href="https://api.github.com/repos/square/basil2style" target="_blank" rel="external">https://api.github.com/repos/square/basil2style</a>  </p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>最简单的Retrofit实现流程完毕，Retrofit+Okhttp+Gson可以算是目前来说相当快的超级网络请求框架了。相比较于Volley都快不少，亲测结果：爽爽爽。小伙伴们赶紧整起来吧！</p>
+    <content type="html"><![CDATA[<h3 id="GreenDao简介"><a href="#GreenDao简介" class="headerlink" title="GreenDao简介"></a>GreenDao简介</h3><p>　　GreenDao是一个将对象映射到SQLite数据库中的轻量且快速的ORM数据库框架，本文将讲解如何集成GreenDao3.0环境，如何使用GreenDao自动生成代码及注解的使用。<br>　　<a id="more"></a><br>　　<a href="http://greenrobot.org/greendao/" target="_blank" rel="external">GreenDao官网</a><br>　　<a href="https://github.com/greenrobot/greenDAO" target="_blank" rel="external">GreenDao GitHub</a></p>
+<h3 id="GreenDao3-0优势"><a href="#GreenDao3-0优势" class="headerlink" title="GreenDao3.0优势"></a>GreenDao3.0优势</h3><p>　　GreenDao相较于ORMLite等其他数据库框架有以下优势：<br>　　1. 一个精简的库<br>　　2. 性能最大化<br>　　3. 内存开销最小化<br>　　4. 易于使用的 APIs<br>　　5. 对 Android 进行高度优化<br>　　而GreenDao3.0的版本主要使用注解方式定义实体类，通过gradle插件生成相应的代码。相较于3.0之前的版本集成步骤更为便捷，使用起来也更为简单。本文使用的版本为3.2.0。</p>
+<h3 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h3><h4 id="项目下build-gradle"><a href="#项目下build-gradle" class="headerlink" title="项目下build.gradle"></a>项目下build.gradle</h4><p>　　GitHub中提示添加maven仓库，但是AndroidStudio项目已经默认包含了jcenter仓库，而jcenter仓库就是maven仓库的一个分支，因此不需要再添加仓库，直接添加classPath即可。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath <span class="string">'com.android.tools.build:gradle:2.3.2'</span></div><div class="line">        classpath <span class="string">'org.greenrobot:greendao-gradle-plugin:3.2.1'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="app下build-gradle"><a href="#app下build-gradle" class="headerlink" title="app下build.gradle"></a>app下build.gradle</h4><p>　　在app下build.gradle文件中我们需要声明GreenDao插件，及配置GreenDao生成dao路径等信息，声明GreenDao依赖。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'org.greenrobot.greendao'</span></div><div class="line"></div><div class="line">......</div><div class="line"></div><div class="line">greendao &#123;</div><div class="line">    schemaVersion <span class="number">1</span> <span class="comment">//数据库版本号    </span></div><div class="line">    daoPackage <span class="string">'com.holmeslei.greendaodemo.database'</span> <span class="comment">//设置时生成代码的目录    </span></div><div class="line">    targetGenDir <span class="string">'src/main/java'</span> <span class="comment">//设置DaoMaster、DaoSession、Dao目录   </span></div><div class="line">    <span class="comment">//targetGenDirTest：设置生成单元测试目录    </span></div><div class="line">    <span class="comment">//generateTests：设置自动生成单元测试用例</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    ......</div><div class="line">    compile <span class="string">'org.greenrobot:greendao:3.2.0'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="初始化实体"><a href="#初始化实体" class="headerlink" title="初始化实体"></a>初始化实体</h3><h4 id="编写实体类"><a href="#编写实体类" class="headerlink" title="编写实体类"></a>编写实体类</h4><p>　　集成好使用环境后需要初始化实体，首先编写实体类。这里演示使用公司Company与雇员Employer实体例子。使用@Entity注解。莫急，注解机制在之后小节有详细讲解。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Company</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>) <span class="comment">//自增</span></div><div class="line">    <span class="keyword">private</span> Long id; <span class="comment">//主键</span></div><div class="line">    <span class="keyword">private</span> String companyName; <span class="comment">//公司名称</span></div><div class="line">    <span class="keyword">private</span> String industry; <span class="comment">//行业</span></div><div class="line">    <span class="meta">@ToMany</span>(referencedJoinProperty = <span class="string">"companyId"</span>) <span class="comment">//设置外键companyId</span></div><div class="line">    <span class="keyword">private</span> List&lt;Employee&gt; employeeList; <span class="comment">//公司与雇员建立一对多关系</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id; <span class="comment">//主键</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> companyId; <span class="comment">//指向Company主键</span></div><div class="line">    <span class="keyword">private</span> String employeeName; <span class="comment">//雇员姓名</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> salary; <span class="comment">//薪水</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="生成代码"><a href="#生成代码" class="headerlink" title="生成代码"></a>生成代码</h4><p>　　实体类与注解添加完毕后编译项目，就会为所有带注解的实体生成Dao文件，及DaoMaster与DaoSession。若未在build.gradle中配置过则默认生成目录为build/generated/source。若配置过则生成在配置的目录下。<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/GreenDao/img_build_app.png" alt="编译项目" title="">
+                </div>
+                <div class="image-caption">编译项目</div>
+            </figure><br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/GreenDao/img_generate_code.png" alt="生成代码" title="">
+                </div>
+                <div class="image-caption">生成代码</div>
+            </figure></p>
+<h4 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h4><p>　　3.0之后最大的不同就是使用的注解来配置实体类属性，便捷且灵活。下面来看一下各类注解：</p>
+<h5 id="实体类注解"><a href="#实体类注解" class="headerlink" title="实体类注解"></a>实体类注解</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Entity</span>(</div><div class="line">        schema = <span class="string">"myschema"</span>,</div><div class="line">        active = <span class="keyword">true</span>,       </div><div class="line">        nameInDb = <span class="string">"AWESOME_USERS"</span>,</div><div class="line">        indexes = &#123;</div><div class="line">                <span class="meta">@Index</span>(value = <span class="string">"name DESC"</span>, unique = <span class="keyword">true</span>)</div><div class="line">        &#125;,</div><div class="line">        createInDb = <span class="keyword">false</span></div><div class="line">)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Company</span> </span>&#123;</div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>@Entity：用于标识当前实体需要GreenDao生成代码。</li>
+<li>schema：项目中存在多个Schema时，表明当前实体属于哪个Schema。</li>
+<li>active：标记实体是否处于活动状态，活动状态才支持更新删除刷新等操作。</li>
+<li>nameInDb：存储在数据库中的表名，不写默认与类名一致。</li>
+<li>indexes：定义索引，可跨越多个列。</li>
+<li>createInDb：标记创建数据库表，若有多个实体关联此表可设为false避免重复创建，默认为true。</li>
+</ul>
+<h5 id="属性注解"><a href="#属性注解" class="headerlink" title="属性注解"></a>属性注解</h5><ul>
+<li>@Id :主键Long型，可以通过<code>@Id(autoincrement = true)</code>设置自增长。</li>
+<li>@Property：设置一个非默认关系映射所对应的列名，默认是的使用字段名例如<code>@Property (nameInDb=&quot;name&quot;)</code>。</li>
+<li>@NotNul：设置数据库表当前列不能为空。</li>
+<li>@OrderBy：指定排序。</li>
+<li>@Transient：添加此标记之后不会生成数据库表的列。</li>
+<li>@Generated：为build之后GreenDao自动生成的注解，为防止重复，每一块代码生成后会加个hash作为标记。</li>
+</ul>
+<h5 id="索引注解"><a href="#索引注解" class="headerlink" title="索引注解"></a>索引注解</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Company</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="meta">@Index</span>(unique = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> String industry;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="meta">@Unique</span> </div><div class="line">    <span class="keyword">private</span> String employeeName;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>@Index：创建索引，通过设置name设置别名，设置unique添加约束。</li>
+<li>@Unique：添加唯一约束与(unique = true)作用相同。</li>
+</ul>
+<h5 id="关系注解"><a href="#关系注解" class="headerlink" title="关系注解"></a>关系注解</h5><ul>
+<li>@ToOne：定义与另一实体一对一的关联。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Company</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span> (autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> customerId;</div><div class="line">    <span class="meta">@ToOne</span>(joinProperty = <span class="string">"employeeId"</span>)</div><div class="line">    <span class="keyword">private</span> Employee employee;</div><div class="line">&#125;</div><div class="line">  </div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="keyword">private</span> String employeeName;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>@ToMany：定义与多个实体对象一对多的关联，referencedJoinProperty为外键约束。</li>
+<li>@JoinProperty：标明目标属性的源属性。</li>
+<li>@JoinEntity：建立表连接关系。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//第一种：Employee实体通过外键companyId指向Company实体的主键Id建立一对多关联</span></div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Company</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="keyword">private</span> String companyName; </div><div class="line">    <span class="keyword">private</span> String industry;</div><div class="line">    <span class="meta">@ToMany</span>(referencedJoinProperty = <span class="string">"companyId"</span>)</div><div class="line">    <span class="keyword">private</span> List&lt;Employee&gt; employeeList;</div><div class="line">&#125;</div><div class="line">  </div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> companyId;</div><div class="line">    <span class="keyword">private</span> String employeeName;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> salary;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//第二种：Employee以companyId为外键，与Company非主键不为空的键employeeTag建立一对多关联。</span></div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Company</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="keyword">private</span> String companyName; </div><div class="line">    <span class="keyword">private</span> String industry;  </div><div class="line">    <span class="meta">@ToMany</span>(joinProperties = &#123;</div><div class="line">            <span class="meta">@JoinProperty</span>(name = <span class="string">"employeeTag"</span>, referencedName = <span class="string">"companyId"</span>)</div><div class="line">    &#125;)</div><div class="line">    <span class="keyword">private</span> List&lt;Employee&gt; employeeList;</div><div class="line">&#125;</div><div class="line">  </div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="keyword">private</span> String employeeName;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> salary;</div><div class="line">    <span class="meta">@NotNull</span> </div><div class="line">    <span class="keyword">private</span> String companyId;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="comment">//第三种：通过第三者实体类建立关联，用的较少</span></div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="keyword">private</span> String employeeName;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> salary;</div><div class="line">  </div><div class="line">    <span class="meta">@ToMany</span></div><div class="line">    <span class="meta">@JoinEntity</span>(</div><div class="line">            entity = JoinEmployeeToCompany.class,</div><div class="line">            sourceProperty = <span class="string">"employeeId"</span>,</div><div class="line">            targetProperty = <span class="string">"companyId"</span></div><div class="line">    )</div><div class="line">    <span class="keyword">private</span> List&lt;Company&gt; companyList;</div><div class="line">&#125;</div><div class="line">  </div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JoinEmployeeToCompany</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="keyword">private</span> Long employeeId;</div><div class="line">    <span class="keyword">private</span> Long companyId;</div><div class="line">&#125;</div><div class="line">  </div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Company</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span>(autoincrement = <span class="keyword">true</span>)</div><div class="line">    <span class="keyword">private</span> Long id;</div><div class="line">    <span class="keyword">private</span> String companyName; </div><div class="line">    <span class="keyword">private</span> String industry;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　到此，这一篇关于GreenDao3.0的集成与注解就讲解完毕了，欢迎参看下一篇关于如何使用GreenDao3.0对数据库进行增删改查。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者不懂的地方也可以在我Github上GreenDaoDemo项目的Issues中提出，我会及时解答。附上GreenDaoDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/GreenDaoDemo" target="_blank" rel="external">GreenDaoDemo</a></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h3 id=&quot;Retrofit2-0简介&quot;&gt;&lt;a href=&quot;#Retrofit2-0简介&quot; class=&quot;headerlink&quot; title=&quot;Retrofit2.0简介&quot;&gt;&lt;/a&gt;Retrofit2.0简介&lt;/h3&gt;&lt;p&gt;　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;A type-safe REST client for Android and Java&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;　　现已更新到2.0的版本，与1.0版本的使用上还是不小的差别，我也是第一次用，这里主要和大家研究研究2.0版本简单使用。也可参详&lt;a href=&quot;http://square.github.io/retrofit/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;官方示例&lt;/a&gt;。&lt;br&gt;
+      &lt;h3 id=&quot;GreenDao简介&quot;&gt;&lt;a href=&quot;#GreenDao简介&quot; class=&quot;headerlink&quot; title=&quot;GreenDao简介&quot;&gt;&lt;/a&gt;GreenDao简介&lt;/h3&gt;&lt;p&gt;　　GreenDao是一个将对象映射到SQLite数据库中的轻量且快速的ORM数据库框架，本文将讲解如何集成GreenDao3.0环境，如何使用GreenDao自动生成代码及注解的使用。&lt;br&gt;
     
     </summary>
     
