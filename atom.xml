@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-07-13T08:18:15.000Z</updated>
+  <updated>2017-07-13T08:20:31.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Android开发ORM框架之GreenDao3.0使用详解</title>
-    <link href="http://LeiHolmes.github.io/2017/07/13/Android%E5%BC%80%E5%8F%91ORM%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://LeiHolmes.github.io/2017/07/13/Android开发ORM框架之GreenDao3.0使用详解/</id>
+    <title>Android开发ORM框架之GreenDao3.0使用详解(二)</title>
+    <link href="http://LeiHolmes.github.io/2017/07/13/Android%E5%BC%80%E5%8F%91ORM%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3(%E4%BA%8C)/"/>
+    <id>http://LeiHolmes.github.io/2017/07/13/Android开发ORM框架之GreenDao3.0使用详解(二)/</id>
     <published>2017-07-12T16:00:00.000Z</published>
-    <updated>2017-07-13T08:18:15.000Z</updated>
+    <updated>2017-07-13T08:20:31.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="本文介绍"><a href="#本文介绍" class="headerlink" title="本文介绍"></a>本文介绍</h3><p>　　上一篇讲解了GreenDao3.0如何集成环境与添加各类注解，这一篇我们来看看如何使用GreenDao实现数据库增删改查的功能，还是上一篇公司Company与雇员Employee的例子。<br>　　<a id="more"></a></p>
 <h3 id="数据库初始化"><a href="#数据库初始化" class="headerlink" title="数据库初始化"></a>数据库初始化</h3><p>　　首先初始化数据库与表，可封装一个工具类，这里献上我的：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GreenDaoUtil</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> DaoSession daoSession;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SQLiteDatabase database;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 初始化数据库</div><div class="line">     * 建议放在Application中执行</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initDataBase</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="comment">//通过DaoMaster的内部类DevOpenHelper，可得到一个SQLiteOpenHelper对象。</span></div><div class="line">        DaoMaster.DevOpenHelper devOpenHelper = <span class="keyword">new</span> DaoMaster.DevOpenHelper</div><div class="line">        (context, <span class="string">"greendaoutil.db"</span>, <span class="keyword">null</span>); <span class="comment">//数据库名称</span></div><div class="line">        database = devOpenHelper.getWritableDatabase();</div><div class="line">        DaoMaster daoMaster = <span class="keyword">new</span> DaoMaster(database);</div><div class="line">        daoSession = daoMaster.newSession();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DaoSession <span class="title">getDaoSession</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> daoSession;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SQLiteDatabase <span class="title">getDatabase</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> database;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
@@ -63,11 +63,11 @@
   </entry>
   
   <entry>
-    <title>Android开发ORM框架之GreenDao3.0集成与注解</title>
-    <link href="http://LeiHolmes.github.io/2017/07/10/Android%E5%BC%80%E5%8F%91ORM%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E9%9B%86%E6%88%90%E4%B8%8E%E6%B3%A8%E8%A7%A3/"/>
-    <id>http://LeiHolmes.github.io/2017/07/10/Android开发ORM框架之GreenDao3.0集成与注解/</id>
+    <title>Android开发ORM框架之GreenDao3.0集成与注解(一)</title>
+    <link href="http://LeiHolmes.github.io/2017/07/10/Android%E5%BC%80%E5%8F%91ORM%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E9%9B%86%E6%88%90%E4%B8%8E%E6%B3%A8%E8%A7%A3(%E4%B8%80)/"/>
+    <id>http://LeiHolmes.github.io/2017/07/10/Android开发ORM框架之GreenDao3.0集成与注解(一)/</id>
     <published>2017-07-09T16:00:00.000Z</published>
-    <updated>2017-07-11T08:15:43.000Z</updated>
+    <updated>2017-07-13T08:20:17.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="GreenDao简介"><a href="#GreenDao简介" class="headerlink" title="GreenDao简介"></a>GreenDao简介</h3><p>　　GreenDao是一个将对象映射到SQLite数据库中的轻量且快速的ORM数据库框架，本文将讲解如何集成GreenDao3.0环境，如何使用GreenDao自动生成代码及注解的使用。<br>　　<a id="more"></a><br>　　<a href="http://greenrobot.org/greendao/" target="_blank" rel="external">GreenDao官网</a><br>　　<a href="https://github.com/greenrobot/greenDAO" target="_blank" rel="external">GreenDao GitHub</a></p>
 <h3 id="GreenDao3-0优势"><a href="#GreenDao3-0优势" class="headerlink" title="GreenDao3.0优势"></a>GreenDao3.0优势</h3><p>　　GreenDao相较于ORMLite等其他数据库框架有以下优势：<br>　　1. 一个精简的库<br>　　2. 性能最大化<br>　　3. 内存开销最小化<br>　　4. 易于使用的 APIs<br>　　5. 对 Android 进行高度优化<br>　　而GreenDao3.0的版本主要使用注解方式定义实体类，通过gradle插件生成相应的代码。相较于3.0之前的版本集成步骤更为便捷，使用起来也更为简单。本文使用的版本为3.2.0。</p>
