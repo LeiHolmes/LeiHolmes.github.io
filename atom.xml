@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-07-13T08:20:31.000Z</updated>
+  <updated>2017-07-24T06:24:31.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -14,6 +14,51 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android开发之Lambda表达式基本语法与应用</title>
+    <link href="http://LeiHolmes.github.io/2017/07/24/Android%E5%BC%80%E5%8F%91%E4%B9%8BLambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%BA%94%E7%94%A8/"/>
+    <id>http://LeiHolmes.github.io/2017/07/24/Android开发之Lambda表达式基本语法与应用/</id>
+    <published>2017-07-23T16:00:00.000Z</published>
+    <updated>2017-07-24T06:24:31.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Lambda简介"><a href="#Lambda简介" class="headerlink" title="Lambda简介"></a>Lambda简介</h3><p>　　Lambda表达式是Java8中提供的一种新的特性，它支持Java也能进行简单的“函数式编程”，即Lambda允许你通过表达式来代替功能接口，即可使用更少的代码来实现同样的功能。<br>　　<a id="more"></a><br>　　用官方的解释就是：</p>
+<blockquote>
+<p>A lambda expression is a block of code with parameters.<br>(Lambda表达式是一个带有参数的表达式)</p>
+</blockquote>
+<h3 id="添加支持"><a href="#添加支持" class="headerlink" title="添加支持"></a>添加支持</h3><p>　　首先Java版本需要为1.8，然后在build.gradle中添加：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    defaultConfig &#123;</div><div class="line">        ……</div><div class="line">        jackOptions&#123;</div><div class="line">            enabled <span class="keyword">true</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    compileOptions &#123;</div><div class="line">        <span class="comment">//升级Android Studio的Language level为1.8</span></div><div class="line">        sourceCompatibility JavaVersion.VERSION_1_8</div><div class="line">        targetCompatibility JavaVersion.VERSION_1_8</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><h4 id="完整示例"><a href="#完整示例" class="headerlink" title="完整示例"></a>完整示例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(<span class="keyword">int</span> x, <span class="keyword">int</span> y) -&gt; &#123;</div><div class="line">    Log.i(<span class="string">"TAG"</span>, <span class="string">"x:"</span> + x + <span class="string">"  y:"</span> + y);</div><div class="line">    <span class="keyword">return</span> x + y;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>　　这是一个完整的Lambda表达式的写法，通常由三部分组成：<br>　　1. (int x, int y)：Lambda表达式的参数部分，包括参数类型与参数名<br>　　2. “-&gt;”：箭头goes to，指向代码块<br>　　3. 代码块：用”{}”包裹的代码</p>
+<h4 id="忽略参数类型"><a href="#忽略参数类型" class="headerlink" title="忽略参数类型"></a>忽略参数类型</h4><p>　　在大多数情况下，参数的类型系统可根据上下文推断出来。这种情况参数类型就可以忽略不写。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(x, y) -&gt; &#123;</div><div class="line">    Log.i(<span class="string">"TAG"</span>, <span class="string">"x:"</span> + x + <span class="string">"  y:"</span> + y);</div><div class="line">    <span class="keyword">return</span> x + y;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="忽略：”-”"><a href="#忽略：”-”" class="headerlink" title="忽略：”()”"></a>忽略：”()”</h4><p>　　当只有一个参数时，”()”可以忽略不写。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">x -&gt; &#123;</div><div class="line">    Log.i(<span class="string">"TAG"</span>, <span class="string">"x:"</span> + x);</div><div class="line">    <span class="keyword">return</span> x;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>　　当没有参数时，”()”不可忽略。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">() -&gt; &#123;</div><div class="line">    Log.i(<span class="string">"TAG"</span>, <span class="string">"无参数"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="忽略：”-”-1"><a href="#忽略：”-”-1" class="headerlink" title="忽略：”{}”"></a>忽略：”{}”</h4><p>　　当代码块只包含一条语句时可忽略”{}”不写。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(x, y) -&gt; <span class="keyword">return</span> x + y;</div></pre></td></tr></table></figure></p>
+<h4 id="忽略return"><a href="#忽略return" class="headerlink" title="忽略return"></a>忽略return</h4><p>　　而return关键字也是可以忽略不写的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(x, y) -&gt; x + y;</div></pre></td></tr></table></figure></p>
+<p>　　精简到最后只需要一行代码就可以搞定，是不是很方便。</p>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><h4 id="无参数-语句-代码块"><a href="#无参数-语句-代码块" class="headerlink" title="无参数+语句/代码块"></a>无参数+语句/代码块</h4><p>　　常规写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.i(<span class="string">"TAG"</span>, <span class="string">"测试无参数+语句/代码块"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;).start();</div></pre></td></tr></table></figure></p>
+<p>　　Lambda写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> Thread(() -&gt; Log.i(<span class="string">"TAG"</span>, <span class="string">"测试无参数+语句/代码块"</span>)).start();</div></pre></td></tr></table></figure></p>
+<p>　　适用于匿名内部类中方法无参数的情况</p>
+<h4 id="有参数-语句"><a href="#有参数-语句" class="headerlink" title="有参数+语句"></a>有参数+语句</h4><p>　　常规写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">findViewById(R.id.button).setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">        Log.i(<span class="string">"TAG"</span>, <span class="string">"测试有参数+语句"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　Lambda写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">findViewById(R.id.button).setOnClickListener(v -&gt; Log.i(<span class="string">"TAG"</span>, <span class="string">"测试有参数+语句"</span>));</div></pre></td></tr></table></figure></p>
+<p>　　适用于匿名内部类中方法只有一个参数的情况</p>
+<h4 id="有参数-代码块"><a href="#有参数-代码块" class="headerlink" title="有参数+代码块"></a>有参数+代码块</h4><p>　　常规写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);</div><div class="line">checkBox.setOnCheckedChangeListener(<span class="keyword">new</span> CompoundButton.OnCheckedChangeListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCheckedChanged</span><span class="params">(CompoundButton buttonView, <span class="keyword">boolean</span> isChecked)</span> </span>&#123;</div><div class="line">        Log.i(<span class="string">"TAG"</span>, <span class="string">"测试有参数+代码块1"</span>);</div><div class="line">        Log.i(<span class="string">"TAG"</span>, <span class="string">"测试有参数+代码块2"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　Lambda写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">checkBox.setOnCheckedChangeListener((buttonView, isChecked) -&gt; &#123;</div><div class="line">    Log.i(<span class="string">"TAG"</span>, <span class="string">"测试有参数+代码块1"</span>);</div><div class="line">    Log.i(<span class="string">"TAG"</span>, <span class="string">"测试有参数+代码块2"</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　适用于匿名内部类中方法不止一个参数且执行语句不止一行的情况</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　Lambda表达式的应用场景很多，例如可与RxJava，Retrofit等进行完美配合，更多的就等待各位码友去实践发掘了。而到此，本篇关于Lambda表达式的详解与应用就讲解完毕了。技术渣一枚，有写的不对的地方欢迎大神们留言指正。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;Lambda简介&quot;&gt;&lt;a href=&quot;#Lambda简介&quot; class=&quot;headerlink&quot; title=&quot;Lambda简介&quot;&gt;&lt;/a&gt;Lambda简介&lt;/h3&gt;&lt;p&gt;　　Lambda表达式是Java8中提供的一种新的特性，它支持Java也能进行简单的“函数式编程”，即Lambda允许你通过表达式来代替功能接口，即可使用更少的代码来实现同样的功能。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="http://LeiHolmes.github.io/categories/Android/"/>
+    
+    
+      <category term="Lambda" scheme="http://LeiHolmes.github.io/tags/Lambda/"/>
+    
+  </entry>
   
   <entry>
     <title>Android开发ORM框架之GreenDao3.0使用详解(二)</title>
