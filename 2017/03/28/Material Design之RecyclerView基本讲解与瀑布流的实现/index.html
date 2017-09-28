@@ -24,7 +24,7 @@ ga('send', 'pageview');
     
     
     
-    <title>Android开发之RecyclerView初尝试 | Lei’s Blog | 不忘初心，淡然前行</title>
+    <title>Material Design之RecyclerView基本讲解与瀑布流的实现 | Lei’s Blog | 不忘初心，淡然前行</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
@@ -34,13 +34,13 @@ ga('send', 'pageview');
     <meta name="description" content="RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
 <meta name="keywords" content="RecyclerView">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android开发之RecyclerView初尝试">
-<meta property="og:url" content="http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/index.html">
+<meta property="og:title" content="Material Design之RecyclerView基本讲解与瀑布流的实现">
+<meta property="og:url" content="http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
-<meta property="og:updated_time" content="2017-07-10T07:01:37.000Z">
+<meta property="og:updated_time" content="2017-09-28T08:57:03.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android开发之RecyclerView初尝试">
+<meta name="twitter:title" content="Material Design之RecyclerView基本讲解与瀑布流的实现">
 <meta name="twitter:description" content="RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
     
         <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
@@ -125,13 +125,13 @@ ga('send', 'pageview');
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">Android开发之RecyclerView初尝试</div>
+        <div class="flex-col header-title ellipsis">Material Design之RecyclerView基本讲解与瀑布流的实现</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -147,7 +147,7 @@ ga('send', 'pageview');
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">Android开发之RecyclerView初尝试</h1>
+        <h1 class="title">Material Design之RecyclerView基本讲解与瀑布流的实现</h1>
         <h5 class="subtitle">
             
                 <time datetime="2017-03-27T16:00:00.000Z" itemprop="datePublished" class="page-time">
@@ -176,11 +176,11 @@ ga('send', 'pageview');
         </nav>
     </aside>
     
-<article id="post-Android开发之RecyclerView初尝试"
+<article id="post-Material Design之RecyclerView基本讲解与瀑布流的实现"
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">Android开发之RecyclerView初尝试</h1>
+        <h1 class="post-card-title">Material Design之RecyclerView基本讲解与瀑布流的实现</h1>
         <div class="post-meta">
             <time class="post-time" title="2017-03-28 00:00:00" datetime="2017-03-27T16:00:00.000Z"  itemprop="datePublished">2017-03-28</time>
 
@@ -512,7 +512,7 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2017-07-10T07:01:37.000Z" itemprop="dateUpdated">2017-07-10 15:01:37</time>
+    最后更新时间：<time datetime="2017-09-28T08:57:03.000Z" itemprop="dateUpdated">2017-09-28 16:57:03</time>
 </span><br>
 
 
@@ -547,7 +547,7 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/&title=《Material Design之RecyclerView基本讲解与瀑布流的实现》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -557,22 +557,22 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&source=RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和Gri..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/&title=《Material Design之RecyclerView基本讲解与瀑布流的实现》 — Lei’s Blog&source=RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和Gri..." data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发之RecyclerView初尝试》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Material Design之RecyclerView基本讲解与瀑布流的实现》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/&via=http://LeiHolmes.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -595,18 +595,18 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2017/05/15/Android开发之DataBinding基本实现/" id="post-prev" class="post-nav-link">
+      <a href="/2017/05/15/DataBinding数据绑定基本讲解/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Android开发之DataBinding基本实现</h4>
+        <h4 class="title">DataBinding数据绑定基本讲解</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/" id="post-next" class="post-nav-link">
+      <a href="/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Android开发之AlarmManager闹钟+Notification通知</h4>
+        <h4 class="title">AlarmManager+Notification实现定时通知提醒功能</h4>
       </a>
     </div>
   
@@ -628,8 +628,8 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
     <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
     <script>
     var cloudTieConfig = {
-        url: 'http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/index.html',
-        sourceId: 'Android开发之RecyclerView初尝试',
+        url: 'http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/index.html',
+        sourceId: 'Material Design之RecyclerView基本讲解与瀑布流的实现',
         productKey: 'a49afc3603394502bd2ba8121a4284d9',
         target: 'cloud-tie-wrapper',
         pcFiles: [
@@ -697,7 +697,7 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+            <span>博客内容遵循<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
         </p>
     </div>
     <div class="bottom">
@@ -717,7 +717,7 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/&title=《Material Design之RecyclerView基本讲解与瀑布流的实现》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -727,22 +727,22 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&title=《Android开发之RecyclerView初尝试》 — Lei’s Blog&source=RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和Gri..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/&title=《Material Design之RecyclerView基本讲解与瀑布流的实现》 — Lei’s Blog&source=RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和Gri..." data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发之RecyclerView初尝试》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Material Design之RecyclerView基本讲解与瀑布流的实现》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/&via=http://LeiHolmes.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -753,7 +753,7 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACs0lEQVR42u3aQXIbMQwEQP//084DFEkzAJnsoXVy2Wsum64i6QF+fuLP78vn85Ovv/VunOSZ15EPf/Dw8PDWU29fmTz5borvAMmTn+eMh4eHd5uXbPH5y2bHyedFSQ4JPDw8vGfykk0/uf4my5cfG3h4eHjP582ebA8SPDw8vCfz2qFnQUMSZ/y3rAUPDw8v5uVVpOd8faW+h4eHh7euqrcl/DyAaA+J4Wzx8PDwLvA209o3WrXbfTtPPDw8vHu8pASVbNmzGHe2THVjAR4eHt4h3iz6zA+Jdo1nM4lKX3h4eHhHeacaCPIy1Sx3zZsP8PDw8O7x9odBO3TSTJDEEIdrfXh4eHglb9MONWurygOOWUD8l9MPDw8P7xBvdiXNr7OztoNZoSvKWvDw8PCO8pKLch4KtOWuG8/j4eHh3eC1RfrZ0rSBb96+EM0cDw8P7ygvjxWSQfPDIxm5bbF623SFh4eHd5SXF5xmLQJ5Was9ilatY3h4eHgLXrtBtwHBPhqetTjg4eHh3ebVweg6Wt0cIUWbAh4eHt5lXrLF79sI8kWZjYmHh4f373l5OJsHuLOjYtagUKQdeHh4eCPevkNp87Iv2/oihjjWgIWHh4f3pnUgf01+zc1D4VlsEYXLeHh4eBd4+cGwCXM330+u+EULAh4eHt4hXrtBb6Y42+6TYDf6i+Hh4eEd5bWb/uYK3sbH+dX5S1aNh4eHd5nXhg6bpSmKWG1KjYeHh3eU91t+8snlLQX5ktVXfzw8PLwLvHbb3Zej8gNmGD1sThU8PDy8mJcHqe21eLYo7fe//BQPDw/vGi8PIxLALLQ9G0ng4eHhPYc3m1bevLVpUMDDw8N7Mi//r39/Kd+Mj4eHh3ePt7kcJ9Ht7Ml9TIyHh4d3gzdraUqC1GHweq0xCw8PD2/N+wOoaF6TRio/bQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADJ0lEQVR42u3aQW6DQAwF0N7/0nRbKYJ+20QizmNVUULnTRauv+fnJ76Ol+vv/dcnXz+VvP/6fvLMzRc2Njb2h7CPy+sMkPPOtuZ6uclvr9d59gw2Njb2VnaveFSrwzU7L1fXX0C0idjY2Nhfz843JSmE83KIjY2NjZ2ze9uRNCR585M/g42Njf097KR56C0uaT/+CYDiEcVbsjRsbGzsx7PzkOj5P79lvo2NjY39YPZRvJKCcX2/FwwlbysosLGxsRex8wLQi/WTJqE3YMiP/pw+iY2Njb2OnR9k7DUq84Cpd2yoMB7AxsbGXsqelI38s73WpToGxsbGxt7K7qXovffkG9oLnsplDBsbG/vD2b0opzokyEP86zUkv00KJDY2NvZWdt4GTIL7fMBQ3bLCsBkbGxt7HbtZBsb354FUdfyAjY2NvY9dLSSTIKkaNlUP/ZTfj42Njb2IXV1oXgXmW5M0PHkEho2Njb2P3QvoJ+PYXnjU+2Kiio2NjY29jp0vunq4JwdMGozoa8DGxsZexJ6MUavhfrUV6Y0B8u3AxsbG3sSuxv3V8W11DNz77DuGHNjY2Nifwu61FvPxwHxzR98wNjY29gr2pOTMo6X8zb3w6HQl2NjY2F/DzoObfECbl8A8QiqPGbCxsbGXsudRe7KIar51vOHCxsbG3srO/0yvGUgird6xofz9zRQNGxsb+8HsXqyTF7mkbbiL2jxshI2Njb2CXS0wd5XAScLTG1pgY2Nj72PfNQboxUPVw0PVI0enT2JjY2MvYifLyluFakOSxFW98plvGTY2NvYOdlJ+7hoD5KUuX1uvRcHGxsbeys5j/YSUB/o5IC9yhQKGjY2NvZqd388LYfVtvRgripOwsbGxP5x9FK98ifPClrc9+fFQbGxs7H3sagHIw/3qMZ1JmeyNLrCxsbE3sXvD1+pguDrWrd6pNlHY2NjY+9j5wDU/0DOJoibHhrCxsbGxe2Pa/G15qesd7ok2BRsbGxt7cNSmOkLowf75K9jY2Njr2NWoaDJU6PGS6P8t4wFsbGzsx7NzQPOf/tZ75gd05l8bNjY29uPZv0gbPtoTBF+iAAAAAElFTkSuQmCC" alt="微信分享二维码">
 </div>
 
 

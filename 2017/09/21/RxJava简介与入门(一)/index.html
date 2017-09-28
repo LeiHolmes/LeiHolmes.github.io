@@ -24,7 +24,7 @@ ga('send', 'pageview');
     
     
     
-    <title>Android开发响应式编程之RxJava简介(一) | Lei’s Blog | 不忘初心，淡然前行</title>
+    <title>RxJava简介与入门(一) | Lei’s Blog | 不忘初心，淡然前行</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
@@ -34,13 +34,13 @@ ga('send', 'pageview');
     <meta name="description" content="前言　　最近在学习RxJava的过程中,越发感受到这个框架的强大，对于提升开发效率，降低维护成本有很大的作用。有必要强行安利一波，一起来看看RxJava简介，基本概念，原理与使用，本篇主要介绍RxJava的简介。">
 <meta name="keywords" content="RxJava">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android开发响应式编程之RxJava简介(一)">
-<meta property="og:url" content="http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/index.html">
+<meta property="og:title" content="RxJava简介与入门(一)">
+<meta property="og:url" content="http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="前言　　最近在学习RxJava的过程中,越发感受到这个框架的强大，对于提升开发效率，降低维护成本有很大的作用。有必要强行安利一波，一起来看看RxJava简介，基本概念，原理与使用，本篇主要介绍RxJava的简介。">
-<meta property="og:updated_time" content="2017-09-21T09:27:22.000Z">
+<meta property="og:updated_time" content="2017-09-28T08:57:47.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android开发响应式编程之RxJava简介(一)">
+<meta name="twitter:title" content="RxJava简介与入门(一)">
 <meta name="twitter:description" content="前言　　最近在学习RxJava的过程中,越发感受到这个框架的强大，对于提升开发效率，降低维护成本有很大的作用。有必要强行安利一波，一起来看看RxJava简介，基本概念，原理与使用，本篇主要介绍RxJava的简介。">
     
         <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
@@ -125,13 +125,13 @@ ga('send', 'pageview');
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">Android开发响应式编程之RxJava简介(一)</div>
+        <div class="flex-col header-title ellipsis">RxJava简介与入门(一)</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -147,7 +147,7 @@ ga('send', 'pageview');
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">Android开发响应式编程之RxJava简介(一)</h1>
+        <h1 class="title">RxJava简介与入门(一)</h1>
         <h5 class="subtitle">
             
                 <time datetime="2017-09-20T16:00:00.000Z" itemprop="datePublished" class="page-time">
@@ -172,15 +172,15 @@ ga('send', 'pageview');
     <aside class="post-widget">
         <nav class="post-toc-wrap" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#响应式编程"><span class="post-toc-number">2.</span> <span class="post-toc-text">响应式编程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#扩展的观察者模式"><span class="post-toc-number">3.</span> <span class="post-toc-text">扩展的观察者模式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#例子"><span class="post-toc-number">4.</span> <span class="post-toc-text">例子</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#响应式编程ReactiveX"><span class="post-toc-number">2.</span> <span class="post-toc-text">响应式编程ReactiveX</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#扩展的观察者模式"><span class="post-toc-number">3.</span> <span class="post-toc-text">扩展的观察者模式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#例子"><span class="post-toc-number">4.</span> <span class="post-toc-text">例子</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li></ol>
         </nav>
     </aside>
     
-<article id="post-Android开发响应式编程之RxJava基础讲解(一)"
+<article id="post-RxJava简介与入门(一)"
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">Android开发响应式编程之RxJava简介(一)</h1>
+        <h1 class="post-card-title">RxJava简介与入门(一)</h1>
         <div class="post-meta">
             <time class="post-time" title="2017-09-21 00:00:00" datetime="2017-09-20T16:00:00.000Z"  itemprop="datePublished">2017-09-21</time>
 
@@ -200,7 +200,7 @@ ga('send', 'pageview');
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　最近在学习RxJava的过程中,越发感受到这个框架的强大，对于提升开发效率，降低维护成本有很大的作用。有必要强行安利一波，一起来看看RxJava简介，基本概念，原理与使用，本篇主要介绍RxJava的简介。<br>　　<a id="more"></a></p>
-<h3 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h3><p>　　RxJava是ReactiveX中使用Java语言实现的版本，那什么是ReactiveX呢？ReactiveX就是一种新兴的编程模式–响应式编程，定义为一种基于异步数据流概念的编程模式，可分解为”观察者模式+迭代器模式+函数式编程”。</p>
+<h3 id="响应式编程ReactiveX"><a href="#响应式编程ReactiveX" class="headerlink" title="响应式编程ReactiveX"></a>响应式编程ReactiveX</h3><p>　　RxJava是ReactiveX中使用Java语言实现的版本，那什么是ReactiveX呢？ReactiveX就是一种新兴的编程模式–响应式编程，定义为一种基于异步数据流概念的编程模式，可分解为”观察者模式+迭代器模式+函数式编程”。</p>
 <h3 id="扩展的观察者模式"><a href="#扩展的观察者模式" class="headerlink" title="扩展的观察者模式"></a>扩展的观察者模式</h3><p>　　有关观察者模式的概念不懂得童鞋可自行google，这里就不再赘述。RxJava扩展了观察者模式，通过使用可观察的对象序列流来表述一系列事件，订阅者进行占点观察并对序列流做出反应（或持久化或输出显示等等）；借鉴迭代器模式，对多个对象序列进行迭代输出，订阅者可以依次处理不同的对象序列；使用函数式编程思想，简化繁琐的逻辑代码。<br>　　而RxJava的核心便是被观察者Observables与观察者Observer，由Observables发出一系列的事件，Observer通过subscribe()方法进行订阅接收事件并进行处理，类似观察者模式，不同之处在于，若没有观察者，被观察者是不会发出任何事件的。<br>　　所以说，<strong>RxJava本质上是一个异步操作库，是一个能让你用极其简洁的逻辑去处理繁琐复杂任务的异步事件库。</strong></p>
 <h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>　　概念理解起来未免晦涩难懂，我们来看一个例子：<br>　　有这样一个需求：开发一个类似房天下的App，某功能需要检索出某一片区所有住宅小区中购房总价&lt;200W的房源并展示出来。先看原始实现方式：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"> <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//获取要查询的小区集合</span></div><div class="line">        List&lt;Community&gt; communities = getCommunities();</div><div class="line">        <span class="keyword">for</span> (Community community : communities) &#123;</div><div class="line">            <span class="comment">//获取小区中的房源集合</span></div><div class="line">            List&lt;House&gt; houses = community.getHouses();</div><div class="line">            <span class="keyword">for</span> (House house : houses) &#123;</div><div class="line">                <span class="keyword">if</span> (house.getPrice() &lt; <span class="number">200</span>) &#123;</div><div class="line">                    runOnUiThread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">                        <span class="meta">@Override</span></div><div class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                            <span class="comment">//显示查询出来的房源信息</span></div><div class="line">                            ShowSearchedHousesMessage();</div><div class="line">                        &#125;</div><div class="line">                    &#125;);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;).start();</div></pre></td></tr></table></figure>
@@ -215,7 +215,7 @@ ga('send', 'pageview');
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2017-09-21T09:27:22.000Z" itemprop="dateUpdated">2017-09-21 17:27:22</time>
+    最后更新时间：<time datetime="2017-09-28T08:57:47.000Z" itemprop="dateUpdated">2017-09-28 16:57:47</time>
 </span><br>
 
 
@@ -250,7 +250,7 @@ ga('send', 'pageview');
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/&title=《Android开发响应式编程之RxJava简介(一)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/&title=《RxJava简介与入门(一)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -260,22 +260,22 @@ ga('send', 'pageview');
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/&title=《Android开发响应式编程之RxJava简介(一)》 — Lei’s Blog&source=前言　　最近在学习RxJava的过程中,越发感受到这个框架的强大，对于提升开发效率，降低维护成本有很大的作用。有必要强行安利一波，一起来看看RxJava简..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/&title=《RxJava简介与入门(一)》 — Lei’s Blog&source=前言　　最近在学习RxJava的过程中,越发感受到这个框架的强大，对于提升开发效率，降低维护成本有很大的作用。有必要强行安利一波，一起来看看RxJava简..." data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发响应式编程之RxJava简介(一)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava简介与入门(一)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -300,9 +300,9 @@ ga('send', 'pageview');
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2017/07/24/Android开发之Lambda表达式基本语法与应用/" id="post-next" class="post-nav-link">
+      <a href="/2017/07/24/Lambda表达式基本语法与应用/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Android开发之Lambda表达式基本语法与应用</h4>
+        <h4 class="title">Lambda表达式基本语法与应用</h4>
       </a>
     </div>
   
@@ -324,8 +324,8 @@ ga('send', 'pageview');
     <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
     <script>
     var cloudTieConfig = {
-        url: 'http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/index.html',
-        sourceId: 'Android开发响应式编程之RxJava基础讲解(一)',
+        url: 'http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/index.html',
+        sourceId: 'RxJava简介与入门(一)',
         productKey: 'a49afc3603394502bd2ba8121a4284d9',
         target: 'cloud-tie-wrapper',
         pcFiles: [
@@ -393,7 +393,7 @@ ga('send', 'pageview');
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+            <span>博客内容遵循<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
         </p>
     </div>
     <div class="bottom">
@@ -413,7 +413,7 @@ ga('send', 'pageview');
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/&title=《Android开发响应式编程之RxJava简介(一)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/&title=《RxJava简介与入门(一)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -423,22 +423,22 @@ ga('send', 'pageview');
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/&title=《Android开发响应式编程之RxJava简介(一)》 — Lei’s Blog&source=前言　　最近在学习RxJava的过程中,越发感受到这个框架的强大，对于提升开发效率，降低维护成本有很大的作用。有必要强行安利一波，一起来看看RxJava简..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/&title=《RxJava简介与入门(一)》 — Lei’s Blog&source=前言　　最近在学习RxJava的过程中,越发感受到这个框架的强大，对于提升开发效率，降低维护成本有很大的作用。有必要强行安利一波，一起来看看RxJava简..." data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发响应式编程之RxJava简介(一)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava简介与入门(一)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -449,7 +449,7 @@ ga('send', 'pageview');
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADMElEQVR42u3aQW4jMQwEwPz/09lrgqztbtIGPHLNyXACjUo5dEjq6yt+vn88f79vfzP5/He1+8/XKx5sbGzsi7CT5ZLXJCvkB5qveX+fN9fHxsbGPo5965W3PuewTWQmP80PFxsbGxs7L0LygiFfuT0CbGxsbOwkwGbBkzeeZt9gY2NjfyZ71hLaBN4+GpMy6Qm9NGxsbOy3Z7ctnnf+/JL5NjY2NvYbs7/LJy9L2vB47rseKLCxsbEPYrdlRvJPfx6Bsws9eXvr/jrY2NjYJ7Fng4GEnYwBZs2j5ECHJQo2Njb2Bdn5dtsm/rNKl80OH0xFsLGxsQ9i57GR5+Hr8LNB8n8qMGxsbOwj2Hn7Jv93/34TarPOJtiwsbGxz2O3Y938xW2bPsdvhhDRZBgbGxv7UuzZCzaTh33DaD8exsbGxj6V3V5qfG6AzVpF7Xigno1gY2NjX5Y9uy7zrFB51sWd6I+BjY2NfXF2Xnjc//32+k7y/eba0IOow8bGxj6OPQubfGTbRs7rouvXoBcbGxv7CHYeOTl4E1qzYW1+zaiYh2BjY2NfhF1MgEeNp+QKZt5U2lzlxMbGxv4Edj4cbcNpE1ezsfGDw8XGxsY+jp1H12yG3K4/a0Il4ferl4aNjY19BLttKuXbauOwHRvnkflg59jY2NgXZ7e8/GjaK5WzeJvtEBsbG/skdjsGyEOiPYg8hNqrOQUeGxsb+4LsWSO+PZS2YTSDFUNlbGxs7OPYm4DJn9kwOC+Qij8YNjY29kHsfXjkxUxbbMwGEsX32NjY2MexZ/GQw/JBbzskbneCjY2N/Qns2aC3be4XWyyv+ESFEzY2Nvah7DbS2kCaMTaFTTEkwMbGxj6IvY+czeBhPxJISiZsbGzsM9jf5dMG0maQkIdcUggVtRc2Njb2pdibCzezFk/b+kkOsR0bY2NjY5/HTkJr9rm9gpMXQvnQ4uahY2NjYx/HbouEvHTJf9qCN9GLjY2N/cnsdtPRjGLUkFqNn7GxsbE/nr2/arNZbXYQ2NjY2Gez24KhbevMCo82Dl8yHsDGxsZ+e/YmDPJBbHulJm9RzQ4FGxsb+wj2PzqMFhHc19mGAAAAAElFTkSuQmCC" alt="微信分享二维码">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACqklEQVR42u3a0Y7iMAwFUP7/p9nXlWZaru0YVaOTJ4QgzSlSGq79esXj/d+4eufn5+/fv399NV4bAw8PD2+w9Kvpri6QIK++dXX1+xtavgV4eHh4a7x8E58vffLAyNeMh4eH9xxeQrqfuTonHh4e3t/gVY/d94f4+6vg4eHhPZOXhBHVuOH+FuSwL2UteHh4eAtVpOe8Xqnv4eHh4Y2r6tXNfTJ/MnN5tXh4eHgLvHzDrTZdJYFC/iiarBMPDw/vLC/fiKsxxKmHRB7v/vJ5PDw8vAVeb1P+0iKKN6uZrODh4eEVedWAoJqd3l8lX3TeKPDLfwU8PDy8ZV6+iVdbsvIWgcnBvXC38PDw8BZ41YfH/FBeDY7L9T08PDy8Q7y80aq60eczVD8Zxb54eHh4C7wqqVfuerXGyrXw8PDwDl2rtzVPguA8kpg0GeDh4eFt8PIQ4VRQW207GJXB8PDw8JZ5vQaCXmmqN3/5mI6Hh4e3wOsdeXsH4t5K8qii/I8BDw8Pr8WbtEDlW3neDVWNdD8cxPHw8PAWeNVwNj80bzcH5BEGHh4e3gZvUs7vbd/VxfXCXDw8PLwNXq+tqlcAO/UYKBzT8fDw8BZ4eSlr3obVK/9X5y/nGXh4eHhjXt4K8L4dkwfAqavg4eHh7fF6EW3epJUHEL3Grw8rx8PDw1vjzReXRxL3i04AhZ8EDw8P7yu8PJ6olsp6sFGJDg8PD+8o710c1XLUBF8ucf2cBw8PD2+BV91wk+P1RgltEprg4eHhbfDyCLUX406O7734Aw8PD+87vElhrFf+z2EHshY8PDy8B/Amj5PqGTiPg/Hw8PCeyZssuloGq7YgHDhS4+Hh4cW8efvpZIs/1VLwoTMCDw8P7xCv+rVqMJFEupN63YFaHx4eHl7K+wdtqBbbTTifdQAAAABJRU5ErkJggg==" alt="微信分享二维码">
 </div>
 
 

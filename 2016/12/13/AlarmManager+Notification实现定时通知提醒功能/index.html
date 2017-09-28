@@ -24,7 +24,7 @@ ga('send', 'pageview');
     
     
     
-    <title>Android开发之AlarmManager闹钟+Notification通知 | Lei’s Blog | 不忘初心，淡然前行</title>
+    <title>AlarmManager+Notification实现定时通知提醒功能 | Lei’s Blog | 不忘初心，淡然前行</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
@@ -34,13 +34,13 @@ ga('send', 'pageview');
     <meta name="description" content="AlarmManager简介　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它组件（包括Activity,Service,BroadcastReceiver）。本文将讲解一下如何使用AlarmManager实现定时提醒功能。">
 <meta name="keywords" content="AlarmManager">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android开发之AlarmManager闹钟+Notification通知">
-<meta property="og:url" content="http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/index.html">
+<meta property="og:title" content="AlarmManager+Notification实现定时通知提醒功能">
+<meta property="og:url" content="http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="AlarmManager简介　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它组件（包括Activity,Service,BroadcastReceiver）。本文将讲解一下如何使用AlarmManager实现定时提醒功能。">
-<meta property="og:updated_time" content="2017-07-10T07:01:23.000Z">
+<meta property="og:updated_time" content="2017-09-28T08:56:16.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android开发之AlarmManager闹钟+Notification通知">
+<meta name="twitter:title" content="AlarmManager+Notification实现定时通知提醒功能">
 <meta name="twitter:description" content="AlarmManager简介　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它组件（包括Activity,Service,BroadcastReceiver）。本文将讲解一下如何使用AlarmManager实现定时提醒功能。">
     
         <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
@@ -125,13 +125,13 @@ ga('send', 'pageview');
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">Android开发之AlarmManager闹钟+Notification通知</div>
+        <div class="flex-col header-title ellipsis">AlarmManager+Notification实现定时通知提醒功能</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -147,7 +147,7 @@ ga('send', 'pageview');
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">Android开发之AlarmManager闹钟+Notification通知</h1>
+        <h1 class="title">AlarmManager+Notification实现定时通知提醒功能</h1>
         <h5 class="subtitle">
             
                 <time datetime="2016-12-12T16:00:00.000Z" itemprop="datePublished" class="page-time">
@@ -176,11 +176,11 @@ ga('send', 'pageview');
         </nav>
     </aside>
     
-<article id="post-Android开发之AlarmManager闹钟+Notification通知"
+<article id="post-AlarmManager+Notification实现定时通知提醒功能"
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">Android开发之AlarmManager闹钟+Notification通知</h1>
+        <h1 class="post-card-title">AlarmManager+Notification实现定时通知提醒功能</h1>
         <div class="post-meta">
             <time class="post-time" title="2016-12-13 00:00:00" datetime="2016-12-12T16:00:00.000Z"  itemprop="datePublished">2016-12-13</time>
 
@@ -226,7 +226,7 @@ ga('send', 'pageview');
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2017-07-10T07:01:23.000Z" itemprop="dateUpdated">2017-07-10 15:01:23</time>
+    最后更新时间：<time datetime="2017-09-28T08:56:16.000Z" itemprop="dateUpdated">2017-09-28 16:56:16</time>
 </span><br>
 
 
@@ -261,7 +261,7 @@ ga('send', 'pageview');
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/&title=《Android开发之AlarmManager闹钟+Notification通知》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/&title=《AlarmManager+Notification实现定时通知提醒功能》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -271,22 +271,22 @@ ga('send', 'pageview');
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/&title=《Android开发之AlarmManager闹钟+Notification通知》 — Lei’s Blog&source=AlarmManager简介　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/&title=《AlarmManager+Notification实现定时通知提醒功能》 — Lei’s Blog&source=AlarmManager简介　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它..." data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发之AlarmManager闹钟+Notification通知》 — Lei’s Blog&url=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《AlarmManager+Notification实现定时通知提醒功能》 — Lei’s Blog&url=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/&via=http://LeiHolmes.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -309,18 +309,18 @@ ga('send', 'pageview');
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2017/03/28/Android开发之RecyclerView初尝试/" id="post-prev" class="post-nav-link">
+      <a href="/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Android开发之RecyclerView初尝试</h4>
+        <h4 class="title">Material Design之RecyclerView基本讲解与瀑布流的实现</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2016/04/29/Android开发网络请求框架之Retrofit2.0初尝试/" id="post-next" class="post-nav-link">
+      <a href="/2016/04/29/网络请求框架之Retrofit2.0基本讲解/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Android开发网络请求框架之Retrofit2.0初尝试</h4>
+        <h4 class="title">网络请求框架之Retrofit2.0基本讲解</h4>
       </a>
     </div>
   
@@ -342,8 +342,8 @@ ga('send', 'pageview');
     <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
     <script>
     var cloudTieConfig = {
-        url: 'http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/index.html',
-        sourceId: 'Android开发之AlarmManager闹钟+Notification通知',
+        url: 'http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/index.html',
+        sourceId: 'AlarmManager+Notification实现定时通知提醒功能',
         productKey: 'a49afc3603394502bd2ba8121a4284d9',
         target: 'cloud-tie-wrapper',
         pcFiles: [
@@ -411,7 +411,7 @@ ga('send', 'pageview');
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+            <span>博客内容遵循<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
         </p>
     </div>
     <div class="bottom">
@@ -431,7 +431,7 @@ ga('send', 'pageview');
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/&title=《Android开发之AlarmManager闹钟+Notification通知》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/&title=《AlarmManager+Notification实现定时通知提醒功能》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -441,22 +441,22 @@ ga('send', 'pageview');
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/&title=《Android开发之AlarmManager闹钟+Notification通知》 — Lei’s Blog&source=AlarmManager简介　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/&title=《AlarmManager+Notification实现定时通知提醒功能》 — Lei’s Blog&source=AlarmManager简介　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它..." data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android开发之AlarmManager闹钟+Notification通知》 — Lei’s Blog&url=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《AlarmManager+Notification实现定时通知提醒功能》 — Lei’s Blog&url=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/&via=http://LeiHolmes.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -467,7 +467,7 @@ ga('send', 'pageview');
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADL0lEQVR42u3awXLiQAwE0Pz/T7PX3drgdGucKhDPp5QBM28OEWrN11d8Pf67/r6ffPb6mdfvf/bOfA3DCxsbG/tN2I/LK1ni9f1n2/Ts+c8+e/3O9jnY2NjY+9jXhaFder6t+ROuy1tuwcbGxsZOCkzSQpz0CNjY2NjY97Lb4pRHVNebmIdc2NjY2J/APl/QbJDQjgeSoOrmLA0bGxv75dl5e/D6f//KfBsbGxv7hdknTUV+vCY/1pMXpyMFNjY29iL2bFmzQ5knYVC7EdH6sbGxsZey28WdlJy8R5i1HD98FhsbG3sdO4nU21gnGc3mx4DyIUTRimBjY2O/OTs/rJM8enboZ4Zvx8bY2NjYW9l3HbJpxwZtyTwvkN+sChsbG3sRezYuzduVu47gJMOAegiBjY2NvZQ9G/TOxgYn7Uc7eMbGxsbex74rcJ81ErP2Jh/9/hAnYWNjYy9it4WhLXtt5JRHXW0zg42Njb2PnTcJs0/lpasdRcws2NjY2PvY7UITXhsP5d/YjhyevoqNjY29iJ3D8si+bXLaSCjZ9DrYwsbGxl7HPjkQk2xTG/rPQqg6XcPGxsZex86bk/zVvOy1rdFshdjY2Ng72HnBaNuVfL/PBxJt+IWNjY39CeyT4zL56LcNhu461oONjY29g90e0Ll36SejgqOgChsbG3sde1aQ2gHAvcdx8hHyN/exsbGxF7HvheUNySyrb2cdUaiEjY2N/ebsPNyflbfZk/PNnbVJ2NjY2PvYbRCfD3Rnd9pDOXl5+6eAYWNjY69gn4xp87HrScTfxk9HQwJsbGzsFezZqLU9uNmODfJmpih+2NjY2OvYJ1FRsqy8UN37tGgqgo2Njb2O3R7iOT+O095pY6Yir8LGxsZ+K/ajvJIRwmxrZs/PvwsbGxt7K/vkf/6sNCYFrDh8E29HHp9hY2NjvyP7PPrJS2NewNqWqd0sbGxs7H3sJOhvC1U+DM7LXrv1T9+PjY2N/cHs5Od+W8Bm0f9sVdjY2NjYs4i/DfdnRauIw7CxsbHXsWfD3XsjpJMwqx0eYGNjY29iz370tyH+CeOk1Zk1OdjY2Nhvwv4DwSzumvuREx4AAAAASUVORK5CYII=" alt="微信分享二维码">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADNUlEQVR42u3awY7iQAwE0Pn/n969rrQiVLmDRDyPE4JMOq85eMrun5/49eef1/U113/76vX/HV69z9e94YWNjY39EHb+QAkseaxkE5OtfPX+2oKNjY29lZ3fut2IvIC1pSu/HhsbGxu7LU7X90miRVs+sbGxsbFnBeyuwJBsUP4JNjY29u9k5437fMmcmoSTdrNu66VhY2Njfz07n4p+//uPzLexsbGxv5h90sRvQ0XbeMrHybUCGxsbexG7HabOIkobJ/LA0x79wcbGxt7HvrehEzXlP7A17erY2NjYW9nJ57PjMnkhTL7ND/G8CSHY2NjYi9h1dglCSDuanWGuP3/5LTY2NvY69vUysxZ8e4xmVkpnLS1sbGzsTey8AORRpL1bXrTyMhYFKmxsbOxF7LuaPicdm1kba/b82NjY2JvY1wXmZOB6Mio4GSFHx32wsbGx17Gvl89jRj4GbqNF+2MUvTRsbGzsh7NzXj7WvS4wbbmKWkLlRmNjY2PvY991sCYpISdNojcBI1g3GvRiY2NjP5B9UnJmzaD2kNBJ4YxCCDY2NvbD2TNS3tyfHaBsy1UdjbCxsbFXsE+WzK9pW0L5EGIWirCxsbE3sU8a8ck4YTY2mAWVpNQVTSVsbGzsh7CTf+XPm0onA+NkgNFuMTY2NvYm9qx934JnMWNWJvOfDRsbG3sHu2213zZVvmkYkI+Wf5KeEzY2NvZj2SeD3qRV9LmjP7M7Y2NjY+9jt/2WHN82epIy2Y5+30QRbGxs7Iezk+BxMmRtDwC1J2qSwhkFEmxsbOyHs8/jxPnBmpPJRj4GxsbGxt7KnoGTR5nFkjyKtNsR5TBsbGzsh7Pb9v2MnY8fZqGoLmDY2NjYK9j5IZs2hCTB42St4fXY2NjYK9izhs55uyePIkm7v14FGxsbexG7LQBtS+gk3rSbm8cqbGxs7H3s2ZGdky2brZvcv2h+YWNjY69j54WhvTIZzeaHeNrteJPDsLGxsbFvKi3twKAtsUcnlbCxsbGXstvDNMl92k5Y/mNgY2Nj/wb2bLh73n666271xmFjY2MvYucFIP8kbx61MWY2Bs5DDjY2Nvaj2H8BdL/tOR37YBAAAAAASUVORK5CYII=" alt="微信分享二维码">
 </div>
 
 

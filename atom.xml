@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-09-21T09:27:22.000Z</updated>
+  <updated>2017-09-28T08:57:47.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -16,14 +16,14 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Android开发响应式编程之RxJava简介(一)</title>
-    <link href="http://LeiHolmes.github.io/2017/09/21/Android%E5%BC%80%E5%8F%91%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B%E4%B9%8BRxJava%E5%9F%BA%E7%A1%80%E8%AE%B2%E8%A7%A3(%E4%B8%80)/"/>
-    <id>http://LeiHolmes.github.io/2017/09/21/Android开发响应式编程之RxJava基础讲解(一)/</id>
+    <title>RxJava简介与入门(一)</title>
+    <link href="http://LeiHolmes.github.io/2017/09/21/RxJava%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%85%A5%E9%97%A8(%E4%B8%80)/"/>
+    <id>http://LeiHolmes.github.io/2017/09/21/RxJava简介与入门(一)/</id>
     <published>2017-09-20T16:00:00.000Z</published>
-    <updated>2017-09-21T09:27:22.000Z</updated>
+    <updated>2017-09-28T08:57:47.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　最近在学习RxJava的过程中,越发感受到这个框架的强大，对于提升开发效率，降低维护成本有很大的作用。有必要强行安利一波，一起来看看RxJava简介，基本概念，原理与使用，本篇主要介绍RxJava的简介。<br>　　<a id="more"></a></p>
-<h3 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h3><p>　　RxJava是ReactiveX中使用Java语言实现的版本，那什么是ReactiveX呢？ReactiveX就是一种新兴的编程模式–响应式编程，定义为一种基于异步数据流概念的编程模式，可分解为”观察者模式+迭代器模式+函数式编程”。</p>
+<h3 id="响应式编程ReactiveX"><a href="#响应式编程ReactiveX" class="headerlink" title="响应式编程ReactiveX"></a>响应式编程ReactiveX</h3><p>　　RxJava是ReactiveX中使用Java语言实现的版本，那什么是ReactiveX呢？ReactiveX就是一种新兴的编程模式–响应式编程，定义为一种基于异步数据流概念的编程模式，可分解为”观察者模式+迭代器模式+函数式编程”。</p>
 <h3 id="扩展的观察者模式"><a href="#扩展的观察者模式" class="headerlink" title="扩展的观察者模式"></a>扩展的观察者模式</h3><p>　　有关观察者模式的概念不懂得童鞋可自行google，这里就不再赘述。RxJava扩展了观察者模式，通过使用可观察的对象序列流来表述一系列事件，订阅者进行占点观察并对序列流做出反应（或持久化或输出显示等等）；借鉴迭代器模式，对多个对象序列进行迭代输出，订阅者可以依次处理不同的对象序列；使用函数式编程思想，简化繁琐的逻辑代码。<br>　　而RxJava的核心便是被观察者Observables与观察者Observer，由Observables发出一系列的事件，Observer通过subscribe()方法进行订阅接收事件并进行处理，类似观察者模式，不同之处在于，若没有观察者，被观察者是不会发出任何事件的。<br>　　所以说，<strong>RxJava本质上是一个异步操作库，是一个能让你用极其简洁的逻辑去处理繁琐复杂任务的异步事件库。</strong></p>
 <h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>　　概念理解起来未免晦涩难懂，我们来看一个例子：<br>　　有这样一个需求：开发一个类似房天下的App，某功能需要检索出某一片区所有住宅小区中购房总价&lt;200W的房源并展示出来。先看原始实现方式：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"> <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//获取要查询的小区集合</span></div><div class="line">        List&lt;Community&gt; communities = getCommunities();</div><div class="line">        <span class="keyword">for</span> (Community community : communities) &#123;</div><div class="line">            <span class="comment">//获取小区中的房源集合</span></div><div class="line">            List&lt;House&gt; houses = community.getHouses();</div><div class="line">            <span class="keyword">for</span> (House house : houses) &#123;</div><div class="line">                <span class="keyword">if</span> (house.getPrice() &lt; <span class="number">200</span>) &#123;</div><div class="line">                    runOnUiThread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">                        <span class="meta">@Override</span></div><div class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                            <span class="comment">//显示查询出来的房源信息</span></div><div class="line">                            ShowSearchedHousesMessage();</div><div class="line">                        &#125;</div><div class="line">                    &#125;);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;).start();</div></pre></td></tr></table></figure>
@@ -47,11 +47,11 @@
   </entry>
   
   <entry>
-    <title>Android开发之Lambda表达式基本语法与应用</title>
-    <link href="http://LeiHolmes.github.io/2017/07/24/Android%E5%BC%80%E5%8F%91%E4%B9%8BLambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%BA%94%E7%94%A8/"/>
-    <id>http://LeiHolmes.github.io/2017/07/24/Android开发之Lambda表达式基本语法与应用/</id>
+    <title>Lambda表达式基本语法与应用</title>
+    <link href="http://LeiHolmes.github.io/2017/07/24/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%BA%94%E7%94%A8/"/>
+    <id>http://LeiHolmes.github.io/2017/07/24/Lambda表达式基本语法与应用/</id>
     <published>2017-07-23T16:00:00.000Z</published>
-    <updated>2017-07-24T06:24:31.000Z</updated>
+    <updated>2017-09-28T08:56:54.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Lambda简介"><a href="#Lambda简介" class="headerlink" title="Lambda简介"></a>Lambda简介</h3><p>　　Lambda表达式是Java8中提供的一种新的特性，它支持Java也能进行简单的“函数式编程”，即Lambda允许你通过表达式来代替功能接口，即可使用更少的代码来实现同样的功能。<br>　　<a id="more"></a><br>　　用官方的解释就是：</p>
 <blockquote>
@@ -92,11 +92,11 @@
   </entry>
   
   <entry>
-    <title>Android开发ORM框架之GreenDao3.0增删改查使用详解(二)</title>
-    <link href="http://LeiHolmes.github.io/2017/07/13/Android%E5%BC%80%E5%8F%91ORM%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3(%E4%BA%8C)/"/>
-    <id>http://LeiHolmes.github.io/2017/07/13/Android开发ORM框架之GreenDao3.0增删改查使用详解(二)/</id>
+    <title>ORM框架之GreenDao3.0使用详解(二)</title>
+    <link href="http://LeiHolmes.github.io/2017/07/13/ORM%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3(%E4%BA%8C)/"/>
+    <id>http://LeiHolmes.github.io/2017/07/13/ORM框架之GreenDao3.0使用详解(二)/</id>
     <published>2017-07-12T16:00:00.000Z</published>
-    <updated>2017-08-13T07:40:10.000Z</updated>
+    <updated>2017-09-28T08:57:24.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="本文介绍"><a href="#本文介绍" class="headerlink" title="本文介绍"></a>本文介绍</h3><p>　　上一篇讲解了GreenDao3.0如何集成环境与添加各类注解，这一篇我们来看看如何使用GreenDao实现数据库增删改查的功能，还是上一篇公司Company与雇员Employee的例子。<br>　　<a id="more"></a></p>
 <h3 id="数据库初始化"><a href="#数据库初始化" class="headerlink" title="数据库初始化"></a>数据库初始化</h3><p>　　首先初始化数据库与表，可封装一个工具类，这里献上我的：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GreenDaoUtil</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> DaoSession daoSession;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SQLiteDatabase database;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 初始化数据库</div><div class="line">     * 建议放在Application中执行</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initDataBase</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="comment">//通过DaoMaster的内部类DevOpenHelper，可得到一个SQLiteOpenHelper对象。</span></div><div class="line">        DaoMaster.DevOpenHelper devOpenHelper = <span class="keyword">new</span> DaoMaster.DevOpenHelper</div><div class="line">        (context, <span class="string">"greendaoutil.db"</span>, <span class="keyword">null</span>); <span class="comment">//数据库名称</span></div><div class="line">        database = devOpenHelper.getWritableDatabase();</div><div class="line">        DaoMaster daoMaster = <span class="keyword">new</span> DaoMaster(database);</div><div class="line">        daoSession = daoMaster.newSession();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DaoSession <span class="title">getDaoSession</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> daoSession;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SQLiteDatabase <span class="title">getDatabase</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> database;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
@@ -139,11 +139,11 @@
   </entry>
   
   <entry>
-    <title>Android开发ORM框架之GreenDao3.0集成与注解(一)</title>
-    <link href="http://LeiHolmes.github.io/2017/07/10/Android%E5%BC%80%E5%8F%91ORM%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E9%9B%86%E6%88%90%E4%B8%8E%E6%B3%A8%E8%A7%A3(%E4%B8%80)/"/>
-    <id>http://LeiHolmes.github.io/2017/07/10/Android开发ORM框架之GreenDao3.0集成与注解(一)/</id>
+    <title>ORM框架之GreenDao3.0集成与注解(一)</title>
+    <link href="http://LeiHolmes.github.io/2017/07/10/ORM%E6%A1%86%E6%9E%B6%E4%B9%8BGreenDao3.0%E9%9B%86%E6%88%90%E4%B8%8E%E6%B3%A8%E8%A7%A3(%E4%B8%80)/"/>
+    <id>http://LeiHolmes.github.io/2017/07/10/ORM框架之GreenDao3.0集成与注解(一)/</id>
     <published>2017-07-09T16:00:00.000Z</published>
-    <updated>2017-07-13T08:20:17.000Z</updated>
+    <updated>2017-09-28T08:57:13.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="GreenDao简介"><a href="#GreenDao简介" class="headerlink" title="GreenDao简介"></a>GreenDao简介</h3><p>　　GreenDao是一个将对象映射到SQLite数据库中的轻量且快速的ORM数据库框架，本文将讲解如何集成GreenDao3.0环境，如何使用GreenDao自动生成代码及注解的使用。<br>　　<a id="more"></a><br>　　<a href="http://greenrobot.org/greendao/" target="_blank" rel="external">GreenDao官网</a><br>　　<a href="https://github.com/greenrobot/greenDAO" target="_blank" rel="external">GreenDao GitHub</a></p>
 <h3 id="GreenDao3-0优势"><a href="#GreenDao3-0优势" class="headerlink" title="GreenDao3.0优势"></a>GreenDao3.0优势</h3><p>　　GreenDao相较于ORMLite等其他数据库框架有以下优势：<br>　　1. 一个精简的库<br>　　2. 性能最大化<br>　　3. 内存开销最小化<br>　　4. 易于使用的 APIs<br>　　5. 对 Android 进行高度优化<br>　　而GreenDao3.0的版本主要使用注解方式定义实体类，通过gradle插件生成相应的代码。相较于3.0之前的版本集成步骤更为便捷，使用起来也更为简单。本文使用的版本为3.2.0。</p>
@@ -214,11 +214,11 @@
   </entry>
   
   <entry>
-    <title>Android开发之DataBinding基本实现</title>
-    <link href="http://LeiHolmes.github.io/2017/05/15/Android%E5%BC%80%E5%8F%91%E4%B9%8BDataBinding%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0/"/>
-    <id>http://LeiHolmes.github.io/2017/05/15/Android开发之DataBinding基本实现/</id>
+    <title>DataBinding数据绑定基本讲解</title>
+    <link href="http://LeiHolmes.github.io/2017/05/15/DataBinding%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E5%9F%BA%E6%9C%AC%E8%AE%B2%E8%A7%A3/"/>
+    <id>http://LeiHolmes.github.io/2017/05/15/DataBinding数据绑定基本讲解/</id>
     <published>2017-05-14T16:00:00.000Z</published>
-    <updated>2017-07-10T07:01:31.000Z</updated>
+    <updated>2017-09-28T08:56:44.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="DataBinding简介"><a href="#DataBinding简介" class="headerlink" title="DataBinding简介"></a>DataBinding简介</h3><p>　　DataBinding是基于MVVM思想实现数据与UI绑定的框架，有了Data Binding，在Android中也可以很方便的实现MVVM。它于2015年7月由Google在Studio1.3上引入，2016年4月在Studio2.0上得到正式支持。DataBinding是一个support库，最低支持到Android2.1（API Level 7+）。<br><a id="more"></a><br>　　在引入DataBinding之前，我们需要敲很多很鸡肋的代码，如 findViewById()、setText()，setVisibility()，setEnabled() 或 setOnClickListener() 等，通过 DataBinding , 我们可以通过声明式布局以精简的代码来绑定应用程序逻辑和布局，这样就不用编写大量的冗余的代码了。这一节我们来讲一讲DataBinding的基本实现之常量绑定、变量绑定与事件绑定。</p>
 <h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><h4 id="在build-gradle中添加"><a href="#在build-gradle中添加" class="headerlink" title="在build.gradle中添加"></a>在build.gradle中添加</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    dataBinding &#123;</div><div class="line">        enabled = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -257,11 +257,11 @@
   </entry>
   
   <entry>
-    <title>Android开发之RecyclerView初尝试</title>
-    <link href="http://LeiHolmes.github.io/2017/03/28/Android%E5%BC%80%E5%8F%91%E4%B9%8BRecyclerView%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
-    <id>http://LeiHolmes.github.io/2017/03/28/Android开发之RecyclerView初尝试/</id>
+    <title>Material Design之RecyclerView基本讲解与瀑布流的实现</title>
+    <link href="http://LeiHolmes.github.io/2017/03/28/Material%20Design%E4%B9%8BRecyclerView%E5%9F%BA%E6%9C%AC%E8%AE%B2%E8%A7%A3%E4%B8%8E%E7%80%91%E5%B8%83%E6%B5%81%E7%9A%84%E5%AE%9E%E7%8E%B0/"/>
+    <id>http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/</id>
     <published>2017-03-27T16:00:00.000Z</published>
-    <updated>2017-07-10T07:01:37.000Z</updated>
+    <updated>2017-09-28T08:57:03.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="RecyclerView简介"><a href="#RecyclerView简介" class="headerlink" title="RecyclerView简介"></a>RecyclerView简介</h3><p>　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。<br><a id="more"></a>  </p>
 <h3 id="相关原理与简单实现"><a href="#相关原理与简单实现" class="headerlink" title="相关原理与简单实现"></a>相关原理与简单实现</h3><h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>　　在AndroidStudio的build.gradle中添加依赖：  </p>
@@ -585,11 +585,11 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
   </entry>
   
   <entry>
-    <title>Android开发之AlarmManager闹钟+Notification通知</title>
-    <link href="http://LeiHolmes.github.io/2016/12/13/Android%E5%BC%80%E5%8F%91%E4%B9%8BAlarmManager%E9%97%B9%E9%92%9F+Notification%E9%80%9A%E7%9F%A5/"/>
-    <id>http://LeiHolmes.github.io/2016/12/13/Android开发之AlarmManager闹钟+Notification通知/</id>
+    <title>AlarmManager+Notification实现定时通知提醒功能</title>
+    <link href="http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification%E5%AE%9E%E7%8E%B0%E5%AE%9A%E6%97%B6%E9%80%9A%E7%9F%A5%E6%8F%90%E9%86%92%E5%8A%9F%E8%83%BD/"/>
+    <id>http://LeiHolmes.github.io/2016/12/13/AlarmManager+Notification实现定时通知提醒功能/</id>
     <published>2016-12-12T16:00:00.000Z</published>
-    <updated>2017-07-10T07:01:23.000Z</updated>
+    <updated>2017-09-28T08:56:16.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="AlarmManager简介"><a href="#AlarmManager简介" class="headerlink" title="AlarmManager简介"></a>AlarmManager简介</h3><p>　　AlarmManager实质是一个全局的定时器，是Android中常用的一种系统级别的提示服务，在指定时间或周期性启动其它组件（包括Activity,Service,BroadcastReceiver）。本文将讲解一下如何使用AlarmManager实现定时提醒功能。<br><a id="more"></a></p>
 <h3 id="闹钟配置"><a href="#闹钟配置" class="headerlink" title="闹钟配置"></a>闹钟配置</h3><h4 id="周期闹钟"><a href="#周期闹钟" class="headerlink" title="周期闹钟"></a>周期闹钟</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent intent = <span class="keyword">new</span> Intent();</div><div class="line">intent.setAction(GlobalValues.TIMER_ACTION_REPEATING);</div><div class="line">PendingIntent sender = PendingIntent.getBroadcast(context, <span class="number">0</span>, intent, <span class="number">0</span>);</div><div class="line">AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div><div class="line">alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + <span class="number">5</span> * <span class="number">1000</span>, <span class="number">3</span> * <span class="number">1000</span>, sender);</div></pre></td></tr></table></figure>
@@ -627,11 +627,11 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
   </entry>
   
   <entry>
-    <title>Android开发网络请求框架之Retrofit2.0初尝试</title>
-    <link href="http://LeiHolmes.github.io/2016/04/29/Android%E5%BC%80%E5%8F%91%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E6%A1%86%E6%9E%B6%E4%B9%8BRetrofit2.0%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
-    <id>http://LeiHolmes.github.io/2016/04/29/Android开发网络请求框架之Retrofit2.0初尝试/</id>
+    <title>网络请求框架之Retrofit2.0基本讲解</title>
+    <link href="http://LeiHolmes.github.io/2016/04/29/%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E6%A1%86%E6%9E%B6%E4%B9%8BRetrofit2.0%E5%9F%BA%E6%9C%AC%E8%AE%B2%E8%A7%A3/"/>
+    <id>http://LeiHolmes.github.io/2016/04/29/网络请求框架之Retrofit2.0基本讲解/</id>
     <published>2016-04-28T16:00:00.000Z</published>
-    <updated>2017-07-21T06:10:36.000Z</updated>
+    <updated>2017-09-28T08:56:06.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Retrofit2-0简介"><a href="#Retrofit2-0简介" class="headerlink" title="Retrofit2.0简介"></a>Retrofit2.0简介</h3><p>　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:</p>
 <blockquote>
@@ -678,11 +678,11 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
   </entry>
   
   <entry>
-    <title>Android开发之神器Stetho调试Volley</title>
-    <link href="http://LeiHolmes.github.io/2016/04/19/Android%E5%BC%80%E5%8F%91%E4%B9%8B%E7%A5%9E%E5%99%A8Stetho%E8%B0%83%E8%AF%95Volley/"/>
-    <id>http://LeiHolmes.github.io/2016/04/19/Android开发之神器Stetho调试Volley/</id>
+    <title>如何使用神器Stetho调试Volley</title>
+    <link href="http://LeiHolmes.github.io/2016/04/19/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E7%A5%9E%E5%99%A8Stetho%E8%B0%83%E8%AF%95Volley/"/>
+    <id>http://LeiHolmes.github.io/2016/04/19/如何使用神器Stetho调试Volley/</id>
     <published>2016-04-18T16:00:00.000Z</published>
-    <updated>2017-07-10T07:01:16.000Z</updated>
+    <updated>2017-09-28T08:55:57.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Stetho简介"><a href="#Stetho简介" class="headerlink" title="Stetho简介"></a>Stetho简介</h3><p>　　Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入<a href="http://facebook.github.io/stetho/" target="_blank" rel="external">Stetho官网</a>。<br><a id="more"></a></p>
 <h3 id="Stetho结合OkHttp使用"><a href="#Stetho结合OkHttp使用" class="headerlink" title="Stetho结合OkHttp使用"></a>Stetho结合OkHttp使用</h3><h5 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// Gradle dependency on Stetho </div><div class="line">  dependencies &#123; </div><div class="line">    compile 'com.facebook.stetho:stetho:1.1.1' </div><div class="line">  &#125;</div></pre></td></tr></table></figure>
