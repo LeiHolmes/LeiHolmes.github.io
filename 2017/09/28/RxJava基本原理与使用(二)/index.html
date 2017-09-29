@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'true', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="UA-99027890-1">
+    
+    
+    
+    <title>RxJava基本原理与使用(二) | Lei’s Blog | 不忘初心，淡然前行</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="RxJava">
+    <meta name="description" content="前言　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的影响与概念了。本篇我们将更深入的学习RxJava的基本原理以及如何使用RxJava。">
+<meta name="keywords" content="RxJava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava基本原理与使用(二)">
+<meta property="og:url" content="http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/index.html">
+<meta property="og:site_name" content="Lei’s Blog">
+<meta property="og:description" content="前言　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的影响与概念了。本篇我们将更深入的学习RxJava的基本原理以及如何使用RxJava。">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/example.jpeg">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/connect.png">
+<meta property="og:updated_time" content="2017-09-29T08:40:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava基本原理与使用(二)">
+<meta name="twitter:description" content="前言　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的影响与概念了。本篇我们将更深入的学习RxJava的基本原理以及如何使用RxJava。">
+<meta name="twitter:image" content="http://leiholmes.github.io/img/RxJava/example.jpeg">
+    
+        <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">徐雷</h5>
+          <a href="mailto:18010498185@163.com" title="18010498185@163.com" class="mail">18010498185@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                成长之路
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ShylockXu" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/u/1850954523?topnav=1&wvr=6&topsug=1" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RxJava基本原理与使用(二)</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RxJava基本原理与使用(二)</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-09-27T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-09-28
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#观察者模式"><span class="post-toc-number">2.</span> <span class="post-toc-text">观察者模式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#创建被观察者"><span class="post-toc-number">3.</span> <span class="post-toc-text">创建被观察者</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-RxJava基本原理与使用(二)"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RxJava基本原理与使用(二)</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-09-28 00:00:00" datetime="2017-09-27T16:00:00.000Z"  itemprop="datePublished">2017-09-28</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的影响与概念了。本篇我们将更深入的学习RxJava的基本原理以及如何使用RxJava。<br>　　<a id="more"></a></p>
+<h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>　　上一篇有提到RxJava的核心便是扩展的观察者模式，我们先来学习一下观察者模式。  </p>
+<p><div align="center"><br>　　<img src="/img/RxJava/example.jpeg" alt=""><br></div><br>　　事件：某雷按下遥控器开关，空调启动并开始吹风了。按下制冷按键，空调吹出的风变为凉风。再按下3档风速按键，空调吹的风变大了。<br>　　在这个事件中，<strong>空调作为观察者，遥控器作为被观察者，空调通过红外线检测遥控器传来的信号并作出响应。</strong>  </p>
+<p><div align="center"><br>　　<img src="/img/RxJava/connect.png" alt=""><br></div><br>　　通过上图我们可以很清晰的看出遥控器作为事件的生产方<strong>主动</strong>发起事件，是事件的起点，而空调作为事件的处理方<strong>被动</strong>接收事件做出响应，是事件的终点。而在事件传递的过程中可对事件进行过滤，转换，合并等操作，就像例子中制冷与加大风速的效果。<br>　　这个概念是RxJava中的核心，它是基于观察者模式来组建自己的程序逻辑，遥控器就相当于RxJava的<strong>被观察者Observable</strong>，空调相当于<strong>观察者Observer</strong>，而对事件处理的一些操作相当于各类<strong>操作符</strong>。不同的是RxJava中观察者需要对被观察者进行订阅，这样当被观察者发出事件时，观察者才会接收到事件进行处理。若未进行订阅，被观察者是不会发出任何事件的。</p>
+<h3 id="创建被观察者"><a href="#创建被观察者" class="headerlink" title="创建被观察者"></a>创建被观察者</h3><p>　　了解了观察者模式，接下来动起指尖尝试下怎么使用。第一步：创建被观察者：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　到此，本篇关于RxJava的基本原理与使用就讲解完毕了，下一篇我们将一起研究RxJava的四类操作符中的创建操作符。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-09-29T08:40:25.000Z" itemprop="dateUpdated">2017-09-29 16:40:25</time>
+</span><br>
+
+
+        
+        进阶中的程序猿一枚，若发现有不正确的地方或者疑问欢迎各位留言指正。QQ：781751723
+        
+    </div>
+    <footer>
+        <a href="http://LeiHolmes.github.io">
+            <img src="/img/avatar.jpg" alt="徐雷">
+            徐雷
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RxJava/">RxJava</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/&title=《RxJava基本原理与使用(二)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/&title=《RxJava基本原理与使用(二)》 — Lei’s Blog&source=前言　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的影响与概念了。本篇我们将..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava基本原理与使用(二)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/09/21/RxJava简介与入门(一)/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RxJava简介与入门(一)</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
+    <script>
+    var cloudTieConfig = {
+        url: 'http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/index.html',
+        sourceId: 'RxJava基本原理与使用(二)',
+        productKey: 'a49afc3603394502bd2ba8121a4284d9',
+        target: 'cloud-tie-wrapper',
+        pcFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/pc.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/pc.min.js',
+        ],
+        mobileFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/mobile.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/mobile.min.js'
+        ]
+    };
+    </script>
+    <script src="//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/loader.min.js"></script>
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/img/wechat.jpg" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/img/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>徐雷 &copy; 2015 - 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/&title=《RxJava基本原理与使用(二)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/&title=《RxJava基本原理与使用(二)》 — Lei’s Blog&source=前言　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的影响与概念了。本篇我们将..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava基本原理与使用(二)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACuUlEQVR42u3a0W7jMAwEQP//T/eAPh1wtbMrSmkOGD8FTiBrVMBkSV5XfH19X893/r7/79X+JtnDtgsPDw9vaevPj7z7nDz4eZ1ktbv9RMeEh4eHd4w32VaCz4NEe0wvLHh4eHi/ymvT33blfDU8PDy8/4WXAyZVgjw44eHh4f0uLylG5N/uOpR2P3h4eHjv4bUNsE/4fLC/h4eHhzfoqq8NAewtTOTB4Ied4OHh4R3gTdLcts2/FoTaI6grynh4eHjl+u3rPh+Zei4f5LC1ttkPcQ8PDw9vE29ShE0S6DzxTZ6VP/Fq/1Z4eHh4S7x2i2vJ91qBY1IKwcPDwzvBa0sMSeI7KVg8YxYLH3h4eHibePMhqrygkG+6HcC6/RYPDw/vGK/9539XW2utvJscNx4eHt45XrvEaEJhaVihLf5ekxPCw8PDC57Yprnt6EBbSshLG0V9Gg8PD28rr335zttR+cFNDuJFMRcPDw9vwNtbUGibYWvHVPweDw8P7xhvMmLVjpC246ptlMPDw8M7zcvT1ny7i3n9pmGC25Xx8PDwNvHmja6EmmPWxgtud4uHh4f3Ft48kW0LsnnCXZc28PDw8N7CSxLcvXfy42gLu3h4eHjneJMCbh4SJiny4gAWHh4e3gFeO3TVPrINDO2hR0/Hw8PDO8DbNVbVtvPXAs9aKMLDw8Pby0tezfmhnGie5SHqdrIMDw8P7wCvbi9tanGN4lgSbPDw8PC28r7Ka14syMcFJoMFRQMMDw8Pr+StvXDzIJE3riajXfnQGB4eHt4uXlsIWCtSTEoYeWC45pVmPDw8vE399LwM0b7id8WuF4EBDw8P7wN4eel2V7qcYPDw8PA+jdcOQiWv+7wonK+Gh4eH9x5e2/SatLLakYJRIo6Hh4d3gLc2q9Um4nmDfz6sgIeHh3eM9wdQlw0BnEqY9gAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

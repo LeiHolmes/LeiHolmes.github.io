@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-09-28T08:57:47.000Z</updated>
+  <updated>2017-09-29T08:40:25.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -14,6 +14,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>RxJava基本原理与使用(二)</title>
+    <link href="http://LeiHolmes.github.io/2017/09/28/RxJava%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%BF%E7%94%A8(%E4%BA%8C)/"/>
+    <id>http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/</id>
+    <published>2017-09-27T16:00:00.000Z</published>
+    <updated>2017-09-29T08:40:25.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的影响与概念了。本篇我们将更深入的学习RxJava的基本原理以及如何使用RxJava。<br>　　<a id="more"></a></p>
+<h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>　　上一篇有提到RxJava的核心便是扩展的观察者模式，我们先来学习一下观察者模式。  </p>
+<p><div align="center"><br>　　<img src="/img/RxJava/example.jpeg" alt=""><br></div><br>　　事件：某雷按下遥控器开关，空调启动并开始吹风了。按下制冷按键，空调吹出的风变为凉风。再按下3档风速按键，空调吹的风变大了。<br>　　在这个事件中，<strong>空调作为观察者，遥控器作为被观察者，空调通过红外线检测遥控器传来的信号并作出响应。</strong>  </p>
+<p><div align="center"><br>　　<img src="/img/RxJava/connect.png" alt=""><br></div><br>　　通过上图我们可以很清晰的看出遥控器作为事件的生产方<strong>主动</strong>发起事件，是事件的起点，而空调作为事件的处理方<strong>被动</strong>接收事件做出响应，是事件的终点。而在事件传递的过程中可对事件进行过滤，转换，合并等操作，就像例子中制冷与加大风速的效果。<br>　　这个概念是RxJava中的核心，它是基于观察者模式来组建自己的程序逻辑，遥控器就相当于RxJava的<strong>被观察者Observable</strong>，空调相当于<strong>观察者Observer</strong>，而对事件处理的一些操作相当于各类<strong>操作符</strong>。不同的是RxJava中观察者需要对被观察者进行订阅，这样当被观察者发出事件时，观察者才会接收到事件进行处理。若未进行订阅，被观察者是不会发出任何事件的。</p>
+<h3 id="创建被观察者"><a href="#创建被观察者" class="headerlink" title="创建被观察者"></a>创建被观察者</h3><p>　　了解了观察者模式，接下来动起指尖尝试下怎么使用。第一步：创建被观察者：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　到此，本篇关于RxJava的基本原理与使用就讲解完毕了，下一篇我们将一起研究RxJava的四类操作符中的创建操作符。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的影响与概念了。本篇我们将更深入的学习RxJava的基本原理以及如何使用RxJava。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="http://LeiHolmes.github.io/categories/Android/"/>
+    
+    
+      <category term="RxJava" scheme="http://LeiHolmes.github.io/tags/RxJava/"/>
+    
+  </entry>
   
   <entry>
     <title>RxJava简介与入门(一)</title>
