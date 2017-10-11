@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'true', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="UA-99027890-1">
+    
+    
+    
+    <title>RxJava操作符之创建操作符(三) | Lei’s Blog | 不忘初心，淡然前行</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="RxJava">
+    <meta name="description" content="前言　　通过前两篇博文对于RxJava概念，原理及使用的学习，想必各位码友已经基本掌握RxJava的逻辑与功能了，那么从这篇博文开始我们来研究RxJava的各类操作符。">
+<meta name="keywords" content="RxJava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava操作符之创建操作符(三)">
+<meta property="og:url" content="http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/index.html">
+<meta property="og:site_name" content="Lei’s Blog">
+<meta property="og:description" content="前言　　通过前两篇博文对于RxJava概念，原理及使用的学习，想必各位码友已经基本掌握RxJava的逻辑与功能了，那么从这篇博文开始我们来研究RxJava的各类操作符。">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/schedulers.jpg">
+<meta property="og:updated_time" content="2017-10-11T09:15:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava操作符之创建操作符(三)">
+<meta name="twitter:description" content="前言　　通过前两篇博文对于RxJava概念，原理及使用的学习，想必各位码友已经基本掌握RxJava的逻辑与功能了，那么从这篇博文开始我们来研究RxJava的各类操作符。">
+<meta name="twitter:image" content="http://leiholmes.github.io/img/RxJava/schedulers.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">徐雷</h5>
+          <a href="mailto:18010498185@163.com" title="18010498185@163.com" class="mail">18010498185@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                成长之路
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/LeiHolmes" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/u/1850954523?topnav=1&wvr=6&topsug=1" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RxJava操作符之创建操作符(三)</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RxJava操作符之创建操作符(三)</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-10-10T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-10-11
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Create"><span class="post-toc-number">2.</span> <span class="post-toc-text">Create</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Just"><span class="post-toc-number">3.</span> <span class="post-toc-text">Just</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#From"><span class="post-toc-number">4.</span> <span class="post-toc-text">From</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Range"><span class="post-toc-number">5.</span> <span class="post-toc-text">Range</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Defer"><span class="post-toc-number">6.</span> <span class="post-toc-text">Defer</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Interval"><span class="post-toc-number">7.</span> <span class="post-toc-text">Interval</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Timer"><span class="post-toc-number">8.</span> <span class="post-toc-text">Timer</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Delay"><span class="post-toc-number">9.</span> <span class="post-toc-text">Delay</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Repeat"><span class="post-toc-number">10.</span> <span class="post-toc-text">Repeat</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#线程调度Scheduler"><span class="post-toc-number">11.</span> <span class="post-toc-text">线程调度Scheduler</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">12.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-RxJava操作符之创建操作符(三)"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RxJava操作符之创建操作符(三)</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-10-11 00:00:00" datetime="2017-10-10T16:00:00.000Z"  itemprop="datePublished">2017-10-11</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　通过前两篇博文对于RxJava概念，原理及使用的学习，想必各位码友已经基本掌握RxJava的逻辑与功能了，那么从这篇博文开始我们来研究RxJava的各类操作符。<br>　　<a id="more"></a><br>　　什么是操作符？通过之前的学习，我们发现Observable负责发送事件，Observer负责接收事件，而这个过程中想要对事件数据做出修改就需要交给操作符来负责啦。主流RxJava中操作符主要分为三类：转换操作符，过滤操作符，组合操作符。而我个人将用来创建Observable的操作符归为了一个新类型。本篇我们就来看看常用的创建操作符都有哪些以及如何使用。</p>
+<h3 id="Create"><a href="#Create" class="headerlink" title="Create"></a>Create</h3><p>　　上一篇博文的例子中我们已经实践了create操作符如何使用了，这里我们介绍一种便捷的创建Observer的方式。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Observable.create(<span class="keyword">new</span> Observable.OnSubscribe&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Subscriber&lt;? <span class="keyword">super</span> String&gt; subscriber)</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</div><div class="line">            subscriber.onNext(<span class="string">"xulei"</span> + i);</div><div class="line">        &#125;</div><div class="line">        subscriber.onCompleted();</div><div class="line">    &#125;</div><div class="line">&#125;).subscribe(<span class="keyword">new</span> Action1&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"create:"</span> + s);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　subscribe()的入参使用Action1代替原来的Observer，只需重写一个call()方法，等同于原Observer中onNext()方法。如果需要onComplete与onError状态，还可以如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">.subscribe(<span class="keyword">new</span> Action1&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"create:"</span> + s);</div><div class="line">    &#125;</div><div class="line">&#125;, <span class="keyword">new</span> Action1&lt;Throwable&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Throwable throwable)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"onError:"</span> + throwable.getMessage());</div><div class="line">    &#125;</div><div class="line">&#125;, <span class="keyword">new</span> Action0() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"onCompleted"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　使用new ActionX代替new Observer，代码是不是看起来更加灵活与简洁呢。</p>
+<h3 id="Just"><a href="#Just" class="headerlink" title="Just"></a>Just</h3><p>　　just操作符可将某个或某些对象转化为Observable对象，并将其发射出去。参数可为一个或多个数字，字符串。也可为集合，数组，Iterate对象等。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">Observable.just(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>).subscribe(<span class="keyword">new</span> Action1&lt;Integer&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Integer integer)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"just:数字："</span> + integer);</div><div class="line">        <span class="comment">//数字或者字符串都是单个发射多次</span></div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">List&lt;String&gt; stringList = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">stringList.add(<span class="string">"Hello"</span>);</div><div class="line">stringList.add(<span class="string">"Ha"</span>);</div><div class="line">stringList.add(<span class="string">"RxJava"</span>);</div><div class="line">Observable.just(stringList).subscribe(<span class="keyword">new</span> Action1&lt;List&lt;String&gt;&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(List&lt;String&gt; strings)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"just:集合："</span> + strings.toString());</div><div class="line">        <span class="comment">//集合或数组是直接发射集合整体，不会拆分</span></div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">just:数字：<span class="number">1</span></div><div class="line">just:数字：<span class="number">2</span></div><div class="line">just:数字：<span class="number">3</span></div><div class="line">just:数字：<span class="number">4</span></div><div class="line">just:数字：<span class="number">5</span></div><div class="line">just:数字：<span class="number">6</span></div><div class="line">just:集合：[Hello, Ha, RxJava]</div></pre></td></tr></table></figure></p>
+<h3 id="From"><a href="#From" class="headerlink" title="From"></a>From</h3><p>　　from操作符可将某个对象转化为Observable对象，并且将其发射出去。不同于just，他接收集合或数组，并可将集合数组遍历之后拆分发送。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">List&lt;String&gt; stringList = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">stringList.add(<span class="string">"Hello"</span>);</div><div class="line">stringList.add(<span class="string">"Ha"</span>);</div><div class="line">stringList.add(<span class="string">"RxJava"</span>);</div><div class="line">Observable.from(stringList).subscribe(<span class="keyword">new</span> Action1&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"from："</span> + s);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from：Hello</div><div class="line">from：Ha</div><div class="line">from：RxJava</div></pre></td></tr></table></figure></p>
+<h3 id="Range"><a href="#Range" class="headerlink" title="Range"></a>Range</h3><p>　　range(int start, int count)操作符，根据初始值start，与数量count，发射count次以start为基数依次增加的值。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Observable.range(<span class="number">4</span>, <span class="number">5</span>).subscribe(<span class="keyword">new</span> Action1&lt;Integer&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Integer integer)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"range："</span> + integer);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">range：<span class="number">4</span></div><div class="line">range：<span class="number">5</span></div><div class="line">range：<span class="number">6</span></div><div class="line">range：<span class="number">7</span></div><div class="line">range：<span class="number">8</span></div></pre></td></tr></table></figure></p>
+<h3 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h3><p>　　defer操作符功能类似于just操作符，不同之处在于defer只有在调用subscribe()方法进行订阅时才创建Observable，而just操作符在初始化Observable就已经创建了，且只创建一个Observable实例。这里我们通过与just对比进行实践。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">Action1&lt;String&gt; action1 = <span class="keyword">new</span> Action1&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, s);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">//defer</span></div><div class="line">Observable&lt;String&gt; deferObservable = Observable.defer(<span class="keyword">new</span> Func0&lt;Observable&lt;String&gt;&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Observable&lt;String&gt; <span class="title">call</span><span class="params">()</span> </span>&#123;</div><div class="line">        Object o = <span class="keyword">new</span> Object();</div><div class="line">        <span class="keyword">return</span> Observable.just(<span class="string">"defer：hashCode："</span> + o.hashCode());</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line">deferObservable.subscribe(action1);</div><div class="line">deferObservable.subscribe(action1);</div><div class="line">deferObservable.subscribe(action1);</div><div class="line"></div><div class="line"><span class="comment">//just</span></div><div class="line">Observable&lt;String&gt; justObservable = Observable.just(<span class="string">"just：hashCode："</span> + <span class="keyword">new</span> Object().hashCode());</div><div class="line">justObservable.subscribe(action1);</div><div class="line">justObservable.subscribe(action1);</div><div class="line">justObservable.subscribe(action1);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">defer：hashCode：<span class="number">112449879</span></div><div class="line">defer：hashCode：<span class="number">118897732</span></div><div class="line">defer：hashCode：<span class="number">191664429</span></div><div class="line">just：hashCode：<span class="number">121878114</span></div><div class="line">just：hashCode：<span class="number">121878114</span></div><div class="line">just：hashCode：<span class="number">121878114</span></div></pre></td></tr></table></figure></p>
+<p>　　由输出结果我们可以看出defer每次输出的Observable哈西值是不同的，说明其每subscribe订阅一次都会创建一个新的Observable，从而可保证Observable中的数据都是最新的。而just只有初始化的时候创建一次Observable。</p>
+<h3 id="Interval"><a href="#Interval" class="headerlink" title="Interval"></a>Interval</h3><p>　　interval创建操作符，创建一个Observabel并每隔一段时间周期发射一个由0开始增加的数字。<br>　　<strong>注意：此Observabel是运行在新的线程，所以更新UI需要在主线程中订阅</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//每隔100ms发射一个数字,从0自增</span></div><div class="line">Observable.interval(<span class="number">100</span>, TimeUnit.MILLISECONDS) <span class="comment">//单位为毫秒</span></div><div class="line">        .observeOn(AndroidSchedulers.mainThread())</div><div class="line">        .take(<span class="number">5</span>) <span class="comment">//取前5次事件发射，take为过滤操作符，后期会详细讲</span></div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;Long&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"interval："</span> + aLong);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="number">100</span>ms后...</div><div class="line">interval：<span class="number">0</span></div><div class="line"><span class="number">100</span>ms后...</div><div class="line">interval：<span class="number">1</span></div><div class="line"><span class="number">100</span>ms后...</div><div class="line">interval：<span class="number">2</span></div><div class="line"><span class="number">100</span>ms后...</div><div class="line">interval：<span class="number">3</span></div><div class="line"><span class="number">100</span>ms后...</div><div class="line">interval：<span class="number">4</span></div></pre></td></tr></table></figure></p>
+<h3 id="Timer"><a href="#Timer" class="headerlink" title="Timer"></a>Timer</h3><p>　　timer操作符，创建一个Observable并隔一段时间后发射一个特殊的值，仅发射一次。<br>　　<strong>注意：此Observabel是运行在新的线程，所以更新UI需要在主线程中订阅</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//隔1s后发射一个数字</span></div><div class="line">Observable.timer(<span class="number">1</span>, TimeUnit.SECONDS) <span class="comment">//单位为秒</span></div><div class="line">        .observeOn(AndroidSchedulers.mainThread())</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;Long&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"timer："</span> + aLong);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>秒后...</div><div class="line">timer：<span class="number">0</span></div></pre></td></tr></table></figure></p>
+<h3 id="Delay"><a href="#Delay" class="headerlink" title="Delay"></a>Delay</h3><p>　　delay操作符，可用于延迟一定时长再发送事件。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//延迟2秒后发射事件</span></div><div class="line">Observable.just(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">        .delay(<span class="number">2</span>, TimeUnit.SECONDS)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;Integer&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Integer integer)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"delay："</span> + integer);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">2</span>秒后...</div><div class="line">delay：<span class="number">1</span></div><div class="line">delay：<span class="number">2</span></div><div class="line">delay：<span class="number">3</span></div></pre></td></tr></table></figure></p>
+<h3 id="Repeat"><a href="#Repeat" class="headerlink" title="Repeat"></a>Repeat</h3><p>　　repeat(long count)操作符，将Observable重复发射count次。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//重复发射5次“Sherlock”</span></div><div class="line">Observable.just(<span class="string">"Sherlock"</span>).repeat(<span class="number">5</span>)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"repeat："</span> + s);</div><div class="line">            &#125;</div><div class="line">     &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">repeat：Sherlock</div><div class="line">repeat：Sherlock</div><div class="line">repeat：Sherlock</div><div class="line">repeat：Sherlock</div><div class="line">repeat：Sherlock</div></pre></td></tr></table></figure></p>
+<p>　　以上就是常用的一些创建操作符，类似但不常用的还有empty、never、error等等就不一一介绍了，有兴趣的码友可以自行百度。</p>
+<h3 id="线程调度Scheduler"><a href="#线程调度Scheduler" class="headerlink" title="线程调度Scheduler"></a>线程调度Scheduler</h3><p>　　RxJava就是用来处理异步任务的，所以就牵扯到生产事件所在线程，处理事件所在线程的问题，下面来看一下RxJava提供的线程调度Scheduler都有哪些。</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/schedulers.jpg" alt=""><br></div><br>　　有了Scheduler，RxJava当然也提供了方法来使用它们。<br>　　<strong>.subscribeOn()</strong>指定被观察者Observable的执行线程。<br>　　<strong>.observeOn()</strong>指定观察者Observer的执行线程。<br>　　如第一篇博文中的例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获取要查询的小区集合</span></div><div class="line">Observable.from(getCommunitiesFromServer())</div><div class="line">        .flatMap(<span class="keyword">new</span> Func1&lt;Community, Observable&lt;House&gt;&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Observable&lt;House&gt; <span class="title">call</span><span class="params">(Community community)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> Observable.from(community.getHouses());</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .filter(<span class="keyword">new</span> Func1&lt;House, Boolean&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Boolean <span class="title">call</span><span class="params">(House house)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> house.getPrice() &lt; <span class="number">200</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .subscribeOn(Schedulers.io())</div><div class="line">        .observeOn(AndroidSchedulers.mainThread())</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;House&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(House house)</span> </span>&#123;</div><div class="line">                <span class="comment">//显示查询出来的房源信息</span></div><div class="line">                ShowSearchedHousesMessage();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　其中<code>.subscribeOn(Schedulers.io())</code>指定了Observable在io线程运行，通常用来执行从服务器获取数据，数据库加载等耗时操作。<code>.observeOn(AndroidSchedulers.mainThread())</code>指定了Observer在Android环境下的UI线程运行，通常用来获取到数据后进行UI刷新的操作。可根据实际需求选择不同线程类型。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　到此，本篇关于RxJava的创建类操作符以及线程调度就讲解完毕了，下一篇我们将一起研究RxJava的四类操作符中的转换操作符都有哪些以及如何使用。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。<br>　　附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2017-10-11T09:15:55.000Z" itemprop="dateUpdated">2017-10-11 17:15:55</time>
+</span><br>
+
+
+        
+        进阶中的程序猿一枚，若发现有不正确的地方或者疑问欢迎各位留言指正。QQ：781751723
+        
+    </div>
+    <footer>
+        <a href="http://LeiHolmes.github.io">
+            <img src="/img/avatar.jpg" alt="徐雷">
+            徐雷
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RxJava/">RxJava</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/&title=《RxJava操作符之创建操作符(三)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/&title=《RxJava操作符之创建操作符(三)》 — Lei’s Blog&source=前言　　通过前两篇博文对于RxJava概念，原理及使用的学习，想必各位码友已经基本掌握RxJava的逻辑与功能了，那么从这篇博文开始我们来研究RxJava..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava操作符之创建操作符(三)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/09/28/RxJava基本原理与使用(二)/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RxJava基本原理与使用(二)</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
+    <script>
+    var cloudTieConfig = {
+        url: 'http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/index.html',
+        sourceId: 'RxJava操作符之创建操作符(三)',
+        productKey: 'a49afc3603394502bd2ba8121a4284d9',
+        target: 'cloud-tie-wrapper',
+        pcFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/pc.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/pc.min.js',
+        ],
+        mobileFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/mobile.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/mobile.min.js'
+        ]
+    };
+    </script>
+    <script src="//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/loader.min.js"></script>
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/img/wechat.jpg" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/img/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>徐雷 &copy; 2015 - 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/&title=《RxJava操作符之创建操作符(三)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/&title=《RxJava操作符之创建操作符(三)》 — Lei’s Blog&source=前言　　通过前两篇博文对于RxJava概念，原理及使用的学习，想必各位码友已经基本掌握RxJava的逻辑与功能了，那么从这篇博文开始我们来研究RxJava..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava操作符之创建操作符(三)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/10/11/RxJava操作符之创建操作符(三)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACrklEQVR42u3aQXLjMAwEwPz/09kHZC3PAGTKW9s6uSyJYutAQgC+vuLj+8fx8+zzXc//v/r9PM6xAw8PD2899VePf35Mcv3zq3keITn7l7nh4eHhXeMl003uSnjPS3+7kbyZFR4eHt4H8JLQdn9NG3bj4eHhfTKv/epvtw08PDy8f4WXfPzXQ8ep2CRkv55rwcPDw4t5eRXpc35fqe/h4eHhravqbbvArFiVA+rZ4uHh4V3gbRINbeE/L3S14fibK/Hw8PAu8JKy06w1qn1ZbeqhbSzAw8PDO8vbJGrzR95oQVhlU/Dw8PBGpKTUtHkReWpjtsG8/AcPDw/vGu9wVB6nD3JM3kZw/6MDDw/vf+flyH0onDcEtK+4KIDh4eHhHeXNlulZSWzTXNWW4vDw8PDO8mbh7GwR36do68YCPDw8vAu8lpEjZ6FwMmax4+Hh4eFd47U3RymAESx/etH6gIeHh3eBd6C9KS/nxy0LsxTzMKTGw8PDi3nJ530b2s4mtElqvBTh4eHh/Qpv3/w0W5mTNEcbrOPh4eHd5s1SAzkyWe7zpycBNx4eHt49XpIY3Tw+qb8Nq3bPmxAeHh7eNV6SDmibrmZnZ+F1ve/h4eHhLXjtIp4nI2aNCHlit07y4uHh4V3gzQD5CJspztrC8PDw8O7x8sW6LZVtGgVmrQlvJoqHh4d3lJcvtftJ51vRLN2Mh4eH9zu8NlCeJWTzbSAvfb2ZLR4eHt5R3nd57FsEzr5EPDw8vN/ntUttu5TnTVqz5O/XqQMPDw+v5M02g7YRYZPamCU18PDw8G7zZvnPfJwbLzGaAx4eHt6H8faB76whoLgeDw8P72N4s5bT2chJwexwSI2Hh4d3KBnRbgBtGJ23INQhNR4eHt5RXntbO4m2vfVswwEeHh7eUd4f34T33V77SskAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
