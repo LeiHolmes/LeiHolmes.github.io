@@ -38,17 +38,23 @@ ga('send', 'pageview');
 <meta property="og:url" content="http://LeiHolmes.github.io/2017/10/13/RxJava操作符之过滤操作符(五)/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="前言　　上一篇文章我们一起学习了转换类操作符，本篇我们将学习RxJava过滤类操作符。过滤操作符主要是用来对事件数据进行过滤与筛选，只返回满足条件的数据，一起来看下都有哪些。">
-<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/map.png">
-<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/flatMap.png">
-<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/concatMap.png">
-<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/switchMap.png">
-<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/scan.png">
-<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/groupBy.png">
-<meta property="og:updated_time" content="2017-10-13T08:46:47.000Z">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/filter.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/take.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/takeLast.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/takeUntil.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/skip.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/skipLast.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/elementAt.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/debounce.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/distinct.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/distinctUntilChanged.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/first.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/last.png">
+<meta property="og:updated_time" content="2017-10-13T09:27:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava操作符之过滤操作符(五)">
 <meta name="twitter:description" content="前言　　上一篇文章我们一起学习了转换类操作符，本篇我们将学习RxJava过滤类操作符。过滤操作符主要是用来对事件数据进行过滤与筛选，只返回满足条件的数据，一起来看下都有哪些。">
-<meta name="twitter:image" content="http://leiholmes.github.io/img/RxJava/map.png">
+<meta name="twitter:image" content="http://leiholmes.github.io/img/RxJava/filter.png">
     
         <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
     
@@ -207,29 +213,55 @@ ga('send', 'pageview');
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　上一篇文章我们一起学习了转换类操作符，本篇我们将学习RxJava过滤类操作符。过滤操作符主要是用来对事件数据进行过滤与筛选，只返回满足条件的数据，一起来看下都有哪些。<br>　　<a id="more"></a></p>
-<h3 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h3><p>　　filter操作符，</p>
-<p><div align="center"><br>　　<img src="/img/RxJava/map.png" alt=""><br></div><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<h3 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h3><p>　　filter操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
 <p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
-<p>　　　</p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/filter.png" alt=""><br></div></p>
 <h3 id="Take"><a href="#Take" class="headerlink" title="Take"></a>Take</h3><p>　　take操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
-<p>　　<br>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
-<p>　　<br>　　官方原理图：</p>
-<p><div align="center"><br>　　<img src="/img/RxJava/flatMap.png" alt=""><br></div></p>
-<h3 id="TakeLast"><a href="#TakeLast" class="headerlink" title="TakeLast"></a>TakeLast</h3><p>　　takeLast操作符，<br>　　原理图：</p>
-<p><div align="center"><br>　　<img src="/img/RxJava/concatMap.png" alt=""><br></div></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/take.png" alt=""><br></div></p>
+<h3 id="TakeLast"><a href="#TakeLast" class="headerlink" title="TakeLast"></a>TakeLast</h3><p>　　takeLast操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/takeLast.png" alt=""><br></div></p>
 <h3 id="TakeUntil"><a href="#TakeUntil" class="headerlink" title="TakeUntil"></a>TakeUntil</h3><p>　　takeUntil操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/takeUntil.png" alt=""><br></div></p>
 <h3 id="Skip"><a href="#Skip" class="headerlink" title="Skip"></a>Skip</h3><p>　　skip转换操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
-<p>　　<br>　　原理图：</p>
-<p><div align="center"><br>　　<img src="/img/RxJava/switchMap.png" alt=""><br></div></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/skip.png" alt=""><br></div></p>
 <h3 id="SkipLast"><a href="#SkipLast" class="headerlink" title="SkipLast"></a>SkipLast</h3><p>　　skipLast操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
 <p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
 <p>　　原理图：</p>
-<p><div align="center"><br>　　<img src="/img/RxJava/scan.png" alt=""><br></div></p>
+<p><div align="center"><br>　　<img src="/img/RxJava/skipLast.png" alt=""><br></div></p>
 <h3 id="ElementAt"><a href="#ElementAt" class="headerlink" title="ElementAt"></a>ElementAt</h3><p>　　elementAt操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
-<p>　　<br>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
 <p>　　原理图：</p>
-<p><div align="center"><br>　　<img src="/img/RxJava/groupBy.png" alt=""><br></div></p>
-<h3 id="Debounce"><a href="#Debounce" class="headerlink" title="Debounce"></a>Debounce</h3><h3 id="Distinct"><a href="#Distinct" class="headerlink" title="Distinct"></a>Distinct</h3><h3 id="DistinctUntilChanged"><a href="#DistinctUntilChanged" class="headerlink" title="DistinctUntilChanged"></a>DistinctUntilChanged</h3><h3 id="First"><a href="#First" class="headerlink" title="First"></a>First</h3><h3 id="Last"><a href="#Last" class="headerlink" title="Last"></a>Last</h3><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　到此，本篇关于RxJava的常用过滤类操作符就讲解完毕了，下一篇我们将一起研究RxJava的四类操作符中的转换操作符都有哪些以及如何使用。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。<br>　　附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a></p>
+<p><div align="center"><br>　　<img src="/img/RxJava/elementAt.png" alt=""><br></div></p>
+<h3 id="Debounce"><a href="#Debounce" class="headerlink" title="Debounce"></a>Debounce</h3><p>　　debounce操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/debounce.png" alt=""><br></div></p>
+<h3 id="Distinct"><a href="#Distinct" class="headerlink" title="Distinct"></a>Distinct</h3><p>　　distinct操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/distinct.png" alt=""><br></div></p>
+<h3 id="DistinctUntilChanged"><a href="#DistinctUntilChanged" class="headerlink" title="DistinctUntilChanged"></a>DistinctUntilChanged</h3><p>　　distinctUntilChanged操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/distinctUntilChanged.png" alt=""><br></div></p>
+<h3 id="First"><a href="#First" class="headerlink" title="First"></a>First</h3><p>　　first操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/first.png" alt=""><br></div></p>
+<h3 id="Last"><a href="#Last" class="headerlink" title="Last"></a>Last</h3><p>　　last操作符，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/last.png" alt=""><br></div></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　到此，本篇关于RxJava的常用过滤类操作符就讲解完毕了，下一篇我们将一起研究RxJava的四类操作符中的转换操作符都有哪些以及如何使用。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。<br>　　附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a></p>
 
         </div>
 
@@ -237,7 +269,7 @@ ga('send', 'pageview');
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2017-10-13T08:46:47.000Z" itemprop="dateUpdated">2017-10-13 16:46:47</time>
+    Last updated: <time datetime="2017-10-13T09:27:03.000Z" itemprop="dateUpdated">2017-10-13 17:27:03</time>
 </span><br>
 
 
