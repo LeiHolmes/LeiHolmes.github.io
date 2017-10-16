@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-10-16T06:35:14.000Z</updated>
+  <updated>2017-10-16T06:41:24.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>RxJava操作符之过滤操作符(五)</title>
-    <link href="http://LeiHolmes.github.io/2017/10/13/RxJava%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%B9%8B%E8%BF%87%E6%BB%A4%E6%93%8D%E4%BD%9C%E7%AC%A6(%E4%BA%94)/"/>
-    <id>http://LeiHolmes.github.io/2017/10/13/RxJava操作符之过滤操作符(五)/</id>
-    <published>2017-10-12T16:00:00.000Z</published>
-    <updated>2017-10-16T06:35:14.000Z</updated>
+    <link href="http://LeiHolmes.github.io/2017/10/16/RxJava%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%B9%8B%E8%BF%87%E6%BB%A4%E6%93%8D%E4%BD%9C%E7%AC%A6(%E4%BA%94)/"/>
+    <id>http://LeiHolmes.github.io/2017/10/16/RxJava操作符之过滤操作符(五)/</id>
+    <published>2017-10-15T16:00:00.000Z</published>
+    <updated>2017-10-16T06:41:24.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　上一篇文章我们学习了转换类操作符，本篇我们将一起来学习RxJava过滤类操作符。过滤操作符主要是用来对事件数据进行过滤与筛选，只返回满足条件的数据，一起来看下都有哪些。<br>　　<a id="more"></a></p>
 <h3 id="过滤操作符"><a href="#过滤操作符" class="headerlink" title="过滤操作符"></a>过滤操作符</h3><h4 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h4><p>　　filter操作符，按照一定的约束条件过滤序列中我们不想要的数据，只返回满足条件的数据给观察者。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//结合flatmap，过滤出各小区中房源大小大于120平的房子</span></div><div class="line">Observable.from(communities)</div><div class="line">        .flatMap(<span class="keyword">new</span> Func1&lt;Community, Observable&lt;House&gt;&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Observable&lt;House&gt; <span class="title">call</span><span class="params">(Community community)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> Observable.from(community.getHouses());</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .filter(<span class="keyword">new</span> Func1&lt;House, Boolean&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Boolean <span class="title">call</span><span class="params">(House house)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> house.getSize() &gt; <span class="number">120f</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;House&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(House house)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"filter：大于120平的房子："</span> + house.getCommunityName() + <span class="string">"小区，大小："</span> + house.getSize());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
