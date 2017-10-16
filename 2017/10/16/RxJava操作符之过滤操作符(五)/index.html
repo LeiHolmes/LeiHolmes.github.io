@@ -55,7 +55,7 @@ ga('send', 'pageview');
 <meta property="og:image" content="http://leiholmes.github.io/img/RxJava/elementAt.png">
 <meta property="og:image" content="http://leiholmes.github.io/img/RxJava/first.png">
 <meta property="og:image" content="http://leiholmes.github.io/img/RxJava/last.png">
-<meta property="og:updated_time" content="2017-10-16T06:41:24.000Z">
+<meta property="og:updated_time" content="2017-10-16T06:46:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava操作符之过滤操作符(五)">
 <meta name="twitter:description" content="前言　　上一篇文章我们学习了转换类操作符，本篇我们将一起来学习RxJava过滤类操作符。过滤操作符主要是用来对事件数据进行过滤与筛选，只返回满足条件的数据，一起来看下都有哪些。">
@@ -282,7 +282,8 @@ ga('send', 'pageview');
 <p>　　原理图：</p>
 <p><div align="center"><br>　　<img src="/img/RxJava/last.png" alt=""><br></div><br>　　<strong>2.last(Func1)</strong><br>　　根据Func1中call方法的条件，发射符合条件的最后一个数据项。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//发送符合条件的最后一个数据项：过滤最后一个小区名为马德里春天的房源</span></div><div class="line">Observable.from(communities)</div><div class="line">        .flatMap(<span class="keyword">new</span> Func1&lt;Community, Observable&lt;House&gt;&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Observable&lt;House&gt; <span class="title">call</span><span class="params">(Community community)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> Observable.from(community.getHouses());</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .last(<span class="keyword">new</span> Func1&lt;House, Boolean&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Boolean <span class="title">call</span><span class="params">(House house)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> <span class="string">"马德里春天"</span>.equals(house.getCommunityName());</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;House&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(House house)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"last："</span> + house.getCommunityName() + <span class="string">"小区，大小："</span> + house.getSize());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
 <p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">last：马德里春天小区，大小：<span class="number">88.6</span></div></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　到此，本篇关于RxJava的常用过滤类操作符就讲解完毕了，下一篇我们将一起研究RxJava的四类操作符中的组合操作符都有哪些以及如何使用。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。<br>　　附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　到此，本篇关于RxJava的常用过滤类操作符就讲解完毕了，下一篇我们将一起研究RxJava的四类操作符中的组合操作符都有哪些以及如何使用。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。<br>　　附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a>
+　　</p>
 
         </div>
 
@@ -290,7 +291,7 @@ ga('send', 'pageview');
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2017-10-16T06:41:24.000Z" itemprop="dateUpdated">2017-10-16 14:41:24</time>
+    Last updated: <time datetime="2017-10-16T06:46:23.000Z" itemprop="dateUpdated">2017-10-16 14:46:23</time>
 </span><br>
 
 
