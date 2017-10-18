@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'true', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="UA-99027890-1">
+    
+    
+    
+    <title>RxJava操作符之组合操作符(六) | Lei’s Blog | 不忘初心，淡然前行</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="RxJava">
+    <meta name="description" content="前言　　上一篇文章我们学习了过滤类操作符，本篇我们将一起来学习RxJava组合类操作符。组合操作符主要是用来……，一起来看下都有哪些。">
+<meta name="keywords" content="RxJava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava操作符之组合操作符(六)">
+<meta property="og:url" content="http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/index.html">
+<meta property="og:site_name" content="Lei’s Blog">
+<meta property="og:description" content="前言　　上一篇文章我们学习了过滤类操作符，本篇我们将一起来学习RxJava组合类操作符。组合操作符主要是用来……，一起来看下都有哪些。">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/merge.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/mergeDelayError.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/concat.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/zip.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/startWith.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/switchOnNext.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/combineLatest.png">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/join.png">
+<meta property="og:updated_time" content="2017-10-18T09:51:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava操作符之组合操作符(六)">
+<meta name="twitter:description" content="前言　　上一篇文章我们学习了过滤类操作符，本篇我们将一起来学习RxJava组合类操作符。组合操作符主要是用来……，一起来看下都有哪些。">
+<meta name="twitter:image" content="http://leiholmes.github.io/img/RxJava/merge.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">徐雷</h5>
+          <a href="mailto:17611595118@163.com" title="17611595118@163.com" class="mail">17611595118@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                成长之路
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/LeiHolmes" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/u/1850954523?topnav=1&wvr=6&topsug=1" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RxJava操作符之组合操作符(六)</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RxJava操作符之组合操作符(六)</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-10-17T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-10-18
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#组合操作符"><span class="post-toc-number">2.</span> <span class="post-toc-text">组合操作符</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Merge"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Merge</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#MergeDelayError"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">MergeDelayError</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Concat"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">Concat</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Zip"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">Zip</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#StartWith"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">StartWith</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#SwitchOnNext"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">SwitchOnNext</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#CombineLatest"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">CombineLatest</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Join"><span class="post-toc-number">2.8.</span> <span class="post-toc-text">Join</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-RxJava操作符之组合操作符(六)"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RxJava操作符之组合操作符(六)</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-10-18 00:00:00" datetime="2017-10-17T16:00:00.000Z"  itemprop="datePublished">2017-10-18</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　上一篇文章我们学习了过滤类操作符，本篇我们将一起来学习RxJava组合类操作符。组合操作符主要是用来……，一起来看下都有哪些。<br>　　<a id="more"></a></p>
+<h3 id="组合操作符"><a href="#组合操作符" class="headerlink" title="组合操作符"></a>组合操作符</h3><h4 id="Merge"><a href="#Merge" class="headerlink" title="Merge"></a>Merge</h4><p>　　merge操作符，将两个Observable要发射的观测序列合并为一个序列进行发射。按照两个序列每个元素的发射时间先后进行排序，同一时间点发射的元素则是无序的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//将一个发送字母的Observable与发送数字的Observable合并发射</span></div><div class="line"><span class="keyword">final</span> String[] words = <span class="keyword">new</span> String[]&#123;<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>, <span class="string">"D"</span>, <span class="string">"E"</span>, <span class="string">"F"</span>, <span class="string">"G"</span>, <span class="string">"H"</span>, <span class="string">"I"</span>&#125;;</div><div class="line"><span class="comment">//字母Observable，每200ms发射一次</span></div><div class="line">Observable&lt;String&gt; wordSequence = Observable.interval(<span class="number">200</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .map(<span class="keyword">new</span> Func1&lt;Long, String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(Long position)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> words[position.intValue()];</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .take(words.length);</div><div class="line"><span class="comment">//数字Observable，每500ms发射一次</span></div><div class="line">Observable&lt;Long&gt; numberSequence = Observable.interval(<span class="number">500</span>, TimeUnit.MILLISECONDS).take(<span class="number">4</span>);</div><div class="line">Observable.merge(wordSequence, numberSequence)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;Serializable&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Serializable serializable)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"merge："</span> + serializable.toString());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">merge：A</div><div class="line">merge：B</div><div class="line">merge：<span class="number">0</span></div><div class="line">merge：C</div><div class="line">merge：D</div><div class="line">merge：E</div><div class="line">merge：<span class="number">1</span></div><div class="line">merge：F</div><div class="line">merge：G</div><div class="line">merge：<span class="number">2</span></div><div class="line">merge：H</div><div class="line">merge：I</div><div class="line">merge：<span class="number">3</span></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/merge.png" alt=""><br></div><br>　　merge操作符还有一种入参merge(Observable[]),可传入含有多个Observable的集合，merge操作符也可将这多个Observable的序列合并后发射。</p>
+<h4 id="MergeDelayError"><a href="#MergeDelayError" class="headerlink" title="MergeDelayError"></a>MergeDelayError</h4><p>　　mergeDelayError操作符，与merge功能类似，都是用来合并Observable的。不同之处在于mergeDelayError操作符在合并过程中发生异常的话不会立即停止合并，而会在所有元素合并发射完毕之后再发射异常。但发生异常的那个Observable就不会发射数据了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//字母Observable，每200ms发射一次，模拟过程中产生一个异常</span></div><div class="line">Observable&lt;String&gt; wordSequence = Observable.interval(<span class="number">200</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .map(<span class="keyword">new</span> Func1&lt;Long, String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(Long position)</span> </span>&#123;</div><div class="line">                Long cache = position;</div><div class="line">                <span class="keyword">if</span> (cache == <span class="number">3</span>) &#123;</div><div class="line">                    cache = cache / <span class="number">0</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">return</span> words[position.intValue()];</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .take(words.length);</div><div class="line"><span class="comment">//数字Observable，每500ms发射一次</span></div><div class="line">Observable&lt;Long&gt; numberSequence = Observable.interval(<span class="number">500</span>, TimeUnit.MILLISECONDS).take(<span class="number">4</span>);</div><div class="line">Observable.mergeDelayError(wordSequence, numberSequence)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;Serializable&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Serializable serializable)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"mergeDelayError："</span> + serializable.toString());</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Action1&lt;Throwable&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Throwable throwable)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"mergeDelayError："</span> + throwable.getMessage());</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Action0() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">()</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"mergeDelayError：onComplete"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mergeDelayError：A</div><div class="line">mergeDelayError：B</div><div class="line">mergeDelayError：<span class="number">0</span></div><div class="line">mergeDelayError：C</div><div class="line">mergeDelayError：<span class="number">1</span></div><div class="line">mergeDelayError：<span class="number">2</span></div><div class="line">mergeDelayError：<span class="number">3</span></div><div class="line">mergeDelayError：divide by zero</div></pre></td></tr></table></figure></p>
+<p>　　由输出结果可看出，wordSequence在发射到C时抛出了一个异常，停止发射其剩下的数据，但合并没有停止。合并完成之后这个异常才被发射了出来。<br>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/mergeDelayError.png" alt=""><br></div></p>
+<h4 id="Concat"><a href="#Concat" class="headerlink" title="Concat"></a>Concat</h4><p>　　concat操作符，将多个Obserbavle发射的的数据进行合并后发射，类似于merge操作符。但concat操作符是将Observable依次发射，是有序的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Observable&lt;String&gt; wordSequence = Observable.just(<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>, <span class="string">"D"</span>, <span class="string">"E"</span>);</div><div class="line">Observable&lt;Integer&gt; numberSequence = Observable.just(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>);</div><div class="line">Observable&lt;String&gt; nameSequence = Observable.just(<span class="string">"Sherlock"</span>, <span class="string">"Holmes"</span>, <span class="string">"Xu"</span>, <span class="string">"Lei"</span>);</div><div class="line">Observable.concat(wordSequence, numberSequence, nameSequence)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;Serializable&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Serializable serializable)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"concat："</span> + serializable.toString());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">concat：A</div><div class="line">concat：B</div><div class="line">concat：C</div><div class="line">concat：D</div><div class="line">concat：E</div><div class="line">concat：<span class="number">1</span></div><div class="line">concat：<span class="number">2</span></div><div class="line">concat：<span class="number">3</span></div><div class="line">concat：<span class="number">4</span></div><div class="line">concat：<span class="number">5</span></div><div class="line">concat：Sherlo</div><div class="line">concat：Holmes</div><div class="line">concat：Xu</div><div class="line">concat：Lei</div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/concat.png" alt=""><br></div></p>
+<h4 id="Zip"><a href="#Zip" class="headerlink" title="Zip"></a>Zip</h4><p>　　zip(Observable, Observable, Func2)操作符，根据Func2中的call()方法规则合并两个Observable的数据项并发射。<br>　　<strong>注意：若其中一个Observable数据发送结束后或出现异常后，另一个Observable也会停止发射数据。</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Observable&lt;String&gt; wordSequence = Observable.just(<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>, <span class="string">"D"</span>, <span class="string">"E"</span>);</div><div class="line">Observable&lt;Integer&gt; numberSequence = Observable.just(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>);</div><div class="line">Observable.zip(wordSequence, numberSequence, <span class="keyword">new</span> Func2&lt;String, Integer, String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(String s, Integer integer)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> s + integer;</div><div class="line">    &#125;</div><div class="line">&#125;).subscribe(<span class="keyword">new</span> Action1&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"zip："</span> + s);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">zip：A1</div><div class="line">zip：B2</div><div class="line">zip：C3</div><div class="line">zip：D4</div><div class="line">zip：E5</div></pre></td></tr></table></figure></p>
+<p>　　由输出结果可看出numberSequence观测序列最后的6并没有发射出来，由于wordSequence观测序列已发射完所有数据，所以组合序列也停止发射数据了。<br>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/zip.png" alt=""><br></div></p>
+<h4 id="StartWith"><a href="#StartWith" class="headerlink" title="StartWith"></a>StartWith</h4><p>　　startWith操作符，用于在源Observable发射的数据前，插入指定的数据并发射。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Observable.just(<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>)</div><div class="line">        .startWith(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;Integer&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Integer integer)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"startWith："</span> + integer);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">startWith：<span class="number">1</span></div><div class="line">startWith：<span class="number">2</span></div><div class="line">startWith：<span class="number">3</span></div><div class="line">startWith：<span class="number">4</span></div><div class="line">startWith：<span class="number">5</span></div><div class="line">startWith：<span class="number">6</span></div><div class="line">startWith：<span class="number">7</span></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/startWith.png" alt=""><br></div><br>　　startWith还有两种入参：<br>　　1. startWith(Iterable<t>)：可在源Observable发射的数据前插入Iterable数据并发射。<br>　　2. startWith(Observable<t>)：可在源Observable发射的数据前插入另一Observable发射的数据并发射。</t></t></p>
+<h4 id="SwitchOnNext"><a href="#SwitchOnNext" class="headerlink" title="SwitchOnNext"></a>SwitchOnNext</h4><p>　　switchOnNext操作符，用来将一个发射多个小Observable的源Observable转化为一个Observable，然后发射多个小Observable所发射的数据。若小Observable正在发射数据时，源Observable又发射了新的小Observable，则前一个小Observable还未发射的数据会被抛弃，直接发射新的小Observable所发射的数据，上例子。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//每隔500ms产生一个Observable</span></div><div class="line">Observable&lt;Observable&lt;Long&gt;&gt; observable = Observable.interval(<span class="number">500</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .map(<span class="keyword">new</span> Func1&lt;Long, Observable&lt;Long&gt;&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Observable&lt;Long&gt; <span class="title">call</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                <span class="comment">//每隔200毫秒产生一组数据（0,10,20,30,40)</span></div><div class="line">                <span class="keyword">return</span> Observable.interval(<span class="number">200</span>, TimeUnit.MILLISECONDS)</div><div class="line">                        .map(<span class="keyword">new</span> Func1&lt;Long, Long&gt;() &#123;</div><div class="line">                            <span class="meta">@Override</span></div><div class="line">                            <span class="function"><span class="keyword">public</span> Long <span class="title">call</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                                <span class="keyword">return</span> aLong * <span class="number">10</span>;</div><div class="line">                            &#125;</div><div class="line">                        &#125;).take(<span class="number">5</span>);</div><div class="line">                &#125;</div><div class="line">        &#125;).take(<span class="number">2</span>);</div><div class="line">        </div><div class="line">Observable.switchOnNext(observable)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;Long&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"switchOnNext："</span> + aLong);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">switchOnNext：<span class="number">0</span></div><div class="line">switchOnNext：<span class="number">10</span></div><div class="line">switchOnNext：<span class="number">0</span></div><div class="line">switchOnNext：<span class="number">10</span></div><div class="line">switchOnNext：<span class="number">20</span></div><div class="line">switchOnNext：<span class="number">30</span></div><div class="line">switchOnNext：<span class="number">40</span></div></pre></td></tr></table></figure></p>
+<p>　　由输出结果发现第一个小Observable打印到10则停止了发射数据，说明其发射到10时，新的小Observable被创建了出来，第一个小Observable则被中断发射，开始发射新的小Observable的数据。<br>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/switchOnNext.png" alt=""><br></div></p>
+<h4 id="CombineLatest"><a href="#CombineLatest" class="headerlink" title="CombineLatest"></a>CombineLatest</h4><p>　　combineLatest操作符，用于将两个Observale最近发射的数据以Func2函数的规则进行组合并发射。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//引用merge的例子</span></div><div class="line"><span class="keyword">final</span> String[] words = <span class="keyword">new</span> String[]&#123;<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>, <span class="string">"D"</span>, <span class="string">"E"</span>, <span class="string">"F"</span>, <span class="string">"G"</span>, <span class="string">"H"</span>, <span class="string">"I"</span>&#125;;</div><div class="line">Observable&lt;String&gt; wordSequence = Observable.interval(<span class="number">300</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .map(<span class="keyword">new</span> Func1&lt;Long, String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(Long position)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> words[position.intValue()];</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .take(words.length);</div><div class="line">Observable&lt;Long&gt; numberSequence = Observable.interval(<span class="number">500</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .take(<span class="number">5</span>);</div><div class="line">Observable.combineLatest(wordSequence, numberSequence,</div><div class="line">        <span class="keyword">new</span> Func2&lt;String, Long, String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(String s, Long aLong)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> s + aLong;</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .subscribe(<span class="keyword">new</span> Action1&lt;Serializable&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Serializable serializable)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"combineLatest："</span> + serializable.toString());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">combineLatest：A0</div><div class="line">combineLatest：B0</div><div class="line">combineLatest：C0</div><div class="line">combineLatest：C1</div><div class="line">combineLatest：D1</div><div class="line">combineLatest：E1</div><div class="line">combineLatest：E2</div><div class="line">combineLatest：F2</div><div class="line">combineLatest：F3</div><div class="line">combineLatest：G3</div><div class="line">combineLatest：H3</div><div class="line">combineLatest：H4</div><div class="line">combineLatest：I4</div></pre></td></tr></table></figure></p>
+<p>　　如果将wordSequence与numberSequence的入参顺序互换，输出结果也会不同：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">combineLatest：<span class="number">0</span>A</div><div class="line">combineLatest：<span class="number">0</span>B</div><div class="line">combineLatest：<span class="number">0</span>C</div><div class="line">combineLatest：<span class="number">1</span>C</div><div class="line">combineLatest：<span class="number">1</span>D</div><div class="line">combineLatest：<span class="number">2</span>D</div><div class="line">combineLatest：<span class="number">2</span>E</div><div class="line">combineLatest：<span class="number">2F</span></div><div class="line">combineLatest：<span class="number">3F</span></div><div class="line">combineLatest：<span class="number">3</span>G</div><div class="line">combineLatest：<span class="number">3</span>H</div><div class="line">combineLatest：<span class="number">4</span>H</div><div class="line">combineLatest：<span class="number">4</span>I</div></pre></td></tr></table></figure></p>
+<p>　　wordSequence每300ms发射一个字符，numberSequence每500ms发射一个数字。可能有些码友不知道这个输出结果怎么来的，这个操作符确实不太好理解。我们来看一下这个原理图就很清楚了。<br>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/combineLatest.png" alt=""><br></div></p>
+<h4 id="Join"><a href="#Join" class="headerlink" title="Join"></a>Join</h4><p>　　join(Observable, Func1, Func1, Func2)操作符，用于将ObservableA与ObservableB发射的数据进行排列组合<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//产生0，5，10，15，20，25的序列</span></div><div class="line">Observable&lt;Long&gt; observableA = Observable.interval(<span class="number">1000</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .map(<span class="keyword">new</span> Func1&lt;Long, Long&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Long <span class="title">call</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> aLong * <span class="number">5</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;).take(<span class="number">5</span>);</div><div class="line"></div><div class="line"><span class="comment">//产生0，10，20，30,40,50的序列,延时500ms发射</span></div><div class="line">Observable&lt;Long&gt; observableB = Observable.interval(<span class="number">500</span>, <span class="number">1000</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .map(<span class="keyword">new</span> Func1&lt;Long, Long&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Long <span class="title">call</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> aLong * <span class="number">10</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;).take(<span class="number">5</span>);</div><div class="line"><span class="comment">//join</span></div><div class="line">observableA.join(observableB,</div><div class="line">        <span class="keyword">new</span> Func1&lt;Long, Observable&lt;Long&gt;&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Observable&lt;Long&gt; <span class="title">call</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                <span class="comment">//使ObservableA延迟600毫秒执行</span></div><div class="line">                <span class="keyword">return</span> Observable.just(aLong).delay(<span class="number">600</span>, TimeUnit.MILLISECONDS);</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">        <span class="keyword">new</span> Func1&lt;Long, Observable&lt;Long&gt;&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> Observable&lt;Long&gt; <span class="title">call</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                <span class="comment">//使ObservableB延迟600毫秒执行</span></div><div class="line">                <span class="keyword">return</span> Observable.just(aLong).delay(<span class="number">600</span>, TimeUnit.MILLISECONDS);</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">        <span class="keyword">new</span> Func2&lt;Long, Long, String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(Long aLong, Long aLong2)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> <span class="string">"ObservableA:"</span> + aLong + <span class="string">"-------ObservableB:"</span> + aLong2;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">).subscribe(<span class="keyword">new</span> Action1&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_test"</span>, <span class="string">"join："</span> + s);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">join：ObservableA:<span class="number">0</span>-------ObservableB:<span class="number">0</span></div><div class="line">join：ObservableA:<span class="number">0</span>-------ObservableB:<span class="number">10</span></div><div class="line">join：ObservableA:<span class="number">5</span>-------ObservableB:<span class="number">10</span></div><div class="line">join：ObservableA:<span class="number">5</span>-------ObservableB:<span class="number">20</span></div><div class="line">join：ObservableA:<span class="number">10</span>-------ObservableB:<span class="number">20</span></div><div class="line">join：ObservableA:<span class="number">10</span>-------ObservableB:<span class="number">30</span></div><div class="line">join：ObservableA:<span class="number">15</span>-------ObservableB:<span class="number">30</span></div><div class="line">join：ObservableA:<span class="number">15</span>-------ObservableB:<span class="number">40</span></div><div class="line">join：ObservableA:<span class="number">20</span>-------ObservableB:<span class="number">40</span></div></pre></td></tr></table></figure></p>
+<p>　　原理图：</p>
+<p><div align="center"><br>　　<img src="/img/RxJava/join.png" alt=""><br></div></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　到此，本篇关于RxJava的常用组合类操作符就讲解完毕了。通过以上四篇文章对RxJava四类操作符的学习，相信大家已经基本掌握RxJava如何使用了。实践是检验真理的唯一标准，下一篇我们来一起上项目看看实践中如何使用RxJava。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。<br>　　附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a>
+　　</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-10-18T09:51:12.000Z" itemprop="dateUpdated">2017-10-18 17:51:12</time>
+</span><br>
+
+
+        
+        进阶中的程序猿一枚，若发现有不正确的地方或者疑问欢迎各位留言指正。QQ：781751723
+        
+    </div>
+    <footer>
+        <a href="http://LeiHolmes.github.io">
+            <img src="/img/avatar.jpg" alt="徐雷">
+            徐雷
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RxJava/">RxJava</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/&title=《RxJava操作符之组合操作符(六)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/&title=《RxJava操作符之组合操作符(六)》 — Lei’s Blog&source=前言　　上一篇文章我们学习了过滤类操作符，本篇我们将一起来学习RxJava组合类操作符。组合操作符主要是用来……，一起来看下都有哪些。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava操作符之组合操作符(六)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/10/16/RxJava操作符之过滤操作符(五)/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RxJava操作符之过滤操作符(五)</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
+    <script>
+    var cloudTieConfig = {
+        url: 'http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/index.html',
+        sourceId: 'RxJava操作符之组合操作符(六)',
+        productKey: 'a49afc3603394502bd2ba8121a4284d9',
+        target: 'cloud-tie-wrapper',
+        pcFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/pc.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/pc.min.js',
+        ],
+        mobileFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/mobile.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/mobile.min.js'
+        ]
+    };
+    </script>
+    <script src="//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/loader.min.js"></script>
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/img/wechat.jpg" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/img/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>徐雷 &copy; 2015 - 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/&title=《RxJava操作符之组合操作符(六)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/&title=《RxJava操作符之组合操作符(六)》 — Lei’s Blog&source=前言　　上一篇文章我们学习了过滤类操作符，本篇我们将一起来学习RxJava组合类操作符。组合操作符主要是用来……，一起来看下都有哪些。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava操作符之组合操作符(六)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/10/18/RxJava操作符之组合操作符(六)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtUlEQVR42u3aSW7DMBAEQP//0wmQU3yQ0LPQC1A6BVlolg7kpGcej/j5+Xuuvv//ydfJ/+p+DwsPHh4eXmvrV8/V0lebSwD3n3L/KvM94+Hh4Z3mJcvl1OT3k6slX/Py+3h4eHhv5U3AyaaTqhgPDw/vu3jJhu4P90kpj4eHh/dpvORjkn/+k7/qxRnHsxY8PDy8mFdtPn3C1wf7e3h4eHiDrvrWNdBra/XWf1oBDw8P7wBvMvzUa1z1RgfyVxBlwHh4eHgDXgKrNp8WooHBa33aIR4eHt4BXt747w0H5IXvZA/l/h4eHh7emFeNEnJqUgpX211JaY6Hh4d3mjch9Rpm+aUyv8Dw8PDwTvDyiCE/9PNQYxIfFy4JPDw8vCVedURgUtpO6v37ayZKqfHw8PCWePlxXEVW15wPKIy6anh4eHiDEzIJI/LgtRolVMPfQlGOh4eHt8rLP6A6LlD9xBxciEXw8PDwDvDyTVQL6ISxO57VjCHw8PDwllpfW82t6rhVfhkUJiPw8PDwlni94DWB5cFHL+SNAg48PDy8A7zqIZ4sl48j5FHCaAU8PDy8VV7ejO+Vv72NbrXK8PDw8M7xqv/q59dDdUBqdygBDw8P7zW85AjOQ4FJg60Kji4GPDw8vDFvstD8BSVH/2SMAA8PD+80L3mqm+5FFUkc3Jwjw8PDw1viJUd27w31yt9eDBEV03h4eHirvLxUrRa1vRK591oLiQseHh5ei9crW6PjuNi7rw4HRK8MDw8P7wBvEkNMRqbyrWyNc+Hh4eHt8nqXQXVzk9Ch2pbDw8PDew2vdyhPIozduyuaicDDw8N7K695TBfHC6oFNB4eHt6n8XrNqupPk2C3HEbg4eHhHeDlx311HKp6nVQvm7WsBQ8PD2+p9ZUAeo3/6lXRGz7Aw8PDW+X9AmEhVLkwDW3VAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
