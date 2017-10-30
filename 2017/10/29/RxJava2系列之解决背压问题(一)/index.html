@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'true', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="UA-99027890-1">
+    
+    
+    
+    <title>RxJava2系列之背压问题(一) | Lei’s Blog | 不忘初心，淡然前行</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="RxJava">
+    <meta name="description" content="前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就">
+<meta name="keywords" content="RxJava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava2系列之背压问题(一)">
+<meta property="og:url" content="http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/index.html">
+<meta property="og:site_name" content="Lei’s Blog">
+<meta property="og:description" content="前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就">
+<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/backPressure.png">
+<meta property="og:updated_time" content="2017-10-30T07:41:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava2系列之背压问题(一)">
+<meta name="twitter:description" content="前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就">
+<meta name="twitter:image" content="http://leiholmes.github.io/img/RxJava/backPressure.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">徐雷</h5>
+          <a href="mailto:17611595118@163.com" title="17611595118@163.com" class="mail">17611595118@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                成长之路
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/LeiHolmes" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/u/1850954523?topnav=1&wvr=6&topsug=1" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RxJava2系列之背压问题(一)</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RxJava2系列之背压问题(一)</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-10-28T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-10-29
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#背压问题"><span class="post-toc-number">2.</span> <span class="post-toc-text">背压问题</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#背压策略"><span class="post-toc-number">3.</span> <span class="post-toc-text">背压策略</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#其他解决方法"><span class="post-toc-number">4.</span> <span class="post-toc-text">其他解决方法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#过滤限流"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">过滤限流</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#打包缓存"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">打包缓存</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#背压操作符"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">背压操作符</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-RxJava2系列之解决背压问题(一)"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RxJava2系列之背压问题(一)</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-10-29 00:00:00" datetime="2017-10-28T16:00:00.000Z"  itemprop="datePublished">2017-10-29</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。<br>　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就在于它解决了RxJava1中未能有效解决的背压(Backpressure)问题。本篇我们就来看看什么是背压，以及RxJava1中是如何解决这个问题。<br>　　<a id="more"></a></p>
+<h3 id="背压问题"><a href="#背压问题" class="headerlink" title="背压问题"></a>背压问题</h3><p>　　先来个定义：<strong>背压问题是指在RxJava观察者模式的异步场景中，由于被观察者生产事件的速度远远快于观察者消费事件的速度，从而导致生产的事件堆积，最后致使内存溢出，程序崩溃</strong>。<br>　　再上个场景：工厂生产面包，消费者吃面包。工厂生产面包速度慢了，消费者处于等待状态，来一个吃一个，这没什么影响。而如果工厂生产面包的速度过快，导致消费者来不及吃，面包就会累积的越来越多，最后就会过期浪费。<br>　　来看代码演示这个问题：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//被观察者每过1ms发射一个事件</span></div><div class="line">Observable.interval(<span class="number">1</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .observeOn(Schedulers.newThread())</div><div class="line">        .subscribe((aLong) -&gt; &#123;</div><div class="line">            <span class="comment">//观察者每过800ms处理一个事件</span></div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                Thread.sleep(<span class="number">800</span>);</div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">            Log.e(<span class="string">"rx_test"</span>, <span class="string">"back_pressure："</span> + aLong);</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　以上代码中被观察者发射事件的速度是观察者处理速度的800倍，执行后就会抛出<code>Caused by: rx.exceptions.MissingBackpressureException</code>的异常。背压问题的出现需要两个条件：</p>
+<ul>
+<li>观察者与被观察者需处于不同线程。</li>
+<li>被观察者产生事件的速度需远快与观察者消费事件的速度。</li>
+</ul>
+<p>　　由于观察者与被观察者处于不同线程，所以RxJava内部使用队列来存储事件，Android中默认队列缓存buffersize为16，所以当事件累计超过16个时就会抛出MissingBackpressureException的异常。解决这种问题就需要对被观察者进行流速控制了，而<strong>背压正是应对这种问题的一种策略</strong>。</p>
+<h3 id="背压策略"><a href="#背压策略" class="headerlink" title="背压策略"></a>背压策略</h3><p>　　背压策略的解决思路便是响应式拉取。与RxJava观察者模型相反，<strong>响应式拉取是观察者主动去被观察者那里拉取事件，而被观察者则是被动等待通知再发射事件。</strong><br>　　观察者需要多少事件就从被观察者那里拉取，而不是被动接收。这样实际上就实现了控制被观察者的流速，达到了背压策略的目的。<br>　　自绘结构图：  </p>
+<p><div align="center"><br>　　<img src="/img/RxJava/backPressure.png" alt=""><br></div><br>　　再来看一下代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//range操作符支持背压策略，发送事件的速度可被控制</span></div><div class="line">Observable.range(<span class="number">1</span>, <span class="number">10000</span>)</div><div class="line">        .observeOn(Schedulers.newThread())</div><div class="line">        .subscribe(<span class="keyword">new</span> Subscriber&lt;Integer&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</div><div class="line">                <span class="comment">//一定要在onStart中通知被观察者先发送一个事件</span></div><div class="line">                request(<span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompleted</span><span class="params">()</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"reactivePull：onCompleted"</span>);</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable e)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"reactivePull：onError："</span> + e.getMessage());</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(Integer n)</span> </span>&#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    Thread.sleep(<span class="number">1000</span>);</div><div class="line">                    Log.e(<span class="string">"rx_test"</span>, <span class="string">"reactivePull：onNext："</span> + n);</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">                <span class="comment">//处理完毕之后，再通知被观察者发送下一个事件</span></div><div class="line">                request(<span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　上述代码示例中，被观察者使用了range操作符发射10000次从1开始自增的数字，在观察者中首先于onStart()中使用request(1)向被观察者请求了第一个事件，之后在onNext()中每延时1000ms后输出日志，处理完事件后再调用request(1)请求一个新的事件。<br>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">reactivePull：onNext：<span class="number">1</span></div><div class="line">...<span class="number">1</span>s后...</div><div class="line">reactivePull：onNext：<span class="number">2</span></div><div class="line">...<span class="number">1</span>s后...</div><div class="line">reactivePull：onNext：<span class="number">3</span></div><div class="line">...<span class="number">1</span>s后...</div><div class="line">reactivePull：onNext：<span class="number">4</span></div><div class="line">...<span class="number">1</span>s后...</div><div class="line">reactivePull：onNext：<span class="number">5</span></div><div class="line">......</div></pre></td></tr></table></figure></p>
+<p>　　由输出结果可看出，每过1秒输出了一个数字，是不是实现了背压限流策略呢？需要多少事件就在观察者中使用request(n)主动拉取。不过RxJava1.x版本中并不是所有操作符都支持request(n)的响应式拉取，例如第一个例子中的interval操作符就不支持背压策略。而这个问题到了RxJava2.x中就得到了完美解决，且看下一篇。</p>
+<h3 id="其他解决方法"><a href="#其他解决方法" class="headerlink" title="其他解决方法"></a>其他解决方法</h3><p>　　RxJava1中不支持背压策略的操作符如何解决背压问题呢？</p>
+<h4 id="过滤限流"><a href="#过滤限流" class="headerlink" title="过滤限流"></a>过滤限流</h4><p>　　通过使用限流操作符将被观察者产生的大部分事件过滤抛弃掉来达到限流的目的，间接降低事件发射的速度。  </p>
+<ul>
+<li><strong>sample</strong>：在一段时间内,只处理最后一个数据</li>
+<li><strong>throttleFirst</strong>：在一段时间内,只处理第一个数据</li>
+<li><strong>debounce</strong>：发送一个数据,开始计时,到了规定时间内,若没有再发送数据,则开始处理数据,反之重新开始计时。</li>
+</ul>
+<p>这里以sample操作符为例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//使用sample过滤操作符，每隔300ms取里时间点最近的事件发送</span></div><div class="line">Observable.interval(<span class="number">1</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .observeOn(Schedulers.newThread())</div><div class="line">        .sample(<span class="number">300</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .subscribe((aLong) -&gt; Log.e(<span class="string">"rx_test"</span>, <span class="string">"controlByFilter：sample："</span> + aLong));</div></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">controlByFilter：sample：<span class="number">280</span></div><div class="line">controlByFilter：sample：<span class="number">577</span></div><div class="line">controlByFilter：sample：<span class="number">878</span></div><div class="line">controlByFilter：sample：<span class="number">1178</span></div><div class="line">controlByFilter：sample：<span class="number">1478</span></div><div class="line">controlByFilter：sample：<span class="number">1779</span></div><div class="line">controlByFilter：sample：<span class="number">2078</span></div><div class="line">controlByFilter：sample：<span class="number">2378</span></div><div class="line">controlByFilter：sample：<span class="number">2673</span></div><div class="line">......</div></pre></td></tr></table></figure></p>
+<p>　　这种方式虽然实现了限流，但却是以抛弃大部分事件为代价的，在实际场景中并不可取，大家了解就好。</p>
+<h4 id="打包缓存"><a href="#打包缓存" class="headerlink" title="打包缓存"></a>打包缓存</h4><p>　　在被观察者发射事件过快，观察者来不及处理的情况下，可以使用缓存类的操作符将其中一部分打包缓存起来，再一点一点的处理其中的事件。</p>
+<ul>
+<li><strong>buffer</strong>：将多个事件打包放入一个List中，再一起发射。</li>
+<li><strong>window</strong>：将多个事件打包放入一个Observable中，再一起发射。</li>
+</ul>
+<p>　　这里以buffer操作符为例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//使用buffer过滤操作符，将100ms内的事件打包为list发送</span></div><div class="line">Observable.interval(<span class="number">1</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .observeOn(Schedulers.newThread())</div><div class="line">        .buffer(<span class="number">100</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .subscribe((longs) -&gt; &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                Thread.sleep(<span class="number">1000</span>);</div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">            Log.e(<span class="string">"rx_test"</span>, <span class="string">"controlByCache：buffer："</span> + longs.size());</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">controlByCache：buffer：<span class="number">79</span></div><div class="line">controlByCache：buffer：<span class="number">1001</span></div><div class="line">controlByCache：buffer：<span class="number">1002</span></div><div class="line">controlByCache：buffer：<span class="number">1000</span></div><div class="line">controlByCache：buffer：<span class="number">1001</span></div><div class="line">controlByCache：buffer：<span class="number">1001</span></div><div class="line">controlByCache：buffer：<span class="number">1001</span></div><div class="line">controlByCache：buffer：<span class="number">1001</span></div><div class="line">controlByCache：buffer：<span class="number">1001</span></div><div class="line">controlByCache：buffer：<span class="number">1000</span></div><div class="line">controlByCache：buffer：<span class="number">1002</span></div><div class="line">controlByCache：buffer：<span class="number">1001</span></div></pre></td></tr></table></figure></p>
+<h4 id="背压操作符"><a href="#背压操作符" class="headerlink" title="背压操作符"></a>背压操作符</h4><p>　　RxJava1.x中，还有两种效果优于以上两种的操作符，可使不支持背压策略的操作符支持背压策略。</p>
+<ul>
+<li><strong>onBackpressureDrop</strong>：将observable发送的事件抛弃掉，直到subscriber再次调用request(n)方法的时候，就发送给它这之后的n个事件。</li>
+<li><strong>onBackpressurebuffer</strong>：把observable发送出来的事件做缓存，当request(n)方法被调用的时候，给下层流发送一个item(如果给这个缓存区设置了大小，那么超过了这个大小就会抛出异常)。</li>
+</ul>
+<p>　　以onBackpressureDrop为例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">Observable.interval(<span class="number">1</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .onBackpressureDrop()</div><div class="line">        .observeOn(Schedulers.newThread())</div><div class="line">        .subscribe(<span class="keyword">new</span> Subscriber&lt;Long&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</div><div class="line">                <span class="keyword">super</span>.onStart();</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"controlBySpecialOperator："</span> + <span class="string">"onStart"</span>);</div><div class="line">                request(<span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompleted</span><span class="params">()</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"controlBySpecialOperator："</span> + <span class="string">"onCompleted"</span>);</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable e)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"controlBySpecialOperator："</span> + <span class="string">"onError"</span>);</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(Long aLong)</span> </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx_test"</span>, <span class="string">"controlBySpecialOperator：onNext："</span> + aLong);</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    Thread.sleep(<span class="number">500</span>);</div><div class="line">                    request(<span class="number">1</span>);</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">controlBySpecialOperator：onStart</div><div class="line">controlBySpecialOperator：onNext：<span class="number">0</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">1</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">2</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">3</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">4</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">5</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">6</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">7</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">9</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">10</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">11</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">12</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">13</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">14</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">15</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8014</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8015</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8016</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8017</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8018</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8019</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8020</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8021</span></div><div class="line">controlBySpecialOperator：onNext：<span class="number">8022</span></div><div class="line">......</div></pre></td></tr></table></figure></p>
+<p>　　首先输出了0-15的数据，是因为observeOn操作符内部有一个长度为16的缓存区，它会首先请求16个事件缓存起来再输出。使用onBackpressureDrop可使不支持背压的操作符也可响应观察者的request(n)。<br>　　<strong>注意：需调用<code>.onBackpressureDrop()</code>方法。</strong></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　以上就是本篇关于RxJava1中存在的背压问题，背压策略的使用方法以及其他解决方法的讲解。背压在实际开发中遇到的不多，除非是大量数据，所以各位码友了解一下就好。本篇旨在为引入正式的Rxjava2做一个铺垫，敬请期待下一篇。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。<br>　　附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a>
+　　</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2017-10-30T07:41:49.000Z" itemprop="dateUpdated">2017-10-30 15:41:49</time>
+</span><br>
+
+
+        
+        进阶中的程序猿一枚，若发现有不正确的地方或者疑问欢迎各位留言指正。QQ：781751723
+        
+    </div>
+    <footer>
+        <a href="http://LeiHolmes.github.io">
+            <img src="/img/avatar.jpg" alt="徐雷">
+            徐雷
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RxJava/">RxJava</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/&title=《RxJava2系列之背压问题(一)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/&title=《RxJava2系列之背压问题(一)》 — Lei’s Blog&source=前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上R..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava2系列之背压问题(一)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/10/20/RxJava终章之实践出真知(七)/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RxJava终章之实践出真知(七)</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
+    <script>
+    var cloudTieConfig = {
+        url: 'http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/index.html',
+        sourceId: 'RxJava2系列之解决背压问题(一)',
+        productKey: 'a49afc3603394502bd2ba8121a4284d9',
+        target: 'cloud-tie-wrapper',
+        pcFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/pc.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/pc.min.js',
+        ],
+        mobileFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/mobile.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/mobile.min.js'
+        ]
+    };
+    </script>
+    <script src="//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/loader.min.js"></script>
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/img/wechat.jpg" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/img/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>徐雷 &copy; 2015 - 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/&title=《RxJava2系列之背压问题(一)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/&title=《RxJava2系列之背压问题(一)》 — Lei’s Blog&source=前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上R..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava2系列之背压问题(一)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压问题(一)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsElEQVR42u3aQW4DMQgF0Nz/0u22UjuZD5hoKr1ZVVHG4XlhU+D1ip+v4Pn5zd9vXa2WvHW1zrEHDw8P72joV995v071kxyZx4yHh4e3zbsKN1k62azkqujFc2PBw8PDewDv/bvv30rWnLyLh4eH90xeXmJIQk8SZTw8PLxn8nrF2V55onpJfKjWgoeHhxfz8i7Sc/5e6e/h4eHhHRoISA7c5GJI1kwKGYVo8fDw8BZ41XS2+pM5OE+gy3Hi4eHhLfN6x/H8cM+bXuV2HR4eHt5RXjXoSdm0Onp1oL6Ch4eHt8BLlui1xyabcqrBhoeHh/cZ3qRoOzmTq+sULgw8PDy8NV71QE+S72QTk/Q9j/Oy1oKHh4d3iJeURHvNsOTKyQu41dM+mmjAw8PDa/GqP1Mtv+YXwCRBv1kHDw8Pb4GXH+K9wYLyLENx1CBZBw8PD+8Ur5cE9xpavaCrJYk/ihF4eHh4C7xeEbZZGhi0vsqbi4eHh7fAmyzUS3N7xdlqYQIPDw9vj1c+XuOBp2rxojd0dbO5eHh4eAu8atGhOj41aaQll0QUCR4eHt5RXi/QjbGDXvp+c13h4eHhLfDykmuSzlaT7+aMQ5DE39x7eHh4eGNeXh6dXBj5YNZX63lVw8LDw8M7ypskuNXDvVfwbV5XeHh4eId4STI9aer32lfVjW7edXh4eHhHeZNm2OSaeb8d+cbh4eHhbfPyA3feNqvCeiNZeHh4eBu8Sak0T7jzoJNtLTTe8PDw8BZ488b8nJ2n0ZPBAjw8PLyzvLxkkJd0T7X/e403PDw8vM/wkqWrCXH+yWTA68aCh4eH9wBer4Bb3aD8wsDDw8P7L7zekEGvnJGn/gdSajw8PLyY1xuN6hUReivnrTg8PDy8bV71n/x5GywvOvTGsPDw8PDWeN8QlOQprqsVmgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
