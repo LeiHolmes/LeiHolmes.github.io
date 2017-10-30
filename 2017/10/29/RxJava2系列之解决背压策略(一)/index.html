@@ -39,7 +39,7 @@ ga('send', 'pageview');
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就">
 <meta property="og:image" content="http://leiholmes.github.io/img/RxJava/backPressure.png">
-<meta property="og:updated_time" content="2017-10-30T07:57:00.000Z">
+<meta property="og:updated_time" content="2017-10-30T08:08:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava2系列之背压策略(一)">
 <meta name="twitter:description" content="前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就">
@@ -133,7 +133,7 @@ ga('send', 'pageview');
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="搜尋">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -220,8 +220,8 @@ ga('send', 'pageview');
 <li><strong>throttleFirst</strong>：在一段时间内,只处理第一个数据</li>
 <li><strong>debounce</strong>：发送一个数据,开始计时,到了规定时间内,若没有再发送数据,则开始处理数据,反之重新开始计时。</li>
 </ul>
-<p>这里以sample操作符为例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//使用sample过滤操作符，每隔300ms取里时间点最近的事件发送</span></div><div class="line">Observable.interval(<span class="number">1</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .observeOn(Schedulers.newThread())</div><div class="line">        .sample(<span class="number">300</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .subscribe((aLong) -&gt; Log.e(<span class="string">"rx_test"</span>, <span class="string">"controlByFilter：sample："</span> + aLong));</div></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">controlByFilter：sample：<span class="number">280</span></div><div class="line">controlByFilter：sample：<span class="number">577</span></div><div class="line">controlByFilter：sample：<span class="number">878</span></div><div class="line">controlByFilter：sample：<span class="number">1178</span></div><div class="line">controlByFilter：sample：<span class="number">1478</span></div><div class="line">controlByFilter：sample：<span class="number">1779</span></div><div class="line">controlByFilter：sample：<span class="number">2078</span></div><div class="line">controlByFilter：sample：<span class="number">2378</span></div><div class="line">controlByFilter：sample：<span class="number">2673</span></div><div class="line">......</div></pre></td></tr></table></figure></p>
+<p>　　这里以sample操作符为例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//使用sample过滤操作符，每隔300ms取里时间点最近的事件发送</span></div><div class="line">Observable.interval(<span class="number">1</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .observeOn(Schedulers.newThread())</div><div class="line">        .sample(<span class="number">300</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .subscribe((aLong) -&gt; Log.e(<span class="string">"rx_test"</span>, <span class="string">"controlByFilter：sample："</span> + aLong));</div></pre></td></tr></table></figure></p>
+<p>　　输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">controlByFilter：sample：<span class="number">280</span></div><div class="line">controlByFilter：sample：<span class="number">577</span></div><div class="line">controlByFilter：sample：<span class="number">878</span></div><div class="line">controlByFilter：sample：<span class="number">1178</span></div><div class="line">controlByFilter：sample：<span class="number">1478</span></div><div class="line">controlByFilter：sample：<span class="number">1779</span></div><div class="line">controlByFilter：sample：<span class="number">2078</span></div><div class="line">controlByFilter：sample：<span class="number">2378</span></div><div class="line">controlByFilter：sample：<span class="number">2673</span></div><div class="line">......</div></pre></td></tr></table></figure></p>
 <p>　　这种方式虽然实现了限流，但却是以抛弃大部分事件为代价的，在实际场景中并不可取，大家了解就好。</p>
 <h4 id="打包缓存"><a href="#打包缓存" class="headerlink" title="打包缓存"></a>打包缓存</h4><p>　　在被观察者发射事件过快，观察者来不及处理的情况下，可以使用缓存类的操作符将其中一部分打包缓存起来，再一点一点的处理其中的事件。</p>
 <ul>
@@ -247,7 +247,7 @@ ga('send', 'pageview');
     <div class="content">
         
 <span class="post-time">
-    最後更新時間：<time datetime="2017-10-30T07:57:00.000Z" itemprop="dateUpdated">2017-10-30 15:57:00</time>
+    最后更新时间：<time datetime="2017-10-30T08:08:55.000Z" itemprop="dateUpdated">2017-10-30 16:08:55</time>
 </span><br>
 
 
@@ -425,7 +425,7 @@ ga('send', 'pageview');
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>本部落格係採用<a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh_TW">創用 CC 姓名標示 4.0 國際 授權條款授權</a></span>
+            <span>博客内容遵循<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
         </p>
     </div>
     <div class="bottom">
