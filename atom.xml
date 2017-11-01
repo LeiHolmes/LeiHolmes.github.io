@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-10-30T08:08:55.000Z</updated>
+  <updated>2017-10-30T08:22:26.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://LeiHolmes.github.io/2017/10/29/RxJava2%E7%B3%BB%E5%88%97%E4%B9%8B%E8%A7%A3%E5%86%B3%E8%83%8C%E5%8E%8B%E7%AD%96%E7%95%A5(%E4%B8%80)/"/>
     <id>http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压策略(一)/</id>
     <published>2017-10-28T16:00:00.000Z</published>
-    <updated>2017-10-30T08:08:55.000Z</updated>
+    <updated>2017-10-30T08:22:26.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。<br>　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就在于它解决了RxJava1中未能有效解决的背压(Backpressure)问题。本篇我们就来看看什么是背压，以及RxJava1中是如何解决这个问题。<br>　　<a id="more"></a></p>
 <h3 id="背压问题"><a href="#背压问题" class="headerlink" title="背压问题"></a>背压问题</h3><p>　　先来个定义：<strong>背压问题是指在RxJava观察者模式的异步场景中，由于被观察者生产事件的速度远远快于观察者消费事件的速度，从而导致生产的事件堆积，最后致使内存溢出，程序崩溃</strong>。<br>　　再上个场景：工厂生产面包，消费者吃面包。工厂生产面包速度慢了，消费者处于等待状态，来一个吃一个，这没什么影响。而如果工厂生产面包的速度过快，导致消费者来不及吃，面包就会累积的越来越多，最后就会过期浪费。<br>　　来看代码演示这个问题：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//被观察者每过1ms发射一个事件</span></div><div class="line">Observable.interval(<span class="number">1</span>, TimeUnit.MILLISECONDS)</div><div class="line">        .observeOn(Schedulers.newThread())</div><div class="line">        .subscribe((aLong) -&gt; &#123;</div><div class="line">            <span class="comment">//观察者每过800ms处理一个事件</span></div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                Thread.sleep(<span class="number">800</span>);</div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">            Log.e(<span class="string">"rx_test"</span>, <span class="string">"back_pressure："</span> + aLong);</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
@@ -1034,7 +1034,7 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
     <link href="http://LeiHolmes.github.io/2016/04/29/%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E6%A1%86%E6%9E%B6%E4%B9%8BRetrofit2.0%E5%9F%BA%E6%9C%AC%E8%AE%B2%E8%A7%A3/"/>
     <id>http://LeiHolmes.github.io/2016/04/29/网络请求框架之Retrofit2.0基本讲解/</id>
     <published>2016-04-28T16:00:00.000Z</published>
-    <updated>2017-09-28T08:56:06.000Z</updated>
+    <updated>2017-11-01T01:15:09.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Retrofit2-0简介"><a href="#Retrofit2-0简介" class="headerlink" title="Retrofit2.0简介"></a>Retrofit2.0简介</h3><p>　　Retrofit是一套RESTful架构的Android(Java)客户端实现，基于注解，提供JSON to POJO(Plain Ordinary Java Object,简单Java对象)，POJO to JSON，网络请求(POST，GET,PUT，DELETE等)封装。用官方自己的介绍就是:</p>
 <blockquote>
@@ -1060,7 +1060,7 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
 <h4 id="错误示例1"><a href="#错误示例1" class="headerlink" title="错误示例1"></a>错误示例1</h4><p>　　BASE_URL：<a href="https://api.github.com/repos/square" target="_blank" rel="external">https://api.github.com/repos/square</a><br>　　Get注解：　@GET(“/basil2style”)<br>　　结果URL：　<a href="https://api.github.com/basil2style" target="_blank" rel="external">https://api.github.com/basil2style</a></p>
 <h4 id="错误示例2"><a href="#错误示例2" class="headerlink" title="错误示例2"></a>错误示例2</h4><p>　　BASE_URL：<a href="https://api.github.com/repos/square" target="_blank" rel="external">https://api.github.com/repos/square</a><br>　　Get注解：　@GET(“basil2style”)<br>　　结果URL：　<a href="https://api.github.com/repos/basil2style" target="_blank" rel="external">https://api.github.com/repos/basil2style</a></p>
 <h4 id="推荐写法"><a href="#推荐写法" class="headerlink" title="推荐写法"></a>推荐写法</h4><p>　　BASE_URL：<a href="https://api.github.com/repos/square/" target="_blank" rel="external">https://api.github.com/repos/square/</a><br>　　Get注解：　@GET(“basil2style”)<br>　　结果URL：　<a href="https://api.github.com/repos/square/basil2style" target="_blank" rel="external">https://api.github.com/repos/square/basil2style</a></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　Retrofit2.0的基本实现讲解完毕，Retrofit+Okhttp+Gson可以算是目前来说相当快的超级网络请求框架了。相比较于Volley都快不少，亲测结果很爽。小伙伴们赶紧整起来吧！<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者不懂的地方也可以在我Github上Retrofit2Demo项目的Issues中提出，我会及时解答。附上GreenDaoDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/Retrofit2Demo" target="_blank" rel="external">Retrofit2Demo</a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　Retrofit2.0的基本实现讲解完毕，Retrofit+Okhttp+Gson可以算是目前来说相当快的超级网络请求框架了。相比较于Volley都快不少，亲测结果很爽。小伙伴们赶紧整起来吧！<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者不懂的地方也可以在我Github上Retrofit2Demo项目的Issues中提出，我会及时解答。附上Retrofit2Demo的地址：<br>　　<a href="https://github.com/LeiHolmes/Retrofit2Demo" target="_blank" rel="external">Retrofit2Demo</a></p>
 ]]></content>
     
     <summary type="html">
