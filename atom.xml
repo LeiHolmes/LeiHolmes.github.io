@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-10-30T08:22:26.000Z</updated>
+  <updated>2017-11-06T02:54:47.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -16,9 +16,37 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>RxJava2系列之相较RxJava1的更新之处(一)</title>
+    <link href="http://LeiHolmes.github.io/2017/11/05/RxJava2%E7%B3%BB%E5%88%97%E4%B9%8B%E7%9B%B8%E8%BE%83RxJava1%E7%9A%84%E6%9B%B4%E6%96%B0%E4%B9%8B%E5%A4%84(%E4%B8%80)/"/>
+    <id>http://LeiHolmes.github.io/2017/11/05/RxJava2系列之相较RxJava1的更新之处(一)/</id>
+    <published>2017-11-04T16:00:00.000Z</published>
+    <updated>2017-11-06T02:54:47.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　通过本系列上一篇文章，我们了解了RxJava1中由于被观察者发送事件的速度远快于观察者处理事件的速度导致的背压问题，由此而生出背压策略。虽然RxJava1中有一些操作符支持背压策略，也有一些其他方法，但效果并不太理想。这个问题到了RxJava2中得到了更好地解决。本篇一起来看相较于RxJava1，RxJava2从观察者模式到操作符以及线程调度都做了哪些更新。<br>　　<a id="more"></a></p>
+<h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><p>　　首先当然是添加RxJava2与RxAndroid2的依赖啦，以当前最新版本为准。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">    ......</div><div class="line">    compile <span class="string">'io.reactivex.rxjava2:rxjava:2.1.3'</span></div><div class="line">    compile <span class="string">'io.reactivex.rxjava2:rxandroid:2.0.1'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>　　<strong>注意：RxJava2与RxJava1的依赖不可共存</strong></p>
+<h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>　　RxJava2中除了保留了RxJava1中Observable–&gt;Observer观察者模式以外，还新增了一种观察者模式Flowable–&gt;Subscriber。目的为何相信大家已经知道了，新观察者模式可完美支持背压策略。<br>　　不了解背压策略的码友欢迎阅读上一篇文章：<br>　　<a href="http://xulei.tech/2017/10/29/RxJava2系列之背压策略(一" target="_blank" rel="external">RxJava2系列之背压策略(一)</a>/)</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　以上就是本篇关于RxJava1中存在的背压问题，背压策略的使用方法以及其他解决方法的讲解。背压在实际开发中遇到的不多，除非是大量数据，所以各位码友了解一下就好。本篇旨在为引入正式的Rxjava2做一个铺垫，敬请期待下一篇。<br>　　技术渣一枚，有写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJavaDemo项目Issues中提出，我会及时回复。<br>　　附上RxJavaDemo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJavaDemo" target="_blank" rel="external">RxJavaDemo</a>
+　　</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;　　通过本系列上一篇文章，我们了解了RxJava1中由于被观察者发送事件的速度远快于观察者处理事件的速度导致的背压问题，由此而生出背压策略。虽然RxJava1中有一些操作符支持背压策略，也有一些其他方法，但效果并不太理想。这个问题到了RxJava2中得到了更好地解决。本篇一起来看相较于RxJava1，RxJava2从观察者模式到操作符以及线程调度都做了哪些更新。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="http://LeiHolmes.github.io/categories/Android/"/>
+    
+    
+      <category term="RxJava" scheme="http://LeiHolmes.github.io/tags/RxJava/"/>
+    
+  </entry>
+  
+  <entry>
     <title>RxJava2系列之背压策略(一)</title>
-    <link href="http://LeiHolmes.github.io/2017/10/29/RxJava2%E7%B3%BB%E5%88%97%E4%B9%8B%E8%A7%A3%E5%86%B3%E8%83%8C%E5%8E%8B%E7%AD%96%E7%95%A5(%E4%B8%80)/"/>
-    <id>http://LeiHolmes.github.io/2017/10/29/RxJava2系列之解决背压策略(一)/</id>
+    <link href="http://LeiHolmes.github.io/2017/10/29/RxJava2%E7%B3%BB%E5%88%97%E4%B9%8B%E8%83%8C%E5%8E%8B%E7%AD%96%E7%95%A5(%E4%B8%80)/"/>
+    <id>http://LeiHolmes.github.io/2017/10/29/RxJava2系列之背压策略(一)/</id>
     <published>2017-10-28T16:00:00.000Z</published>
     <updated>2017-10-30T08:22:26.000Z</updated>
     
