@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'true', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="UA-99027890-1">
+    
+    
+    
+    <title>RxJava2系列实践之倒计时功能(三) | Lei’s Blog | 不忘初心，淡然前行</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="RxJava">
+    <meta name="description" content="前言　　通过本系列前两篇的学习，相信各位码友已经基本掌握RxJava2怎么使用了，本篇我们一起来通过一个小例子实践一下，也可以加深印象。来看看如何使用RxJava2的intervalRange操作符实现倒计时功能。">
+<meta name="keywords" content="RxJava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava2系列实践之倒计时功能(三)">
+<meta property="og:url" content="http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/index.html">
+<meta property="og:site_name" content="Lei’s Blog">
+<meta property="og:description" content="前言　　通过本系列前两篇的学习，相信各位码友已经基本掌握RxJava2怎么使用了，本篇我们一起来通过一个小例子实践一下，也可以加深印象。来看看如何使用RxJava2的intervalRange操作符实现倒计时功能。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/8575775-5ff83e5114601b52.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-11-07T05:44:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava2系列实践之倒计时功能(三)">
+<meta name="twitter:description" content="前言　　通过本系列前两篇的学习，相信各位码友已经基本掌握RxJava2怎么使用了，本篇我们一起来通过一个小例子实践一下，也可以加深印象。来看看如何使用RxJava2的intervalRange操作符实现倒计时功能。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/8575775-5ff83e5114601b52.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+    
+        <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">徐雷</h5>
+          <a href="mailto:17611595118@163.com" title="17611595118@163.com" class="mail">17611595118@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                成长之路
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/LeiHolmes" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/u/1850954523?topnav=1&wvr=6&topsug=1" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RxJava2系列实践之倒计时功能(三)</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RxJava2系列实践之倒计时功能(三)</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-06T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-11-07
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#依赖"><span class="post-toc-number">2.</span> <span class="post-toc-text">依赖</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#intervalRange操作符"><span class="post-toc-number">3.</span> <span class="post-toc-text">intervalRange操作符</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#布局"><span class="post-toc-number">4.</span> <span class="post-toc-text">布局</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Activity"><span class="post-toc-number">5.</span> <span class="post-toc-text">Activity</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#运行效果"><span class="post-toc-number">6.</span> <span class="post-toc-text">运行效果</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">7.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-RxJava2系列实践之倒计时功能(三)"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RxJava2系列实践之倒计时功能(三)</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-07 00:00:00" datetime="2017-11-06T16:00:00.000Z"  itemprop="datePublished">2017-11-07</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　通过本系列前两篇的学习，相信各位码友已经基本掌握RxJava2怎么使用了，本篇我们一起来通过一个小例子实践一下，也可以加深印象。来看看如何使用RxJava2的intervalRange操作符实现倒计时功能。<br>　　<a id="more"></a></p>
+<h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><p>　　首先添加依赖，Demo中使用了ButterKnife注入，各版本以当前最新的为准。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">    ......</div><div class="line">    compile <span class="string">'io.reactivex.rxjava2:rxjava:2.1.3'</span></div><div class="line">    compile <span class="string">'io.reactivex.rxjava2:rxandroid:2.0.1'</span></div><div class="line">    compile <span class="string">'com.jakewharton:butterknife:8.7.0'</span></div><div class="line">    annotationProcessor <span class="string">'com.jakewharton:butterknife-compiler:8.7.0'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="intervalRange操作符"><a href="#intervalRange操作符" class="headerlink" title="intervalRange操作符"></a>intervalRange操作符</h3><p>　　别着急上代码，开始前我们先来了解下intervalRange操作符（了解过的可以忽略哈）。<br>　　<strong>intervalRange(long start, long count, long initialDelay, long period, TimeUnit unit)</strong>  </p>
+<ul>
+<li>start：起始数值</li>
+<li>count：发射数量</li>
+<li>initialDelay：延迟执行时间</li>
+<li>period：发射周期时间</li>
+<li>unit：时间单位</li>
+</ul>
+<p>　　一句话简介就是延迟initialDelay个unit单位后，以period为周期，依次发射count个以start为初始值并递增的数字。</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>　　布局中放一个Button用来演示点击获取验证码，并开启倒计时重新获取的功能。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">RelativeLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:padding</span>=<span class="string">"15dp"</span></div><div class="line">    <span class="attr">tools:context</span>=<span class="string">"com.holmeslei.rxjava2demo.ui.CountDownActivity"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn_get_code"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:text</span>=<span class="string">"获取验证码"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h3 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h3><p>　　由于业务逻辑简单，所以就不整什么复杂的框架了，功能都在Activity中实现。</p>
+<ol>
+<li>第一步，使用ButterKnife依赖注入获取Button的实例及设置其点击监听方法。</li>
+<li>第二步，点击Button后首先将其设置为不可点击，然后初始化全局变量Disposable。</li>
+<li>第三步，使用Flowable的intervalRange操作符，从0开始每隔1s发射一个自增的数字，持续11次，延迟0s执行。这样就设定好了10秒的倒计时，可根据实际需要修改时长。</li>
+<li>由于需要刷新UI，所以设定观察者执行在Android的UI线程。</li>
+<li>在doOnNext的回调中更新Button的显示UI，达到读秒的效果。</li>
+<li>在doOnComplete的完成回调中重新将Button设置为可点击，然后设置显示UI。</li>
+<li>最后调用后subscribe()订阅，这样一个完整的异步事件流就完成了。</li>
+<li>别忘了在Activity销毁时将全局Disposable取消订阅销毁掉。使用RxJava将无用的Disposable及时销毁是一个很好的习惯，否则后期就得忙着处理各种OOM异常啦。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CountDownActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line">    <span class="meta">@BindView</span>(R.id.btn_get_code)</div><div class="line">    Button btnGetCode;</div><div class="line">    <span class="keyword">private</span> Disposable mdDisposable;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_count_down);</div><div class="line">        ButterKnife.bind(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@OnClick</span>(R.id.btn_get_code)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onViewClicked</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//点击后置为不可点击状态</span></div><div class="line">        btnGetCode.setEnabled(<span class="keyword">false</span>);</div><div class="line">        <span class="comment">//从0开始发射11个数字为：0-10依次输出，延时0s执行，每1s发射一次。</span></div><div class="line">        mdDisposable = Flowable.intervalRange(<span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">1</span>, TimeUnit.SECONDS)</div><div class="line">                .observeOn(AndroidSchedulers.mainThread())</div><div class="line">                .doOnNext(<span class="keyword">new</span> Consumer&lt;Long&gt;() &#123;</div><div class="line">                    <span class="meta">@Override</span></div><div class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Long aLong)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">                        btnGetCode.setText(<span class="string">"重新获取("</span> + (<span class="number">10</span> - aLong) + <span class="string">")"</span>);</div><div class="line">                    &#125;</div><div class="line">                &#125;)</div><div class="line">                .doOnComplete(<span class="keyword">new</span> Action() &#123;</div><div class="line">                    <span class="meta">@Override</span></div><div class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">                        <span class="comment">//倒计时完毕置为可点击状态</span></div><div class="line">                        btnGetCode.setEnabled(<span class="keyword">true</span>);</div><div class="line">                        btnGetCode.setText(<span class="string">"获取验证码"</span>);</div><div class="line">                    &#125;</div><div class="line">                &#125;)</div><div class="line">                .subscribe();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDestroy();</div><div class="line">        <span class="keyword">if</span> (mdDisposable != <span class="keyword">null</span>) &#123;</div><div class="line">            mdDisposable.dispose();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h3><p>　　最后看一下运行效果Gif。</p>
+<p><div align="center"><br>　　<img src="http://upload-images.jianshu.io/upload_images/8575775-5ff83e5114601b52.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="运行效果"><br></div></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　本篇文章利用RxJava2演示了一个倒计时的小栗子，更多的用法还待各位码友去探索与发现哈。<br>　　进阶中的码猿一枚，写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxJava2Demo项目Issues中提出，我会及时回复。<br>　　附上RxJava2Demo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxJava2Demo" target="_blank" rel="external">RxJava2Demo</a>  </p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2017-11-07T05:44:18.000Z" itemprop="dateUpdated">2017-11-07 13:44:18</time>
+</span><br>
+
+
+        
+        进阶中的程序猿一枚，若发现有不正确的地方或者疑问欢迎各位留言指正。QQ：781751723
+        
+    </div>
+    <footer>
+        <a href="http://LeiHolmes.github.io">
+            <img src="/img/avatar.jpg" alt="徐雷">
+            徐雷
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RxJava/">RxJava</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/&title=《RxJava2系列实践之倒计时功能(三)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/&title=《RxJava2系列实践之倒计时功能(三)》 — Lei’s Blog&source=前言　　通过本系列前两篇的学习，相信各位码友已经基本掌握RxJava2怎么使用了，本篇我们一起来通过一个小例子实践一下，也可以加深印象。来看看如何使用Rx..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava2系列实践之倒计时功能(三)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/05/RxJava2系列之相较RxJava1的更新之处(二)/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RxJava2系列之相较RxJava1的更新之处(二)</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
+    <script>
+    var cloudTieConfig = {
+        url: 'http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/index.html',
+        sourceId: 'RxJava2系列实践之倒计时功能(三)',
+        productKey: 'a49afc3603394502bd2ba8121a4284d9',
+        target: 'cloud-tie-wrapper',
+        pcFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/pc.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/pc.min.js',
+        ],
+        mobileFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/mobile.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/mobile.min.js'
+        ]
+    };
+    </script>
+    <script src="//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/loader.min.js"></script>
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/img/wechat.jpg" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/img/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>徐雷 &copy; 2015 - 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/&title=《RxJava2系列实践之倒计时功能(三)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/&title=《RxJava2系列实践之倒计时功能(三)》 — Lei’s Blog&source=前言　　通过本系列前两篇的学习，相信各位码友已经基本掌握RxJava2怎么使用了，本篇我们一起来通过一个小例子实践一下，也可以加深印象。来看看如何使用Rx..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxJava2系列实践之倒计时功能(三)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/11/07/RxJava2系列实践之倒计时功能(三)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACs0lEQVR42u3a0WojMQwF0Pz/T+9Cnwolm3slOw3smacQJh6fKViqpMcjvv58XT8/57/6/s3P69lvZ8+tLzw8PLzR1v/94Nk3yZ3PAPmzXrwsPDw8vGu8Nhgkm0uO9Zyar4aHh4f3Obz86I8eHAePPK3Hw8PD+0xeXhp49iLa8PDWwICHh4cX85JiRL6tfWKdJ9nHai14eHh4MW/TAPutz2/q7+Hh4eGVx3Fy7O6T5va1FvvEw8PDu8DblGs3o1ezQ78t9eLh4eHd4N1rSm2aYZuQ86aeGx4e3n/Mmx3cs8HTTXK8GZbFw8PDO8ubtb427fx9QyvfGx4eHt4NXp6enmIn5YxZyTgqkeDh4eGteZvBps3AU/4iWt4j/5vg4eHhLXh566suoZa8YaI8mzvAw8PDG/HatlZels1bYptgEK2Dh4eHd5TXpsV5Vy0f22rvqTt7eHh4eEd5s+XyFdqA0ZKiQS48PDy8o7xZ+ptQ8yZZkqDPGm94eHh4N3jtJl5EmEPBZpbWvxggwMPDwzvE2z/+Rl1534TDw8PDu8fbpMWbNn/y+maNt2i8AA8PD2/B2xdb80JGW1/dNM/w8PDw7vHaIao2Rc5j0Sx9L8q4eHh4eId4G0beiIqy+FHRFg8PD+8TeG1rvy3LbpL4Oozh4eHhXeC1x/Es7W4x+cQUHh4e3vt5OWPWypoFibzF9eLl4uHh4V3gzYqq7XBAHiRmkw5FxMPDw8Nb8/bFiOSYbscL8qLGi9Xw8PDwLvDaRlSeLp+KVHnxoo5+eHh4eAverOmVJL6bddrRhKe/xcPDw7vGaw/9WYq8uWe4Ah4eHt7H8FaHdTkukASbpyvg4eHh/Spv9pikrdW+uKIth4eHh3eNt296tSNQs9XqAjEeHh7eBV77r/4sAORbvzG4gIeHh3eI9xeTVkrfj8BjuwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
