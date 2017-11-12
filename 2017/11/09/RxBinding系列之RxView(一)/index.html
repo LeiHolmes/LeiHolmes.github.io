@@ -38,7 +38,7 @@ ga('send', 'pageview');
 <meta property="og:url" content="http://LeiHolmes.github.io/2017/11/09/RxBinding系列之RxView(一)/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="前言　　自从用上RxJava后彻底迷上Rx系列响应式编程，从本篇开始一起来学习一下Rx套餐之一的RxBinding。RxBinding是什么？它是一组开源库，来自大神Jake Wharton之手，可将Android中各类UI控件的动作事件转换为RxJava中的数据流。也就是说使用RxBinding，我们就可以以RxJava的形式来处理UI事件。本篇主要讲解其中RxView的相关View事件如何绑定">
-<meta property="og:updated_time" content="2017-11-09T09:18:57.000Z">
+<meta property="og:updated_time" content="2017-11-12T12:33:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxBinding系列之RxView(一)">
 <meta name="twitter:description" content="前言　　自从用上RxJava后彻底迷上Rx系列响应式编程，从本篇开始一起来学习一下Rx套餐之一的RxBinding。RxBinding是什么？它是一组开源库，来自大神Jake Wharton之手，可将Android中各类UI控件的动作事件转换为RxJava中的数据流。也就是说使用RxBinding，我们就可以以RxJava的形式来处理UI事件。本篇主要讲解其中RxView的相关View事件如何绑定">
@@ -131,7 +131,7 @@ ga('send', 'pageview');
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -209,7 +209,7 @@ ga('send', 'pageview');
 <h3 id="drag拖拽事件"><a href="#drag拖拽事件" class="headerlink" title="drag拖拽事件"></a>drag拖拽事件</h3><p>　　<code>RxView.drags(View view)</code>，内部封装了OnDragListener拖拽监听。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//当btnDraw被拖拽时触发</span></div><div class="line">addDisposable(RxView.drags(btnDraw)</div><div class="line">        .subscribe(o -&gt; &#123;</div><div class="line">            Log.e(<span class="string">"rx_binding_test"</span>, <span class="string">"drags:btnDraw被拖拽了"</span>);</div><div class="line">        &#125;));</div></pre></td></tr></table></figure></p>
 <h3 id="layoutChange布局改变事件"><a href="#layoutChange布局改变事件" class="headerlink" title="layoutChange布局改变事件"></a>layoutChange布局改变事件</h3><p>　　<code>RxView.layoutChanges(View view)</code>，内部封装了OnLayoutChangeListener布局改变监听。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//点击btnChange改变btn_layout的布局,防抖2s</span></div><div class="line">addDisposable(RxView.clicks(btnChange)</div><div class="line">        .throttleFirst(<span class="number">2</span>, TimeUnit.SECONDS)</div><div class="line">        .subscribe(o -&gt; btnLayout.layout(btnLayout.getLeft() - <span class="number">20</span>, </div><div class="line">                btnLayout.getTop(), btnLayout.getRight() - <span class="number">20</span>, btnLayout.getBottom())</div><div class="line">        ));</div><div class="line">        </div><div class="line"><span class="comment">//btn_layout布局改变时触发</span></div><div class="line">addDisposable(RxView.layoutChanges(btnLayout)</div><div class="line">        .subscribe(o -&gt; &#123;</div><div class="line">            Log.e(<span class="string">"rx_binding_test"</span>, <span class="string">"layoutChanges:btnLayout布局改变了"</span>);</div><div class="line">        &#125;));</div></pre></td></tr></table></figure></p>
 <h3 id="scrollChange滑动事件"><a href="#scrollChange滑动事件" class="headerlink" title="scrollChange滑动事件"></a>scrollChange滑动事件</h3><p>　　<code>RxView.scrollChangeEvents(View view)</code>，内部封装了OnScrollChangeListener滑动监听。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//点击btnScroll模拟让btnScrollLayout滑动</span></div><div class="line">addDisposable(RxView.clicks(btnScroll)</div><div class="line">        .throttleFirst(<span class="number">2</span>, TimeUnit.SECONDS)</div><div class="line">        .subscribe(o -&gt; &#123;</div><div class="line">            x += <span class="number">10</span>;</div><div class="line">            <span class="keyword">if</span> (x == <span class="number">100</span>) &#123;</div><div class="line">                x = <span class="number">0</span>;</div><div class="line">            &#125;</div><div class="line">            btnScrollLayout.scrollTo(x, <span class="number">0</span>);</div><div class="line">        &#125;));</div><div class="line">        </div><div class="line"><span class="comment">//btnScrollLayout滑动时触发</span></div><div class="line">addDisposable(RxView.scrollChangeEvents(btnScrollLayout)</div><div class="line">        .subscribe(event -&gt; &#123;</div><div class="line">            Log.e(<span class="string">"rx_binding_test"</span>, <span class="string">"scrollChangeEvents:btnScrollLayout滑动了:"</span> + event.toString());</div><div class="line">        &#125;));</div></pre></td></tr></table></figure></p>
-<h3 id="View操作"><a href="#View操作" class="headerlink" title="View操作"></a>View操作</h3><p>　　RxBinding中还封装了一些常用的例如<code>setVisibility()</code>、<code>setClickable()</code>等View操作。使用起来也很简单，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">addDisposable(RxView.clicks(btnClick)</div><div class="line">        .throttleFirst(<span class="number">2</span>, TimeUnit.SECONDS)</div><div class="line">        .subscribe(o -&gt; &#123;</div><div class="line">            RxView.visibility(btnClick).accept(<span class="keyword">true</span>);</div><div class="line">            RxView.clickable(btnClick).accept(<span class="keyword">true</span>);</div><div class="line">            RxView.enabled(btnClick).accept(<span class="keyword">true</span>);</div><div class="line">        &#125;));</div></pre></td></tr></table></figure></p>
+<h3 id="View操作"><a href="#View操作" class="headerlink" title="View操作"></a>View操作</h3><p>　　RxView中还封装了一些常用的例如<code>setVisibility()</code>、<code>setClickable()</code>等View操作。使用起来也很简单，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">addDisposable(RxView.clicks(btnClick)</div><div class="line">        .throttleFirst(<span class="number">2</span>, TimeUnit.SECONDS)</div><div class="line">        .subscribe(o -&gt; &#123;</div><div class="line">            RxView.visibility(btnClick).accept(<span class="keyword">true</span>);</div><div class="line">            RxView.clickable(btnClick).accept(<span class="keyword">true</span>);</div><div class="line">            RxView.enabled(btnClick).accept(<span class="keyword">true</span>);</div><div class="line">        &#125;));</div></pre></td></tr></table></figure></p>
 <p>　　这种操作方法单独使用是需要进行try-catch的，但还记得RxJava2系列中我们学习到，RxJava2的Action与Function的回调方法中都默认throws Exception，RxBinding也是如此。所以在观察者中调用就无需try-catch了。<br>　　更多的操作可在RxView的源码中查到，基本上View中有的，J大神都编写了，膜拜大神。</p>
 <h3 id="取消订阅"><a href="#取消订阅" class="headerlink" title="取消订阅"></a>取消订阅</h3><p>　　最后别忘了在Activity销毁时对创建的Disposable取消订阅。Demo中的Act都以BaseActivity为基类，所以就无需再调用取消订阅了，BaseActivity已经将这些工作做好了。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　RxBinding使用起来非常简单，RxView中还有attaches、detaches，focusChanges，globalLayouts，hovers，touches等等就不一一演示了，码友们可自行尝试。<br>　　进阶中的码猿一枚，写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxBindingDemo项目Issues中提出，我会及时回复。<br>　　附上Demo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxBindingDemo" target="_blank" rel="external">RxBindingDemo</a>  </p>
@@ -220,7 +220,7 @@ ga('send', 'pageview');
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2017-11-09T09:18:57.000Z" itemprop="dateUpdated">2017-11-09 17:18:57</time>
+    Last updated: <time datetime="2017-11-12T12:33:05.000Z" itemprop="dateUpdated">2017-11-12 20:33:05</time>
 </span><br>
 
 
@@ -300,7 +300,14 @@ ga('send', 'pageview');
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/12/RxBinding系列之RxTextView(二)/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">RxBinding系列之RxTextView(二)</h4>
+      </a>
+    </div>
   
 
   
@@ -398,7 +405,7 @@ ga('send', 'pageview');
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>博客内容遵循<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
         </p>
     </div>
     <div class="bottom">
