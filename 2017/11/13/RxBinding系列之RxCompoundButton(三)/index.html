@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'true', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="UA-99027890-1">
+    
+    
+    
+    <title>RxBinding系列之RxCompoundButton(三) | Lei’s Blog | 不忘初心，淡然前行</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="RxBinding">
+    <meta name="description" content="前言　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件及动作加以RxJava的观察者模式并封装了起来就形成了RxCompoundButton，使用起来也很简单。">
+<meta name="keywords" content="RxBinding">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxBinding系列之RxCompoundButton(三)">
+<meta property="og:url" content="http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/index.html">
+<meta property="og:site_name" content="Lei’s Blog">
+<meta property="og:description" content="前言　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件及动作加以RxJava的观察者模式并封装了起来就形成了RxCompoundButton，使用起来也很简单。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/8575775-5ff83e5114601b52.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-11-13T03:44:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxBinding系列之RxCompoundButton(三)">
+<meta name="twitter:description" content="前言　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件及动作加以RxJava的观察者模式并封装了起来就形成了RxCompoundButton，使用起来也很简单。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/8575775-5ff83e5114601b52.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+    
+        <link rel="alternate" type="application/atom+xml" title="Lei’s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">徐雷</h5>
+          <a href="mailto:17611595118@163.com" title="17611595118@163.com" class="mail">17611595118@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                成长之路
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/LeiHolmes" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/u/1850954523?topnav=1&wvr=6&topsug=1" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RxBinding系列之RxCompoundButton(三)</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="搜尋">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RxBinding系列之RxCompoundButton(三)</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-12T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-11-13
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#布局"><span class="post-toc-number">2.</span> <span class="post-toc-text">布局</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Activity"><span class="post-toc-number">3.</span> <span class="post-toc-text">Activity</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#View注入"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">View注入</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#checkedChanges选中状态改变事件"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">checkedChanges选中状态改变事件</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#View操作"><span class="post-toc-number">4.</span> <span class="post-toc-text">View操作</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#运行效果"><span class="post-toc-number">5.</span> <span class="post-toc-text">运行效果</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#本文疑问"><span class="post-toc-number">6.</span> <span class="post-toc-text">本文疑问</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#addDisposable-方法什么鬼？"><span class="post-toc-number">6.1.</span> <span class="post-toc-text">addDisposable()方法什么鬼？</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Lambda表达式什么鬼？"><span class="post-toc-number">6.2.</span> <span class="post-toc-text">Lambda表达式什么鬼？</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">7.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-RxBinding系列之RxCompoundButton(三)"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RxBinding系列之RxCompoundButton(三)</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-13 00:00:00" datetime="2017-11-12T16:00:00.000Z"  itemprop="datePublished">2017-11-13</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件及动作加以RxJava的观察者模式并封装了起来就形成了RxCompoundButton，使用起来也很简单。<br>　　<a id="more"></a><br>　　场景：注册时需用户点击同意用户协议选中框才可点击注册按钮。</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>　　布局中更需要一个注册Button和一个用户协议选中框CheckBox。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></div><div class="line">    <span class="attr">android:padding</span>=<span class="string">"15dp"</span></div><div class="line">    <span class="attr">tools:context</span>=<span class="string">"com.leiholmes.rxbindingdemo.ui.RxCompoundButtonActivity"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn_login"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"@color/colorGray"</span></div><div class="line">        <span class="attr">android:text</span>=<span class="string">"注册"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">CheckBox</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/cb_contract"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_marginTop</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:text</span>=<span class="string">"用户协议"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h3 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h3><h4 id="View注入"><a href="#View注入" class="headerlink" title="View注入"></a>View注入</h4><p>　　使用ButterKnife获取Button与CheckBox实例。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BindView</span>(R.id.btn_login)</div><div class="line">Button btnLogin;</div><div class="line"><span class="meta">@BindView</span>(R.id.cb_contract)</div><div class="line">CheckBox cbContract;</div></pre></td></tr></table></figure></p>
+<h4 id="checkedChanges选中状态改变事件"><a href="#checkedChanges选中状态改变事件" class="headerlink" title="checkedChanges选中状态改变事件"></a>checkedChanges选中状态改变事件</h4><p>　　<code>RxCompoundButton.checkedChanges(CompoundButton view)</code>，内部封装了OnCheckedChangeListener选中状态改变监听。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//默认注册按钮不可点击</span></div><div class="line">btnLogin.setEnabled(<span class="keyword">false</span>);</div><div class="line">addDisposable(RxCompoundButton.checkedChanges(cbContract)</div><div class="line">        .subscribe(aBoolean -&gt; &#123;</div><div class="line">            RxView.enabled(btnLogin).accept(aBoolean);</div><div class="line">            btnLogin.setBackgroundResource(aBoolean ? R.color.colorPrimary : R.color.colorGray);</div><div class="line">            RxTextView.color(btnLogin).accept(aBoolean ? Color.parseColor(<span class="string">"#ffffff"</span>) :</div><div class="line">                    Color.parseColor(<span class="string">"#000000"</span>));</div><div class="line">        &#125;));</div><div class="line">addDisposable(RxView.clicks(btnLogin)</div><div class="line">        <span class="comment">//防抖2s</span></div><div class="line">        .throttleFirst(<span class="number">2</span>, TimeUnit.SECONDS)</div><div class="line">        .subscribe(o -&gt; Toast.makeText(RxCompoundButtonActivity.<span class="keyword">this</span>, <span class="string">"注册成功"</span>,</div><div class="line">                Toast.LENGTH_SHORT).show()));</div></pre></td></tr></table></figure></p>
+<p>　　默认注册按钮不可点击，当CheckBox被选中后则可点击注册，并修改注册按钮的样式。</p>
+<h3 id="View操作"><a href="#View操作" class="headerlink" title="View操作"></a>View操作</h3><p>　　RxCompoundButton中也封装了CompoundButton中例如<code>setchecked()</code>、<code>toggle()</code>等常用的操作，使用方式如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">addDisposable(RxView.clicks(btnLogin)</div><div class="line">        .subscribe(o -&gt; &#123;</div><div class="line">            RxCompoundButton.checked(cbContract).accept(<span class="keyword">true</span>);</div><div class="line">            RxCompoundButton.toggle(cbContract).accept(<span class="keyword">null</span>);</div><div class="line">        &#125;));</div></pre></td></tr></table></figure></p>
+<h3 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h3><p>　　最后看一下运行效果Gif。</p>
+<p><div align="center"><br>　　<img src="http://upload-images.jianshu.io/upload_images/8575775-5ff83e5114601b52.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="运行效果"><br></div></p>
+<h3 id="本文疑问"><a href="#本文疑问" class="headerlink" title="本文疑问"></a>本文疑问</h3><h4 id="addDisposable-方法什么鬼？"><a href="#addDisposable-方法什么鬼？" class="headerlink" title="addDisposable()方法什么鬼？"></a>addDisposable()方法什么鬼？</h4><p>飞机到本系列第一篇有讲解：<br><a href="http://xulei.tech/2017/11/09/RxBinding系列之RxView(一)" target="_blank" rel="external">RxBinding系列之RxView(一)</a></p>
+<h4 id="Lambda表达式什么鬼？"><a href="#Lambda表达式什么鬼？" class="headerlink" title="Lambda表达式什么鬼？"></a>Lambda表达式什么鬼？</h4><p>飞机到我写的Lambda表达式教程：<br><a href="http://xulei.tech/2017/07/24/Lambda表达式基本语法与应用" target="_blank" rel="external">Lambda表达式基本语法与应用</a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　通过实际场景来学习新知识掌握起来肯定比死啃理论快，建议码友们都上手试试。<br>　　进阶中的码猿一枚，写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxBindingDemo项目Issues中提出，我会及时回复。<br>　　附上Demo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxBindingDemo" target="_blank" rel="external">RxBindingDemo</a>  </p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最後更新時間：<time datetime="2017-11-13T03:44:19.000Z" itemprop="dateUpdated">2017-11-13 11:44:19</time>
+</span><br>
+
+
+        
+        进阶中的程序猿一枚，若发现有不正确的地方或者疑问欢迎各位留言指正。QQ：781751723
+        
+    </div>
+    <footer>
+        <a href="http://LeiHolmes.github.io">
+            <img src="/img/avatar.jpg" alt="徐雷">
+            徐雷
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RxBinding/">RxBinding</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/&title=《RxBinding系列之RxCompoundButton(三)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/&title=《RxBinding系列之RxCompoundButton(三)》 — Lei’s Blog&source=前言　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxBinding系列之RxCompoundButton(三)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/12/RxBinding系列之RxTextView(二)/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RxBinding系列之RxTextView(二)</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    <div id="cloud-tie-wrapper" class="comments cloud-tie-wrapper"></div>
+    <script>
+    var cloudTieConfig = {
+        url: 'http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/index.html',
+        sourceId: 'RxBinding系列之RxCompoundButton(三)',
+        productKey: 'a49afc3603394502bd2ba8121a4284d9',
+        target: 'cloud-tie-wrapper',
+        pcFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/pc.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/pc.min.js',
+        ],
+        mobileFiles: [
+            '//unpkg.com/hexo-theme-material-indigo@latest/css/cloudTie/mobile.css',
+            '//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/mobile.min.js'
+        ]
+    };
+    </script>
+    <script src="//unpkg.com/hexo-theme-material-indigo@latest/js/cloudTie/loader.min.js"></script>
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/img/wechat.jpg" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/img/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>本部落格係採用<a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh_TW">創用 CC 姓名標示 4.0 國際 授權條款授權</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p>
+            <span>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></span>
+            <span>徐雷 &copy; 2015 - 2017</span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/&title=《RxBinding系列之RxCompoundButton(三)》 — Lei’s Blog&pic=http://LeiHolmes.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/&title=《RxBinding系列之RxCompoundButton(三)》 — Lei’s Blog&source=前言　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RxBinding系列之RxCompoundButton(三)》 — Lei’s Blog&url=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/&via=http://LeiHolmes.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtElEQVR42u3aW07EMAwF0Nn/pkHiD6HS60cKiJMvVIaSE6TY2H694vX2sa6+vlpfP//1p66eX333dWLh4eHhtbaeb7G63a2DqL4NDw8P7zQvCQaTrUw+mRzx5XM8PDy8H+V9Hwwur+Zimp4cKB4eHt5f4eXJ9KT00DtuPDw8vOd5SZkguaYnRdtkHay14OHh4cW8eQPs+a8f7e/h4eHhDa7mrSBRHUdo7hYPDw/vAC/ZRG8oqncECSlvyOHh4eGd4OWvTo5ja4hq0gD79F08PDy8A7xyDIlbX70iwqRQe5NS4+Hh4a3yqoz5gFSy6Ulaj4eHh/ckr3oFT0JCfpXn+HJLDA8PD6/Iq5YeemlrfsVPZh/KZVw8PDy8AW9rPLS60fk7b/4keHh4eAd4SSqcN8B6l361DNFMzfHw8PCWeFvtpa3Gf6+QcfkcDw8P7wAvCQl5m+qtuHrXfbVhhoeHh7fLq2KSMJAfyu6YV6EBhoeHhzfgVUuiSQjpjSYk6XgeYG6aYXh4eHhjXt5YmqxqGr0WzPDw8PBWefmln3fSJiXavBAc7Q0PDw/vAK/6oryEOhnM2h0Fw8PDw9vlVS/oXilhPkzQK5Hg4eHhneNVG1dJGj05oGqr7PIJHh4e3mFeLznOiwK9ca7R8AEeHh7eMV71V+ahIi9D5KEl/zweHh7eCV7SsK9e371kuhcGvn+Oh4eHd4JXLUNUW1PzAu5onAsPDw/vcV4eW+aBoTecWhi3wsPDw1vi5StPgnshoVcIfm0tPDw8vCKvd30nqXCh2Dooi9z8S4CHh4d3jJcHg95Yan7FVwPATUqNh4eH96O8HJ+/rdoMy1NwPDw8vN/Dm7B7oSVvj41Sajw8PLwirzoaVa2gVtPlaml4odaCh4eH18lU1xpgWwGgmhs/1N/Dw8P7v7x3PF+IvcK+hCEAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Lei’s blog|不忘初心，淡然前行';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2017-11-12T13:08:54.000Z</updated>
+  <updated>2017-11-13T03:44:19.000Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -14,6 +14,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>RxBinding系列之RxCompoundButton(三)</title>
+    <link href="http://LeiHolmes.github.io/2017/11/13/RxBinding%E7%B3%BB%E5%88%97%E4%B9%8BRxCompoundButton(%E4%B8%89)/"/>
+    <id>http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/</id>
+    <published>2017-11-12T16:00:00.000Z</published>
+    <updated>2017-11-13T03:44:19.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件及动作加以RxJava的观察者模式并封装了起来就形成了RxCompoundButton，使用起来也很简单。<br>　　<a id="more"></a><br>　　场景：注册时需用户点击同意用户协议选中框才可点击注册按钮。</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>　　布局中更需要一个注册Button和一个用户协议选中框CheckBox。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></div><div class="line">    <span class="attr">android:padding</span>=<span class="string">"15dp"</span></div><div class="line">    <span class="attr">tools:context</span>=<span class="string">"com.leiholmes.rxbindingdemo.ui.RxCompoundButtonActivity"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn_login"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"@color/colorGray"</span></div><div class="line">        <span class="attr">android:text</span>=<span class="string">"注册"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">CheckBox</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/cb_contract"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_marginTop</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:text</span>=<span class="string">"用户协议"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h3 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h3><h4 id="View注入"><a href="#View注入" class="headerlink" title="View注入"></a>View注入</h4><p>　　使用ButterKnife获取Button与CheckBox实例。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BindView</span>(R.id.btn_login)</div><div class="line">Button btnLogin;</div><div class="line"><span class="meta">@BindView</span>(R.id.cb_contract)</div><div class="line">CheckBox cbContract;</div></pre></td></tr></table></figure></p>
+<h4 id="checkedChanges选中状态改变事件"><a href="#checkedChanges选中状态改变事件" class="headerlink" title="checkedChanges选中状态改变事件"></a>checkedChanges选中状态改变事件</h4><p>　　<code>RxCompoundButton.checkedChanges(CompoundButton view)</code>，内部封装了OnCheckedChangeListener选中状态改变监听。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//默认注册按钮不可点击</span></div><div class="line">btnLogin.setEnabled(<span class="keyword">false</span>);</div><div class="line">addDisposable(RxCompoundButton.checkedChanges(cbContract)</div><div class="line">        .subscribe(aBoolean -&gt; &#123;</div><div class="line">            RxView.enabled(btnLogin).accept(aBoolean);</div><div class="line">            btnLogin.setBackgroundResource(aBoolean ? R.color.colorPrimary : R.color.colorGray);</div><div class="line">            RxTextView.color(btnLogin).accept(aBoolean ? Color.parseColor(<span class="string">"#ffffff"</span>) :</div><div class="line">                    Color.parseColor(<span class="string">"#000000"</span>));</div><div class="line">        &#125;));</div><div class="line">addDisposable(RxView.clicks(btnLogin)</div><div class="line">        <span class="comment">//防抖2s</span></div><div class="line">        .throttleFirst(<span class="number">2</span>, TimeUnit.SECONDS)</div><div class="line">        .subscribe(o -&gt; Toast.makeText(RxCompoundButtonActivity.<span class="keyword">this</span>, <span class="string">"注册成功"</span>,</div><div class="line">                Toast.LENGTH_SHORT).show()));</div></pre></td></tr></table></figure></p>
+<p>　　默认注册按钮不可点击，当CheckBox被选中后则可点击注册，并修改注册按钮的样式。</p>
+<h3 id="View操作"><a href="#View操作" class="headerlink" title="View操作"></a>View操作</h3><p>　　RxCompoundButton中也封装了CompoundButton中例如<code>setchecked()</code>、<code>toggle()</code>等常用的操作，使用方式如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">addDisposable(RxView.clicks(btnLogin)</div><div class="line">        .subscribe(o -&gt; &#123;</div><div class="line">            RxCompoundButton.checked(cbContract).accept(<span class="keyword">true</span>);</div><div class="line">            RxCompoundButton.toggle(cbContract).accept(<span class="keyword">null</span>);</div><div class="line">        &#125;));</div></pre></td></tr></table></figure></p>
+<h3 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h3><p>　　最后看一下运行效果Gif。</p>
+<p><div align="center"><br>　　<img src="http://upload-images.jianshu.io/upload_images/8575775-5ff83e5114601b52.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="运行效果"><br></div></p>
+<h3 id="本文疑问"><a href="#本文疑问" class="headerlink" title="本文疑问"></a>本文疑问</h3><h4 id="addDisposable-方法什么鬼？"><a href="#addDisposable-方法什么鬼？" class="headerlink" title="addDisposable()方法什么鬼？"></a>addDisposable()方法什么鬼？</h4><p>飞机到本系列第一篇有讲解：<br><a href="http://xulei.tech/2017/11/09/RxBinding系列之RxView(一)" target="_blank" rel="external">RxBinding系列之RxView(一)</a></p>
+<h4 id="Lambda表达式什么鬼？"><a href="#Lambda表达式什么鬼？" class="headerlink" title="Lambda表达式什么鬼？"></a>Lambda表达式什么鬼？</h4><p>飞机到我写的Lambda表达式教程：<br><a href="http://xulei.tech/2017/07/24/Lambda表达式基本语法与应用" target="_blank" rel="external">Lambda表达式基本语法与应用</a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　通过实际场景来学习新知识掌握起来肯定比死啃理论快，建议码友们都上手试试。<br>　　进阶中的码猿一枚，写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxBindingDemo项目Issues中提出，我会及时回复。<br>　　附上Demo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxBindingDemo" target="_blank" rel="external">RxBindingDemo</a>  </p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件及动作加以RxJava的观察者模式并封装了起来就形成了RxCompoundButton，使用起来也很简单。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="http://LeiHolmes.github.io/categories/Android/"/>
+    
+    
+      <category term="RxBinding" scheme="http://LeiHolmes.github.io/tags/RxBinding/"/>
+    
+  </entry>
   
   <entry>
     <title>RxBinding系列之RxTextView(二)</title>
@@ -1257,77 +1290,6 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
     
     
       <category term="Retrofit" scheme="http://LeiHolmes.github.io/tags/Retrofit/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如何使用神器Stetho调试Volley</title>
-    <link href="http://LeiHolmes.github.io/2016/04/19/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E7%A5%9E%E5%99%A8Stetho%E8%B0%83%E8%AF%95Volley/"/>
-    <id>http://LeiHolmes.github.io/2016/04/19/如何使用神器Stetho调试Volley/</id>
-    <published>2016-04-18T16:00:00.000Z</published>
-    <updated>2017-09-28T08:55:57.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="Stetho简介"><a href="#Stetho简介" class="headerlink" title="Stetho简介"></a>Stetho简介</h3><p>　　Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入<a href="http://facebook.github.io/stetho/" target="_blank" rel="external">Stetho官网</a>。<br><a id="more"></a></p>
-<h3 id="Stetho结合OkHttp使用"><a href="#Stetho结合OkHttp使用" class="headerlink" title="Stetho结合OkHttp使用"></a>Stetho结合OkHttp使用</h3><h5 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// Gradle dependency on Stetho </div><div class="line">  dependencies &#123; </div><div class="line">    compile 'com.facebook.stetho:stetho:1.1.1' </div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<h5 id="Stetho初始化配置"><a href="#Stetho初始化配置" class="headerlink" title="Stetho初始化配置"></a>Stetho初始化配置</h5><p>在App的Application中完成初始化。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate();</div><div class="line">    Stetho.initialize(</div><div class="line">      Stetho.newInitializerBuilder(<span class="keyword">this</span>)</div><div class="line">        .enableDumpapp(</div><div class="line">            Stetho.defaultDumperPluginsProvider(<span class="keyword">this</span>))</div><div class="line">        .enableWebKitInspector(</div><div class="line">            Stetho.defaultInspectorModulesProvider(<span class="keyword">this</span>))</div><div class="line">        .build());</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>官网中使用OkHttp为实例，使用如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</div><div class="line">client.networkInterceptors().add(<span class="keyword">new</span> StethoInterceptor());</div></pre></td></tr></table></figure></p>
-<p>然后就可以运行App进行调试，基本上可以满足调试需求了。</p>
-<h3 id="Stetho结合Volley使用"><a href="#Stetho结合Volley使用" class="headerlink" title="Stetho结合Volley使用"></a>Stetho结合Volley使用</h3><p>官网中Stetho是结合OkHttp的使用，如果项目中使用Volley做为网络请求框架，可以做如下修改。还是使用OkHttp做为Volley中HttpStack的实现，我们知道，Volley中网络请求在Android2.3及以上基于HttpURLConnection，2.3以下基于HttpClient实现，通过增加HttpStack的具体实现即可。这里使用<a href="https://gist.github.com/bryanstern/4e8f1cb5a8e14c202750" target="_blank" rel="external">Bryan Stern分享的代码</a>。（网页可能被墙，可以通过VPN访问。需要VPN的可以<a href="http://reftizi.com/?r=bf31aecac9700bac" target="_blank" rel="external">点击这里</a>）</p>
-<h5 id="添加依赖-1"><a href="#添加依赖-1" class="headerlink" title="添加依赖"></a>添加依赖</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">compile 'com.facebook.stetho:stetho:1.1.1'</div><div class="line">compile 'com.facebook.stetho:stetho-okhttp:1.1.1'</div><div class="line">compile 'com.squareup.okhttp:okhttp:2.3.0'</div></pre></td></tr></table></figure>
-<h5 id="Stetho初始化配置-1"><a href="#Stetho初始化配置-1" class="headerlink" title="Stetho初始化配置"></a>Stetho初始化配置</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</div><div class="line">client.networkInterceptors().add(<span class="keyword">new</span> StethoInterceptor());</div><div class="line">mRequestQueue = Volley.newRequestQueue(getApplicationContext(), <span class="keyword">new</span> OkHttpStack(client));</div></pre></td></tr></table></figure>
-<p>好了，基本上这样就能使用Stetho神器调试你的App了，感觉到强大了么~。</p>
-<h3 id="补充：使用中遇到的坑"><a href="#补充：使用中遇到的坑" class="headerlink" title="补充：使用中遇到的坑"></a>补充：使用中遇到的坑</h3><ul>
-<li><p>Stetho inspect窗口空白 </p>
-<p>如果出现调试窗口空白，先升级下Chrome吧。升级最新版后再试一下（我被这个坑了）。</p>
-</li>
-<li><p>Stetho inspect窗口还是空白 </p>
-<p>如果Chrome是最新版，无论如何刷新都是空白，那么恭喜你你可能被墙了~用VPN试试吧 <a href="!http://reftizi.com/?r=bf31aecac9700bac">可以戳这里哦</a></p>
-</li>
-</ul>
-<h3 id="我的测试代码和效果图如下："><a href="#我的测试代码和效果图如下：" class="headerlink" title="我的测试代码和效果图如下："></a>我的测试代码和效果图如下：</h3><p>自定义Application类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAppliation</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line">	</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">super</span>.onCreate();</div><div class="line">		context = getApplicationContext();</div><div class="line">		instance = <span class="keyword">this</span>;</div><div class="line"></div><div class="line">		Stetho.initialize(</div><div class="line">				Stetho.newInitializerBuilder(<span class="keyword">this</span>)</div><div class="line">						.enableDumpapp(Stetho.defaultDumperPluginsProvider(<span class="keyword">this</span>))</div><div class="line">						.enableWebKitInspector(Stetho.defaultInspectorModulesProvider(<span class="keyword">this</span>))</div><div class="line">						.build());</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line">	 * <span class="doctag">@return</span> The Volley Request queue</div><div class="line">	 */</div><div class="line">	<span class="function"><span class="keyword">public</span> RequestQueue <span class="title">getRequestQueue</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="comment">// lazy initialize the request queue, the queue instance will be</span></div><div class="line">		<span class="comment">// created when it is accessed for the first time</span></div><div class="line">		<span class="keyword">synchronized</span> (App.class) &#123;</div><div class="line">			<span class="keyword">if</span> (mRequestQueue == <span class="keyword">null</span>) &#123;</div><div class="line">				OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</div><div class="line">				client.networkInterceptors().add(<span class="keyword">new</span> StethoInterceptor());</div><div class="line">				mRequestQueue = Volley.newRequestQueue(getApplicationContext(), <span class="keyword">new</span> OkHttpStack(client));</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> mRequestQueue;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Activity类代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> TextView tv;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.layout_main);</div><div class="line">        tv = (TextView)findViewById(R.id.tv);</div><div class="line"></div><div class="line">        RequestQueue queue = App.getInstance().getRequestQueue();</div><div class="line">        String url = <span class="string">"https://publicobject.com/helloworld.txt"</span>;</div><div class="line">        StringRequest request = <span class="keyword">new</span> StringRequest(Request.Method.GET, url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">                LogUtil.d(s);</div><div class="line">                tv.setText(s);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> com.android.volley.Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError volleyError)</span> </span>&#123;</div><div class="line">                LogUtil.e(volleyError.toString());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        queue.add(request);</div><div class="line"></div><div class="line">        SharedPrfUtil.setInt(<span class="string">"uid"</span>,<span class="number">669</span>);</div><div class="line">        SharedPrfUtil.setString(<span class="string">"username"</span>,<span class="string">"dongye"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>实现效果如下图：</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://dongyeforever.qiniudn.com/stetho-all.png" alt="Stetho调试效果图" title="">
-                </div>
-                <div class="image-caption">Stetho调试效果图</div>
-            </figure>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://dongyeforever.qiniudn.com/stetho-inspect.png" alt="调试程序列表" title="">
-                </div>
-                <div class="image-caption">调试程序列表</div>
-            </figure>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://dongyeforever.qiniudn.com/inspect-network.png" alt="调试网络请求" title="">
-                </div>
-                <div class="image-caption">调试网络请求</div>
-            </figure>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://dongyeforever.qiniudn.com/inspect-sharedpreference.png" alt="读取数据存储" title="">
-                </div>
-                <div class="image-caption">读取数据存储</div>
-            </figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;Stetho简介&quot;&gt;&lt;a href=&quot;#Stetho简介&quot; class=&quot;headerlink&quot; title=&quot;Stetho简介&quot;&gt;&lt;/a&gt;Stetho简介&lt;/h3&gt;&lt;p&gt;　　Stetho 是 Facebook 开源的一个 Android 调试工具。是一个 Chrome Developer Tools 的扩展，可用来检测应用的网络、数据库、WebKit 等方面的功能。开发者也可通过它的 dumpapp 工具提供强大的命令行接口来访问应用内部。无需root查看sqlite文件、sharedpreference文件等等。更多详细介绍可以进入&lt;a href=&quot;http://facebook.github.io/stetho/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Stetho官网&lt;/a&gt;。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="Android" scheme="http://LeiHolmes.github.io/categories/Android/"/>
-    
-    
-      <category term="Stetho" scheme="http://LeiHolmes.github.io/tags/Stetho/"/>
     
   </entry>
   
