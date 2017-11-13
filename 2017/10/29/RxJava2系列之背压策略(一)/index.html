@@ -30,16 +30,16 @@ ga('send', 'pageview');
     <meta name="theme-color" content="#3F51B5">
     
     
-    <meta name="keywords" content="RxJava">
+    <meta name="keywords" content="RxJava2">
     <meta name="description" content="前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就">
-<meta name="keywords" content="RxJava">
+<meta name="keywords" content="RxJava2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RxJava2系列之背压策略(一)">
 <meta property="og:url" content="http://LeiHolmes.github.io/2017/10/29/RxJava2系列之背压策略(一)/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就">
 <meta property="og:image" content="http://leiholmes.github.io/img/RxJava/backPressure.png">
-<meta property="og:updated_time" content="2017-11-06T08:57:37.000Z">
+<meta property="og:updated_time" content="2017-11-13T03:51:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava2系列之背压策略(一)">
 <meta name="twitter:description" content="前言　　通过前7篇RxJava的文章，我们对RxJava1.x版本的内容进行了学习与实践。目前RxJava已经更新到2.x了，有小伙伴问我为什么不直接上RxJava2的教程？RxJava2是在1的基础上进行了更新与优化，有很多相通之处，初学者的话建议还是先从RxJava1的基础理论一步步学习。　　本系列主要通过与RxJava1比较来学习RxJava2都有哪些改变。而RxJava2中最大的优化之处就">
@@ -133,7 +133,7 @@ ga('send', 'pageview');
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="搜尋">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -247,7 +247,7 @@ ga('send', 'pageview');
     <div class="content">
         
 <span class="post-time">
-    最後更新時間：<time datetime="2017-11-06T08:57:37.000Z" itemprop="dateUpdated">2017-11-06 16:57:37</time>
+    最后更新时间：<time datetime="2017-11-13T03:51:07.000Z" itemprop="dateUpdated">2017-11-13 11:51:07</time>
 </span><br>
 
 
@@ -272,7 +272,7 @@ ga('send', 'pageview');
 
         <div class="post-footer">
             
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RxJava/">RxJava</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RxJava2/">RxJava2</a></li></ul>
 
 
             
@@ -432,7 +432,7 @@ ga('send', 'pageview');
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>本部落格係採用<a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh_TW">創用 CC 姓名標示 4.0 國際 授權條款授權</a></span>
+            <span>博客内容遵循<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
         </p>
     </div>
     <div class="bottom">
