@@ -41,7 +41,7 @@ ga('send', 'pageview');
 <meta property="og:image" content="http://leiholmes.github.io/img/RxJava/RxJava2.png">
 <meta property="og:image" content="http://leiholmes.github.io/img/RxJava/Action.png">
 <meta property="og:image" content="http://leiholmes.github.io/img/RxJava/Func.png">
-<meta property="og:updated_time" content="2017-11-13T03:51:17.000Z">
+<meta property="og:updated_time" content="2017-11-17T01:23:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava2系列之相较RxJava1的更新之处(二)">
 <meta name="twitter:description" content="前言　　通过本系列上一篇文章，我们了解了RxJava1中由于被观察者发送事件的速度远快于观察者处理事件的速度导致的背压问题，由此而生出背压策略。虽然RxJava1中有一些操作符支持背压策略，也有一些其他方法，但效果并不太理想。这个问题到了RxJava2中得到了更好地解决。本篇一起来看相较于RxJava1，RxJava2从观察者模式到语法以及线程调度都做了哪些更新。">
@@ -135,7 +135,7 @@ ga('send', 'pageview');
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="搜尋">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -176,7 +176,7 @@ ga('send', 'pageview');
     <aside class="post-widget">
         <nav class="post-toc-wrap" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#依赖"><span class="post-toc-number">2.</span> <span class="post-toc-text">依赖</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#观察者模式更新"><span class="post-toc-number">3.</span> <span class="post-toc-text">观察者模式更新</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#语法更新"><span class="post-toc-number">4.</span> <span class="post-toc-text">语法更新</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Action更新"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">Action更新</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Func更新"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">Func更新</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Subscription更新"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">Subscription更新</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#新增doOnCancel等"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">新增doOnCancel等</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#线程调度更新"><span class="post-toc-number">4.5.</span> <span class="post-toc-text">线程调度更新</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#依赖"><span class="post-toc-number">2.</span> <span class="post-toc-text">依赖</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#观察者模式更新"><span class="post-toc-number">3.</span> <span class="post-toc-text">观察者模式更新</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#语法更新"><span class="post-toc-number">4.</span> <span class="post-toc-text">语法更新</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Null"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">Null</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Action更新"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">Action更新</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Func更新"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">Func更新</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Subscription更新"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">Subscription更新</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#新增doOnCancel等"><span class="post-toc-number">4.5.</span> <span class="post-toc-text">新增doOnCancel等</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#线程调度更新"><span class="post-toc-number">4.6.</span> <span class="post-toc-text">线程调度更新</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li></ol>
         </nav>
     </aside>
     
@@ -222,6 +222,9 @@ ga('send', 'pageview');
 <p>　　这几种观察者模式主要用来判断单一状态，不用来发送大量数据。实际使用频率不高就不一一赘述了。
 　　</p>
 <h3 id="语法更新"><a href="#语法更新" class="headerlink" title="语法更新"></a>语法更新</h3><p>　　语法更新方面，大部分操作符的用法都未改动，有改动的是RxJava1中ActionN，FuncN等等的包名类名。</p>
+<h4 id="Null"><a href="#Null" class="headerlink" title="Null"></a>Null</h4><p>　　经落木语码友的提醒，首先需要注意一个细节变动：RxJava2中不再支持传入null，否则会抛出NullPointerException。<br>　　RxJava1中：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//可直接传入null</span></div><div class="line">Observable.just(<span class="keyword">null</span>);</div></pre></td></tr></table></figure></p>
+<p>　　RxJava2中:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//直接传入null会抛出NullPointerException</span></div><div class="line">Observable.just(<span class="keyword">null</span>);</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//操作符返回null会走onError()回调</span></div><div class="line">Observable.just(<span class="number">1</span>)</div><div class="line">        .map(integer -&gt; <span class="keyword">null</span>)</div><div class="line">        .subscribe(o -&gt; Log.e(<span class="string">"test_rxjava"</span>, <span class="string">"onNext:"</span> + o.toString()),</div><div class="line">            throwable -&gt; Log.e(<span class="string">"test_rxjava"</span>, <span class="string">"onError:"</span> + throwable.getMessage()));</div></pre></td></tr></table></figure>
 <h4 id="Action更新"><a href="#Action更新" class="headerlink" title="Action更新"></a>Action更新</h4><p>　　更新内容见图：</p>
 <p><div align="center"><br>　　<img src="/img/RxJava/Action.png" alt=""><br></div><br>　　用法示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Flowable.just(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)</div><div class="line">        .subscribe(<span class="keyword">new</span> Consumer&lt;Integer&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Integer integer)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">                Log.e(<span class="string">"rx2_test"</span>, <span class="string">"actionChange："</span> + integer);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
 <h4 id="Func更新"><a href="#Func更新" class="headerlink" title="Func更新"></a>Func更新</h4><p>　　更新内容见图：</p>
@@ -249,7 +252,7 @@ ga('send', 'pageview');
     <div class="content">
         
 <span class="post-time">
-    最後更新時間：<time datetime="2017-11-13T03:51:17.000Z" itemprop="dateUpdated">2017-11-13 11:51:17</time>
+    最后更新时间：<time datetime="2017-11-17T01:23:17.000Z" itemprop="dateUpdated">2017-11-17 09:23:17</time>
 </span><br>
 
 
@@ -434,7 +437,7 @@ ga('send', 'pageview');
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>本部落格係採用<a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh_TW">創用 CC 姓名標示 4.0 國際 授權條款授權</a></span>
+            <span>博客内容遵循<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
         </p>
     </div>
     <div class="bottom">
