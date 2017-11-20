@@ -136,7 +136,7 @@ ga('send', 'pageview');
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="搜尋">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -225,10 +225,34 @@ ga('send', 'pageview');
 <p>Activity类代码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> TextView tv;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.layout_main);</div><div class="line">        tv = (TextView)findViewById(R.id.tv);</div><div class="line"></div><div class="line">        RequestQueue queue = App.getInstance().getRequestQueue();</div><div class="line">        String url = <span class="string">"https://publicobject.com/helloworld.txt"</span>;</div><div class="line">        StringRequest request = <span class="keyword">new</span> StringRequest(Request.Method.GET, url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">                LogUtil.d(s);</div><div class="line">                tv.setText(s);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> com.android.volley.Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError volleyError)</span> </span>&#123;</div><div class="line">                LogUtil.e(volleyError.toString());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        queue.add(request);</div><div class="line"></div><div class="line">        SharedPrfUtil.setInt(<span class="string">"uid"</span>,<span class="number">669</span>);</div><div class="line">        SharedPrfUtil.setString(<span class="string">"username"</span>,<span class="string">"dongye"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>实现效果如下图：</p>
-<p><img src="http://dongyeforever.qiniudn.com/stetho-all.png" alt="Stetho调试效果图"></p>
-<p><img src="http://dongyeforever.qiniudn.com/stetho-inspect.png" alt="调试程序列表"></p>
-<p><img src="http://dongyeforever.qiniudn.com/inspect-network.png" alt="调试网络请求"></p>
-<p><img src="http://dongyeforever.qiniudn.com/inspect-sharedpreference.png" alt="读取数据存储"></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://dongyeforever.qiniudn.com/stetho-all.png" alt="Stetho调试效果图" title="">
+                </div>
+                <div class="image-caption">Stetho调试效果图</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://dongyeforever.qiniudn.com/stetho-inspect.png" alt="调试程序列表" title="">
+                </div>
+                <div class="image-caption">调试程序列表</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://dongyeforever.qiniudn.com/inspect-network.png" alt="调试网络请求" title="">
+                </div>
+                <div class="image-caption">调试网络请求</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://dongyeforever.qiniudn.com/inspect-sharedpreference.png" alt="读取数据存储" title="">
+                </div>
+                <div class="image-caption">读取数据存储</div>
+            </figure>
 
         </div>
 
@@ -236,7 +260,7 @@ ga('send', 'pageview');
     <div class="content">
         
 <span class="post-time">
-    最後更新時間：<time datetime="2017-09-28T08:55:57.000Z" itemprop="dateUpdated">2017-09-28 16:55:57</time>
+    Last updated: <time datetime="2017-09-28T08:55:57.000Z" itemprop="dateUpdated">2017-09-28 16:55:57</time>
 </span><br>
 
 
@@ -345,23 +369,6 @@ ga('send', 'pageview');
 
 
 
-<section class="comments" id="comments">
-    <div id="gitment_thread"></div>
-    <link rel="stylesheet" href="//unpkg.com/gitment/style/default.css">
-    <script src="//unpkg.com/gitment/dist/gitment.browser.js"></script>
-    <script>
-        var gitment = new Gitment({
-            owner: '',
-            repo: '',
-            oauth: {
-                client_id: '',
-                client_secret: '',
-            },
-        })
-        gitment.render('comments')
-    </script>
-</section>
-
 
 
 
@@ -412,7 +419,7 @@ ga('send', 'pageview');
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>本部落格係採用<a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh_TW">創用 CC 姓名標示 4.0 國際 授權條款授權</a></span>
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
         </p>
     </div>
     <div class="bottom">
