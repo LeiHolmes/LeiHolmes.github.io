@@ -86,14 +86,14 @@
 <meta property="og:url" content="http://LeiHolmes.github.io/2017/09/28/RxJava基本原理与使用(二)/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="前言　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的印象与概念了。本篇我们将更深入的学习RxJava的基本原理以及如何使用RxJava。">
-<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/example.jpeg">
-<meta property="og:image" content="http://leiholmes.github.io/img/RxJava/connect.png">
+<meta property="og:image" content="http://ozpdwks0y.bkt.clouddn.com/17-11-26/28783483.jpg">
+<meta property="og:image" content="http://ozpdwks0y.bkt.clouddn.com/17-11-26/9099070.jpg">
 <meta property="og:image" content="http://leiholmes.github.io/img/RxJava/subscribe.png">
-<meta property="og:updated_time" content="2017-10-16T09:54:17.000Z">
+<meta property="og:updated_time" content="2017-11-26T10:31:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava基本原理与使用(二)">
 <meta name="twitter:description" content="前言　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的印象与概念了。本篇我们将更深入的学习RxJava的基本原理以及如何使用RxJava。">
-<meta name="twitter:image" content="http://leiholmes.github.io/img/RxJava/example.jpeg">
+<meta name="twitter:image" content="http://ozpdwks0y.bkt.clouddn.com/17-11-26/28783483.jpg">
 
 
 
@@ -512,8 +512,8 @@
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　上一篇我们了解了RxJava的介绍以及通过一个例子学习了RxJava的展现形式，相信大家现在已经对RxJava有一个初步的印象与概念了。本篇我们将更深入的学习RxJava的基本原理以及如何使用RxJava。<br>　　<a id="more"></a></p>
 <h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>　　上一篇有提到RxJava的核心便是扩展的观察者模式，我们先来学习一下观察者模式。  </p>
-<p><div align="center"><br>　　<img src="/img/RxJava/example.jpeg" alt=""><br></div><br>　　事件：小明按下遥控器开关，空调启动并开始吹风了。按下制冷按键，空调吹出的风变为凉风。再按下3档风速按键，空调吹的风变大了。<br>　　在这个事件中，<strong>空调作为观察者，遥控器作为被观察者，空调通过红外线检测遥控器传来的信号并作出响应。</strong>  </p>
-<p><div align="center"><br>　　<img src="/img/RxJava/connect.png" alt=""><br></div><br>　　通过上图我们可以很清晰的看出遥控器作为事件的生产方<strong>主动</strong>发起事件，是事件的起点，而空调作为事件的处理方<strong>被动</strong>接收事件做出响应，是事件的终点。而在事件传递的过程中可对事件进行过滤，转换，合并等操作，就像例子中制冷与加大风速的效果。<br>　　这个概念是RxJava中的核心，它是基于观察者模式来组建自己的程序逻辑，遥控器就相当于RxJava的<strong>被观察者Observable</strong>，空调相当于<strong>观察者Observer</strong>，而对事件处理的一些操作相当于各类<strong>操作符</strong>。不同的是RxJava中观察者需要对被观察者进行订阅，这样当被观察者发出事件时，观察者才会接收到事件进行处理。若未进行订阅，被观察者是不会发出任何事件的。</p>
+<p><div align="center"><br>　　<img src="http://ozpdwks0y.bkt.clouddn.com/17-11-26/28783483.jpg" alt=""><br></div><br>　　事件：小明按下遥控器开关，空调启动并开始吹风了。按下制冷按键，空调吹出的风变为凉风。再按下3档风速按键，空调吹的风变大了。<br>　　在这个事件中，<strong>空调作为观察者，遥控器作为被观察者，空调通过红外线检测遥控器传来的信号并作出响应。</strong>  </p>
+<p><div align="center"><br>　　<img src="http://ozpdwks0y.bkt.clouddn.com/17-11-26/9099070.jpg" alt=""><br></div><br>　　通过上图我们可以很清晰的看出遥控器作为事件的生产方<strong>主动</strong>发起事件，是事件的起点，而空调作为事件的处理方<strong>被动</strong>接收事件做出响应，是事件的终点。而在事件传递的过程中可对事件进行过滤，转换，合并等操作，就像例子中制冷与加大风速的效果。<br>　　这个概念是RxJava中的核心，它是基于观察者模式来组建自己的程序逻辑，遥控器就相当于RxJava的<strong>被观察者Observable</strong>，空调相当于<strong>观察者Observer</strong>，而对事件处理的一些操作相当于各类<strong>操作符</strong>。不同的是RxJava中观察者需要对被观察者进行订阅，这样当被观察者发出事件时，观察者才会接收到事件进行处理。若未进行订阅，被观察者是不会发出任何事件的。</p>
 <h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>　　了解了观察者模式，接下来动起指尖尝试下怎么使用RxJava。</p>
 <h4 id="创建被观察者Observable"><a href="#创建被观察者Observable" class="headerlink" title="创建被观察者Observable"></a>创建被观察者Observable</h4><p>　　第一步：创建被观察者Observable：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Observable&lt;Object&gt; observable = Observable.create(<span class="keyword">new</span> Observable.OnSubscribe&lt;Object&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Subscriber&lt;? <span class="keyword">super</span> Object&gt; subscriber)</span> </span>&#123;</div><div class="line">        <span class="comment">//被观察者的数据操作更新</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</div><div class="line">            subscriber.onNext(<span class="string">"xulei"</span> + i);</div><div class="line">        &#125;</div><div class="line">        subscriber.onCompleted();</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
 <p>　　通过<code>Observable.create()</code>方法创建并返回一个Observable对象，create()方法需要一个OnSubsribe对象作为参数传入并执行call()方法。此OnSubsribe对象继承自Action1。<br>　　而在call()方法中可通过<code>subscriber.onNext()</code>进行事件的发送，<code>subscriber.onCompleted()</code>标记为事件发送完毕。<code>subscriber.onError()</code>标记为事件发送过程出现异常。<br>　　除create()方法创建Observable方式外，还可以使用just()与from()等方式，这个在之后的创建操作符文章中会有讲解。</p>
