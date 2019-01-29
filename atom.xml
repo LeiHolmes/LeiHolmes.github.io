@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2018-06-04T06:46:20.994Z</updated>
+  <updated>2019-01-29T07:22:27.845Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -14,6 +14,266 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android面试技术点总结</title>
+    <link href="http://LeiHolmes.github.io/2019/01/29/Android%E9%9D%A2%E8%AF%95%E6%8A%80%E6%9C%AF%E7%82%B9%E6%80%BB%E7%BB%93/"/>
+    <id>http://LeiHolmes.github.io/2019/01/29/Android面试技术点总结/</id>
+    <published>2019-01-28T16:00:00.000Z</published>
+    <updated>2019-01-29T07:22:27.845Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>　　年末一周不忙了，总结了下在Android开发面试中易问的一些Android相关基础知识与面试题，不太全，大家查缺补漏吧。开始Review！<br>　　<a id="more"></a></p>
+<h2 id="Android组件"><a href="#Android组件" class="headerlink" title="Android组件"></a>Android组件</h2><h3 id="Android四大组件"><a href="#Android四大组件" class="headerlink" title="Android四大组件"></a>Android四大组件</h3><ul>
+<li><strong>Activity</strong>：一个Activity通常就是一个单独的屏幕，它上面可以显示一些控件也可以监听并处理用户的事件做出响应。</li>
+<li><strong>Service</strong>：服务，一段长生命周期的，没有用户界面的程序，可以用来开发如监控类程序。<ul>
+<li><strong>bindingService()</strong>：调用者与服务绑定在一起，不同生，但同死。</li>
+<li><strong>startService()</strong>：调用者与服务无关联，调用者退出，服务依然继续。</li>
+</ul>
+</li>
+<li><strong>BroadcastReceiver</strong>：广播接收器，对外部事件进行过滤只对感兴趣的外部事件进行接收并做出响应。</li>
+<li><strong>ContentProvider</strong>：内容提供者，使一个应用程序的指定数据集提供给其他应用程序。</li>
+</ul>
+<h3 id="Activity启动模式"><a href="#Activity启动模式" class="headerlink" title="Activity启动模式"></a>Activity启动模式</h3><ul>
+<li><strong>Standard</strong>：每次都创建新实例加入启动它的Activity的栈中。注意不可使用ApplicationContext来启动，由于非Activity的Context没有任务栈，所以会报错，可通过设置FLAG_ACTIVITY_NEW_TASK标志从而创建新的任务栈将其压入栈中。</li>
+<li><strong>SingleTop</strong>：若新实例已位于栈顶，则复用并调用其onNewIntent，不调用onCreate与onStart。否则新建。</li>
+<li><strong>SingleTask</strong>：若新实例已位于其需要的栈中，则复用并将其栈上的Activity都弹出。否则新建。</li>
+<li><strong>SingleInstance</strong>：具有SingleTask的特性，每个不同类型的Activity都只能独占一个栈，遵循栈内复用。</li>
+</ul>
+<h3 id="Activity的TaskAffinity属性"><a href="#Activity的TaskAffinity属性" class="headerlink" title="Activity的TaskAffinity属性"></a>Activity的TaskAffinity属性</h3><ul>
+<li><strong>TaskAffinity</strong>：指Activity的归属，控制Activity所属的任务栈。每个Activity都有TaskAffinity属性，指出了它希望进入的Task。若没有显性指定它的属性等于Application指明的TaskAffinity，若Application也没有指明，那么该TaskAffinity的值等于其应用包名。只对启动模式为<strong>SingleTask/SingleInstance</strong>的Activity起作用。</li>
+<li><strong>与allowTaskReparenting属性配合使用</strong>：当把Activity的allowTaskReparenting属性设置成true时，Activity就可以从启动的任务栈移动到TaskAffinity指定的任务栈。例：在TaskA中启动了TaskB的ActivityC，若ActivityC的allowTaskReparenting为true，且ActivityC与TaskB的TaskAffinity相同，那么当TaskB被启动时，ActivityC会直接从TaskA转移到TaskB中。</li>
+<li><strong>与SingleTask启动模式配合使用</strong>：当指定Activity启动模式为SingleTask或设置FLAG_ACTIVITY_NEW_TASK标识时，系统会先检查当前Task与Activity的TaskAffinity是否相同，相同则放入当前Task，不同则寻找有无与其TaskAffinity相同的Task，有则放入那个Task中，无则新建一个与其TaskAffinity值相同的Task并加入其中，加入的Task会被调至前台。</li>
+</ul>
+<h3 id="Activity的Flags"><a href="#Activity的Flags" class="headerlink" title="Activity的Flags"></a>Activity的Flags</h3><ul>
+<li><strong>FLAG_ACTIVITY_NEW_TASK</strong>：指定Activity的启动模式为“singleTask”。优先级大于清单中配置。</li>
+<li><strong>FLAG_ACTIVITY_SINGLE_TOP</strong>：指定Activity的启动模式为“singleTop”。优先级大于清单中配置。</li>
+<li><strong>FLAG_ACTIVITY_CLEAR_TOP</strong>：具有此标记且为“standard”模式的Activity启动时，同一栈中它连同它之上的Activity都出栈，再创建新的实例压入栈中。</li>
+<li><strong>FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS</strong>：具有此标记的Activity不会出现在Activity的历史列表中。等同于在清单中指定Activity的属性<code>android:excludeFromRecents = &quot;true&quot;</code></li>
+</ul>
+<h3 id="Intent七大属性"><a href="#Intent七大属性" class="headerlink" title="Intent七大属性"></a>Intent七大属性</h3><ul>
+<li><strong>ComponentName</strong>：主要用于跨应用访问Activity，进行显式意图访问。（显式 setAction(Intent.xxx)）</li>
+<li><strong>Action</strong>：表示想要启动的Activity要完成什么动作，例如: 调用系统的app打电话, 发短信等程序。（隐式 setComponent(ComponentName cn)）</li>
+<li><strong>Category</strong>：为Action增加附加类别信息，它是Action大动作的子动作。（隐式 addCategory(Intent.CATEGORY_XXX)）</li>
+<li><strong>Extras</strong>：保存需要传递的额外数据，比如邮件标题、正文、收件人、抄送人、短信内容等。（隐式、显式 putExtra(String key,String value);）</li>
+<li><strong>Data</strong>：保存需要传递的数据Uri格式(Uri:统一资源标识符)，比如  tel:  mailto:  smsto等。（隐式 setData(Uri.parse(“tel:xxxxx”))）</li>
+<li><strong>Type</strong>：区分文件类型(MIME大类型/子类型)，例如audio/mp3等。（隐式 setType(“XXX/xxx”) ）</li>
+<li><strong>Flags</strong>：动态配置Activity的启动模式。（addFlags(int)或setFlags(int)）</li>
+</ul>
+<h3 id="数据存储方式"><a href="#数据存储方式" class="headerlink" title="数据存储方式"></a>数据存储方式</h3><ul>
+<li><strong>SharePreferences</strong>：使用模式Context.MODE_PRIVATE，故不可被其他应用访问，但可获取到目标App的Context即可实现跨进程使用。</li>
+<li><strong>ContentProvider</strong></li>
+<li><strong>SQLite数据库</strong></li>
+<li><strong>File文件</strong></li>
+<li><strong>网络存储</strong></li>
+</ul>
+<h3 id="Android布局方式及特点"><a href="#Android布局方式及特点" class="headerlink" title="Android布局方式及特点"></a>Android布局方式及特点</h3><ul>
+<li><strong>FrameLayout</strong>：帧布局，所有元素都被放入左上区域，且无法指定确切位置，下一个元素覆盖上一个元素。</li>
+<li><strong>LinearLayout</strong>：线性布局，每个子元素都以垂直或水平的方式来线性排布。</li>
+<li><strong>AbsoluteLayout</strong>：绝对布局，采用坐标位置的方式排列元素。</li>
+<li><strong>RelativeLayout</strong>：相对布局，以某元素为参照物，来定位下一个元素位置。</li>
+<li><strong>TableLayout</strong>：表格布局，以表格的形式排列子元素。</li>
+<li><strong>线性与相对加载效率</strong>：<ol>
+<li>RelativeLayout会对子View进行两次measure(一横一纵)，LinearLayout只对子View进行一次measure(横或纵)，若设置weight属性也会进行两次（带与不带weight属性的View各一次），一般情况LinearLayout性能高于RelativeLayout。</li>
+<li>视图层级简单时，用LinearLayout效率更高，避免使用weight属性。</li>
+<li>视图层级复杂时，用RelativeLayout可减少层级嵌套，提高效率。</li>
+</ol>
+</li>
+</ul>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><h3 id="Activity生命周期"><a href="#Activity生命周期" class="headerlink" title="Activity生命周期"></a>Activity生命周期</h3><ul>
+<li><strong>打开A，切到B</strong>：A:onCreate()—&gt;A:onStart()—&gt;A:onResume()—&gt;A:onPause()—&gt;B:onCreate()—&gt;B:onStart()—&gt; B:onResume()—&gt;A:onStop()</li>
+<li><strong>Back返回A</strong>：B:onPause()—&gt;A:onRestart()—&gt;A:onStart()—&gt;A:onResume()—&gt;B:onStop()—&gt;B:onDestroy()</li>
+</ul>
+<h3 id="Fragment生命周期"><a href="#Fragment生命周期" class="headerlink" title="Fragment生命周期"></a>Fragment生命周期</h3><ul>
+<li><strong>打开A</strong>：onAttach()—&gt;onCreate()—&gt;onCreateView()—&gt;onViewCreated()—&gt;onActivityCreated()—&gt;onStart()—&gt;onResume()—&gt;onPause()—&gt;onStop()—&gt;onDestroyView()—&gt;onDestroy()—&gt;onDetach()</li>
+<li><strong>切到B</strong>：A:onPause()—&gt;B:onAttach()—&gt;……—&gt;B:onResume()—&gt;A:onStop()</li>
+<li><strong>Back返回A</strong>：B:onPause()—&gt;A:onStart()—&gt;A:onResume()—&gt;B:onStop()—&gt;B:onDestroyView()—&gt;B:onDestroy()—&gt;B:onDetach()</li>
+</ul>
+<h3 id="Service生命周期"><a href="#Service生命周期" class="headerlink" title="Service生命周期"></a>Service生命周期</h3><ul>
+<li><strong>Started Service</strong>：startService()—&gt;onCreate()—&gt;onStartCommand()—&gt;onDestroy()</li>
+<li><strong>Bound Service</strong>：bindService()—&gt;onCreate()—&gt;onBind()—&gt;onUnbind()—&gt;onDestroy()</li>
+<li><strong>注意</strong>：若Service已经启动，则只执行onStart()。<strong>Bound Service</strong>的生命周期与其绑定的组件同生死，<strong>Started Service</strong>不受限制。</li>
+</ul>
+<h3 id="横竖屏切换生命周期"><a href="#横竖屏切换生命周期" class="headerlink" title="横竖屏切换生命周期"></a>横竖屏切换生命周期</h3><ul>
+<li><strong>configChanges设置为<code>orientation</code>或者<code>orientation|keyboardHidden</code></strong>：onCreate()—&gt;onStart()—&gt;onResume()—&gt;onPause()—&gt;onStop()—&gt;onDestroy()—&gt;onCreate()—&gt;onStart()—&gt;onResume()</li>
+<li><strong>configChanges设置为<code>orientation|screenSize</code>或者<code>orientation|screenSize|keyboardHidden</code></strong>：onCreate()—&gt;onStart()—&gt;onResume()—&gt;onConfigurationChanged()</li>
+<li><strong>注意</strong>：targetSdkVersion<12的话，设置为orientation|keyboardhidden，也不重新创建activity，只调用onconfigurationchanged()。而targetsdkversion>=12的话，activity还是会重新创建(需要加上screenSize才有效果)。</12的话，设置为orientation|keyboardhidden，也不重新创建activity，只调用onconfigurationchanged()。而targetsdkversion></li>
+</ul>
+<h2 id="异步多线程"><a href="#异步多线程" class="headerlink" title="异步多线程"></a>异步多线程</h2><h3 id="AsyncTask执行方法"><a href="#AsyncTask执行方法" class="headerlink" title="AsyncTask执行方法"></a>AsyncTask执行方法</h3><ul>
+<li><strong>onPreExecute()</strong>：初始化操作。</li>
+<li><strong>doInBackground()</strong>：后台耗时操作。</li>
+<li><strong>onProgressUpdate()</strong>：doInBackground()中调用publishProgress(Progress…)，可进行进度条进度更新</li>
+<li><strong>onPostExecute()</strong>：耗时操作完成，可刷新UI。</li>
+<li>完全可使用RxJava异步数据流代替</li>
+</ul>
+<h3 id="异步消息处理Handler、Looper、Message关系"><a href="#异步消息处理Handler、Looper、Message关系" class="headerlink" title="异步消息处理Handler、Looper、Message关系"></a>异步消息处理Handler、Looper、Message关系</h3><p>　　Looper负责创建一个MessageQueue，然后无限循环从中读取由Handler创建发送的一个或多个Message。消息队列为空，线程则会阻塞等待。  </p>
+<ul>
+<li><strong>Looper</strong>：构造中创建一个MessageQueue并绑定当前线程，方法主要为prepare()与loop()，prepare将Looper对象放入ThreadLocal初始化，在loop方法中循环从MessageQueue中读取消息，没有则线程阻塞等待。读到消息后调用消息来源Handler中的dispathMessage()方法，其内部最终调用handleMessage()方法。</li>
+<li><strong>Handler</strong>：内部通过Looper.myLooper()获取了当前线程保存的Looper实例并与其MessageQueue进行关联，向其MessageQueue发送Message。</li>
+<li><strong>Message</strong>：存储消息内容。</li>
+</ul>
+<h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><h3 id="内存溢出与内存泄漏"><a href="#内存溢出与内存泄漏" class="headerlink" title="内存溢出与内存泄漏"></a>内存溢出与内存泄漏</h3><ul>
+<li><strong>内存溢出</strong>：所需内存超过系统所能提供内存的上限。</li>
+<li><strong>案例</strong><ol>
+<li>大量使用Bitmap未recycle()回收。</li>
+<li>循环中大量创建对象。</li>
+</ol>
+</li>
+<li><strong>内存泄露</strong>：分配出去的内存无法回收。</li>
+<li><strong>案例</strong><ol>
+<li>静态变量（静态Context持有Activity本身引用，导致其无法被回收）</li>
+<li>非静态内部类和匿名内部类（Handler问题，Handler持有Activity的引用导致其无法被回收，可使用静态内部类加WeakReference弱引用实现）</li>
+<li>既是静态变量又是非静态内部对象（非静态内部对象持有Activity的引用，而其静态变量导致Activity无法被回收）</li>
+<li>单例模式没有解绑（使用EventBus生成单例并注册一个Activity，页面结束时没有解除注册，会导致Activity无法被回收）</li>
+<li>属性动画造成内存泄漏（无限循环的属性动画没有将其停止，View动画则不会）</li>
+<li>RxJava 使用不当（没有及时取消订阅）</li>
+</ol>
+</li>
+</ul>
+<h3 id="ANR异常Application-Not-Responding"><a href="#ANR异常Application-Not-Responding" class="headerlink" title="ANR异常Application Not Responding"></a>ANR异常Application Not Responding</h3><ul>
+<li>5秒内无法响应用户输入时间（键盘输入，触摸屏幕等）</li>
+<li>BroadcastReceiver10s内无法结束</li>
+<li><strong>解决方案</strong>：避免在UI主线程进行耗时操作（文件读写、数据库、网络请求），交给子线程去完成。</li>
+</ul>
+<h3 id="Runtime-Exception"><a href="#Runtime-Exception" class="headerlink" title="Runtime Exception"></a>Runtime Exception</h3><ul>
+<li><strong>运行时异常</strong>：NullPointerException，ClassCastException，IllegalArgumentException，ArithmeticException，ArrayStoreException，IndexOutOfBoundsException，NegativeArraySizeException，NumberFormatException，NoSuchElementException，SecurityException，UnsupportedOperationException，BufferUnderflowException，BufferOverflowException，MissingResourceException</li>
+</ul>
+<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><h3 id="MVC，MVP，MVVVM"><a href="#MVC，MVP，MVVVM" class="headerlink" title="MVC，MVP，MVVVM"></a>MVC，MVP，MVVVM</h3><ul>
+<li><strong>MVC</strong>：通过Controller的控制去操作Model层的数据并交给View层展示。xml布局文件相当于View层，JavaBean类相当于Model层，Activity相当于Controller层。Activity会比较臃肿。</li>
+<li><strong>MVP</strong>：MVC升级版，Activity与Fragment只作为View层，Model层处理数据，而数据与View的交互都交给Presenter层，实现View与Model的解耦。给Activity减压，后期维护与测试更为便利。逻辑复杂的界面会导致接口过多。</li>
+<li><strong>MVVM</strong>：与MVP区别不大，Presenter层替换为ViewModel层，View层与ViewModel层是绑定关系，当更新ViewModel层数据时，View层ui会自动更新。绑定可使用DataBinding实现。View层还是会过重。publishProgress(Progress…)，可进行进度条进度更新</li>
+<li><strong>MVP+DataBinding</strong>：使用DataBinding节省数据绑定的时间，又使用Presenter将业务逻辑和view层分离。</li>
+</ul>
+<h2 id="屏幕适配"><a href="#屏幕适配" class="headerlink" title="屏幕适配"></a>屏幕适配</h2><h3 id="屏幕适配-1"><a href="#屏幕适配-1" class="headerlink" title="屏幕适配"></a>屏幕适配</h3><ul>
+<li>种像素密度机型，做5套图。比例 1：1.5：2：3：4</li>
+<li>多用相对布局</li>
+<li>尺寸限定符</li>
+<li>点九图</li>
+<li>不同图片填充类型ScaleType</li>
+</ul>
+<h2 id="事件分发与消费"><a href="#事件分发与消费" class="headerlink" title="事件分发与消费"></a>事件分发与消费</h2><h3 id="事件分发消费机制"><a href="#事件分发消费机制" class="headerlink" title="事件分发消费机制"></a>事件分发消费机制</h3><ul>
+<li>Activity-&gt;View  </li>
+<li>dispatchTouchEvent：用来分发TouchEvent。</li>
+<li>onInterceptTouchEvent：用来拦截TouchEvent，ViewGroup特有。</li>
+<li>onTouchEvent：用来处理TouchEvent。</li>
+</ul>
+<h3 id="Touch事件的传递流程"><a href="#Touch事件的传递流程" class="headerlink" title="Touch事件的传递流程"></a>Touch事件的传递流程</h3><ul>
+<li>一次完整的Touch事件由一个Down、一个Up和若干个Move组成。Down事件通过dispatchTouchEvent进行分发，目的是为了找到真正需要处理Touch请求的View。当某View或ViewGroup的onTouchEvent事件返回true时，便表示它是真正要处理这次请求的View，之后的Aciton_UP和Action_MOVE将由它处理。当所有子View的onTouchEvent都返回false时，这次的Touch请求就由根ViewGroup，即Activity自己处理了。</li>
+<li><strong>无拦截</strong><br>　　E/Activity:　　　dispatchTouchEvent<br>　　E/ViewGroup:　　dispatchTouchEvent<br>　　E/ViewGroup:　　onInterceptTouchEvent<br>　　E/View:　　　　　dispatchTouchEvent<br>　　E/View:　　　　　onTouchEvent：返回false不处理<br>　　E/ViewGroup:　　onTouchEvent<br>　　E/Activity:　　　onTouchEvent：ACTION_DOWN<br>　　E/Activity:　　　dispatchTouchEvent<br>　　E/Activity:　　　onTouchEvent：ACTION_UP<br>　　分发过程无拦截，事件一直向下分发至View，View在onTouchEvent中返回false表示不处理，则向上传递至Activity处理。由于ACTION_DOWN事件确定了事件交给Activity处理，所以ACTION_UP事件直接分发给Activity处理，不再下传了。</li>
+<li><strong>Intercept拦截</strong><br>　　E/Activity:　　　dispatchTouchEvent<br>　　E/ViewGroup:　　　dispatchTouchEvent<br>　　E/ViewGroup:　　onInterceptTouchEvent<br>　　E/View:　　　　dispatchTouchEvent<br>　　E/View:　　　　onTouchEvent<br>　　E/ViewGroup:　　onTouchEvent：ACTION_DOWN：返回true消费<br>　　E/Activity:　　　dispatchTouchEvent<br>　　E/ViewGroup:　　dispatchTouchEvent<br>　　E/ViewGroup:　　onTouchEvent：ACTION_MOVE：返回true消费<br>　　E/Activity:　　　　dispatchTouchEvent<br>　　E/ViewGroup:　　dispatchTouchEvent<br>　　E/ViewGroup:　　onTouchEvent：ACTION_UP：返回true消费<br>　　事件在回传过程中被ViewGroup在onTouchEvent中返回true消费了，则不继续向上回传。Up与Move事件原理同上，直接分发到ViewGroup中进行处理。</li>
+<li><strong>Dispatch拦截</strong><br>　　E/Activity:　　　dispatchTouchEvent<br>　　E/ViewGroup:　　dispatchTouchEvent：返回true拦截<br>　　E/Activity:　　　dispatchTouchEvent<br>　　E/ViewGroup:　　dispatchTouchEvent：返回true拦截<br>　　事件在分发过程中被ViewGroup在dispatchTouchEvent中返回true拦截了，则不继续向下分发，Down事件就此结束，也没有定位到事件的View，所以Move与Up事件还需重新进行分发过程。</li>
+</ul>
+<h2 id="自定义View"><a href="#自定义View" class="headerlink" title="自定义View"></a>自定义View</h2><h3 id="自定义View生命周期"><a href="#自定义View生命周期" class="headerlink" title="自定义View生命周期"></a>自定义View生命周期</h3><ul>
+<li><strong>onFinishInflate()</strong>：初始准备完毕。</li>
+<li><strong>onAttachedToWindow()</strong>：将View绑定到Activity所在Window上。</li>
+<li><strong>onMeasure()</strong>：计算当前View的宽高大小。</li>
+<li><strong>onLayout()</strong>：计算当前View的位置。</li>
+<li><strong>onDraw()</strong>：绘制View。</li>
+<li><strong>onWindowFocusChanged()</strong>：View焦点变化。</li>
+<li><strong>onDetachedFromWindow()</strong>：Activity销毁后，View会从Window上。剥离</li>
+</ul>
+<h2 id="三方框架"><a href="#三方框架" class="headerlink" title="三方框架"></a>三方框架</h2><h3 id="ButterKnife原理"><a href="#ButterKnife原理" class="headerlink" title="ButterKnife原理"></a>ButterKnife原理</h3><p>　　根据注解生成一个Java类，里面动态的去做一些FindViewById的事。
+　　</p>
+<h3 id="Dragger2好处"><a href="#Dragger2好处" class="headerlink" title="Dragger2好处"></a>Dragger2好处</h3><ul>
+<li>避免重复去new，及单例之类的工作，增加开发效率。</li>
+<li>更好的管理类实例。</li>
+<li>解耦。</li>
+</ul>
+<h3 id="Retrofit"><a href="#Retrofit" class="headerlink" title="Retrofit"></a>Retrofit</h3><ul>
+<li>Retrofit使用注解+java接口来定义后台服务API接口。</li>
+<li>使用Retrofit.create函数创建接口动态代理的示例。</li>
+<li>可将http请求解耦，配合RxJava会更加的灵活。</li>
+</ul>
+<h3 id="OkHttp"><a href="#OkHttp" class="headerlink" title="OkHttp"></a>OkHttp</h3><ul>
+<li>Request：每一个HTTP请求包含一个URL、一个方法（GET或POST或其他）、一些HTTP头。请求还可能包含一个特定内容类型的数据类的主体部分。</li>
+<li>Response：响应是对请求的回复，包含状态码、HTTP头和主体部分。</li>
+<li>Call：OkHttp使用Call抽象出一个满足请求的模型，尽管中间可能会有多个请求或响应。执行Call有两种方式，同步或异步。</li>
+</ul>
+<h3 id="Volley"><a href="#Volley" class="headerlink" title="Volley"></a>Volley</h3><h3 id="xUtils：快速开发框架"><a href="#xUtils：快速开发框架" class="headerlink" title="xUtils：快速开发框架"></a>xUtils：快速开发框架</h3><ul>
+<li>DbUtils</li>
+<li>ViewUtils</li>
+<li>HttpUtils</li>
+<li>BitmapUtils</li>
+</ul>
+<h3 id="Mqtt即时通讯协议"><a href="#Mqtt即时通讯协议" class="headerlink" title="Mqtt即时通讯协议"></a>Mqtt即时通讯协议</h3><ul>
+<li>使用发布/消息订阅模式。</li>
+<li>TCP/IP提供网络连接。</li>
+<li>提供一对多的消息发布，解除应用程序耦合。</li>
+<li>小型传输，开销很小。</li>
+</ul>
+<h3 id="Jpush极光推送"><a href="#Jpush极光推送" class="headerlink" title="Jpush极光推送"></a>Jpush极光推送</h3><h3 id="RxJava"><a href="#RxJava" class="headerlink" title="RxJava"></a>RxJava</h3><ul>
+<li>响应式编程</li>
+<li>采用升级版观察者模式的异步事件流</li>
+<li>空调（观察者）、遥控器（被观察者）、红外信号（操作符）的例子</li>
+</ul>
+<h3 id="GreenDao"><a href="#GreenDao" class="headerlink" title="GreenDao"></a>GreenDao</h3><h3 id="Realm"><a href="#Realm" class="headerlink" title="Realm"></a>Realm</h3><ul>
+<li>Realm 是一个 MVCC （多版本并发控制）数据库，本质上是一个嵌入式数据库，它不是基于SQLite所构建的，它拥有自己的数据库存储引擎，可以高效且快速地完成数据库的构建操作。和SQLite不同，它可在持久层直接和数据对象工作。在它之上是一个函数式风格的查询api，比传统的SQLite 操作更快 。</li>
+<li>易用<ul>
+<li>Ream不是在SQLite基础上的ORM，它有自己的数据查询引擎。并且十分容易使用。</li>
+</ul>
+</li>
+<li>快速<ul>
+<li>由于它是完全重新开始开发的数据库实现，所以它比任何的ORM速度都快很多，甚至比SQLite速度都要快。</li>
+</ul>
+</li>
+<li>跨平台<ul>
+<li>Realm 支持 iOS &amp; OS X (Objective‑C &amp; Swift) &amp; Android。我们可以在这些平台上共享Realm数据库文件，并且上层逻辑可以不用任何改动的情况下实现移植。</li>
+</ul>
+</li>
+<li>高级<ul>
+<li>Ream支持加密，格式化查询，易于移植，支持JSON，流式api，数据变更通知等高级特性</li>
+</ul>
+</li>
+<li>可视化<ul>
+<li>Realm 还提供了一个轻量级的数据库查看工具，在Mac Appstore 可以下载“Realm Browser”这个工具，开发者可以查看数据库当中的内容，执行简单的插入和删除数据的操作。（windows上还不清楚）</li>
+</ul>
+</li>
+</ul>
+<h2 id="面试问题"><a href="#面试问题" class="headerlink" title="面试问题"></a>面试问题</h2><h3 id="资源及状态的操作保存，最好保存在生命周期的哪个函数里？"><a href="#资源及状态的操作保存，最好保存在生命周期的哪个函数里？" class="headerlink" title="资源及状态的操作保存，最好保存在生命周期的哪个函数里？"></a>资源及状态的操作保存，最好保存在生命周期的哪个函数里？</h3><p>　　保存在onPause()中</p>
+<h3 id="哪些情况内存会被垃圾回收机制处理掉？"><a href="#哪些情况内存会被垃圾回收机制处理掉？" class="headerlink" title="哪些情况内存会被垃圾回收机制处理掉？"></a>哪些情况内存会被垃圾回收机制处理掉？</h3><ul>
+<li>对象引用超过其作用范围。</li>
+<li>将对象赋值为null。</li>
+<li>实体不再被任何对象所引用。</li>
+</ul>
+<h3 id="数据库升级方法及注意事项"><a href="#数据库升级方法及注意事项" class="headerlink" title="数据库升级方法及注意事项"></a>数据库升级方法及注意事项</h3><p>　　应用版本更新前若数据库结构有改变，则需更改数据库版本号。新版本运行后需在onUpgrade()中根据数据库版本号判断是否要升级数据库，若版本号大于旧版本号则需要升级，一为了保证旧数据的不丢失，二是为了进行数据库结构的更新。  </p>
+<ul>
+<li>表结构有更改<ol>
+<li>首先将旧数据库的表A重名为A_temp。</li>
+<li>创建满足新版本数据库结构的新表A（增加与修改的字段）。</li>
+<li>将表A_temp中数据插入到表A中。</li>
+</ol>
+</li>
+<li>加入新表<ol>
+<li>只需在新版本运行后插入新的表，并给相应字段附上默认值即可。</li>
+</ol>
+</li>
+<li><strong>注意</strong>：跨版本升级需要先确定相邻版本的差别，从版本1开始依次迭代更新，先执行v1到v2，再v2到v3等等。或根据版本差别，编写对应的升级代码。</li>
+</ul>
+<h3 id="ScrollView嵌套ListView问题"><a href="#ScrollView嵌套ListView问题" class="headerlink" title="ScrollView嵌套ListView问题"></a>ScrollView嵌套ListView问题</h3><p>　　原因：ScrollView拦截了ListView的Move事件。 </p>
+<ul>
+<li>动态计算ListView高度。</li>
+<li>自定义ScrollView重写onInterceptTouchEvent返回false，不拦截ListView的Move事件。</li>
+<li>在listView的dispatchTouchEvent方法中调用requestDisallowInterceptTouchEvent(true)申请不被拦截触摸事件。</li>
+</ul>
+<h3 id="RecyclerView有几种Manager，如何实现瀑布流"><a href="#RecyclerView有几种Manager，如何实现瀑布流" class="headerlink" title="RecyclerView有几种Manager，如何实现瀑布流"></a>RecyclerView有几种Manager，如何实现瀑布流</h3><ul>
+<li>LinearLayoutManager： 线性布局管理器，呈现线性布局的RecyclerView，实现ListView效果。</li>
+<li>GridLayoutManager：网格布局管理器，呈现网格布局的RecyclerView，实现GridView效果。</li>
+<li>StaggeredGridLayoutManager：交错网格布局管理器，呈现交错网格布局的RecyclerView，它是一种特殊的GridLayoutManager，区别在于，它允许每个Item的长度或高度不一致，实现瀑布流效果。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>　　目前Android面试技术点总结的还不太全，我会持续更新，也欢迎码友们指出文中写的不对的地方，或者有遗漏的知识点也可以联系我，咱们一起来维护，方便你我他。最后祝各位求职顺利，入职满意的公司。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;　　年末一周不忙了，总结了下在Android开发面试中易问的一些Android相关基础知识与面试题，不太全，大家查缺补漏吧。开始Review！&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="http://LeiHolmes.github.io/categories/Android/"/>
+    
+    
+      <category term="Android Review" scheme="http://LeiHolmes.github.io/tags/Android-Review/"/>
+    
+  </entry>
   
   <entry>
     <title>Java面试技术点总结</title>
@@ -187,7 +447,7 @@
     <link href="http://LeiHolmes.github.io/2017/11/12/RxBinding%E7%B3%BB%E5%88%97%E4%B9%8BRxTextView(%E4%BA%8C)/"/>
     <id>http://LeiHolmes.github.io/2017/11/12/RxBinding系列之RxTextView(二)/</id>
     <published>2017-11-11T16:00:00.000Z</published>
-    <updated>2018-01-02T10:57:59.000Z</updated>
+    <updated>2018-06-05T03:16:24.380Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　本篇一起来学习RxBinding中的RxTextView，J大神将Android中TextView的一些事件及动作加以RxJava的观察者模式并封装了起来就形成了RxTextView，使用起来也很简单。<br>　　<a id="more"></a></p>
 <h3 id="textChange文本改变事件"><a href="#textChange文本改变事件" class="headerlink" title="textChange文本改变事件"></a>textChange文本改变事件</h3><h4 id="textChanges"><a href="#textChanges" class="headerlink" title="textChanges"></a>textChanges</h4><p>　　<code>RxTextView.textChanges(TextView view)</code>，内部封装了TextWatcher文本改变监听。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">addDisposable(RxTextView.textChanges(etRxTextView)</div><div class="line">.subscribe(<span class="keyword">new</span> Consumer&lt;CharSequence&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(CharSequence charSequence)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        Log.e(<span class="string">"rx_binding_test"</span>, <span class="string">"textChanges:文本改变了:"</span> + charSequence.toString());</div><div class="line">    &#125;</div><div class="line">&#125;));</div></pre></td></tr></table></figure></p>
@@ -988,334 +1248,6 @@
     
     
       <category term="DataBinding" scheme="http://LeiHolmes.github.io/tags/DataBinding/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Material Design之RecyclerView基本讲解与瀑布流的实现</title>
-    <link href="http://LeiHolmes.github.io/2017/03/28/Material%20Design%E4%B9%8BRecyclerView%E5%9F%BA%E6%9C%AC%E8%AE%B2%E8%A7%A3%E4%B8%8E%E7%80%91%E5%B8%83%E6%B5%81%E7%9A%84%E5%AE%9E%E7%8E%B0/"/>
-    <id>http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/</id>
-    <published>2017-03-27T16:00:00.000Z</published>
-    <updated>2017-09-28T08:57:03.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="RecyclerView简介"><a href="#RecyclerView简介" class="headerlink" title="RecyclerView简介"></a>RecyclerView简介</h3><p>　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。<br><a id="more"></a>  </p>
-<h3 id="相关原理与简单实现"><a href="#相关原理与简单实现" class="headerlink" title="相关原理与简单实现"></a>相关原理与简单实现</h3><h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>　　在AndroidStudio的build.gradle中添加依赖：  </p>
-<pre><code class="xml">dependencies {
-    ...
-    compile &#39;com.android.support:recyclerview-v7:25.3.0&#39;
-}
-</code></pre>
-<h4 id="在布局中使用"><a href="#在布局中使用" class="headerlink" title="在布局中使用"></a>在布局中使用</h4><p>　　添加完依赖后就可以在布局中使用RecyclerView了：  </p>
-<pre><code class="xml"><span class="tag">&lt;<span class="name">android.support.v7.widget.RecyclerView</span>
-    <span class="attr">android:id</span>=<span class="string">"@+id/main_recyclerview"</span>
-    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span>
-    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> /&gt;</span>
-</code></pre>
-<h4 id="RecyclerView-Adapter"><a href="#RecyclerView-Adapter" class="headerlink" title="RecyclerView.Adapter"></a>RecyclerView.Adapter</h4><p>　　RecyclerView封装了一种新型的适配器，与现在使用的适配器大同小异。它强制用户使用RecyclerView提供的ViewHolder，使用时主要需要重写onCreateViewHolder与onBindViewHolder方法。前者用来展现视图及其持有者，且只有真正需要一个新view时才会被回调，不需要检查是否已经被回收。后者用来绑定数据到View上。  </p>
-<pre><code class="java"><span class="keyword">import</span> android.content.Context;
-<span class="keyword">import</span> android.support.v7.widget.RecyclerView;
-<span class="keyword">import</span> android.view.LayoutInflater;
-<span class="keyword">import</span> android.view.View;
-<span class="keyword">import</span> android.view.ViewGroup;
-<span class="keyword">import</span> android.widget.TextView;
-<span class="keyword">import</span> java.util.List;
-
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">MyAdapter</span>.<span class="title">MyViewHolder</span>&gt; </span>{
-    <span class="keyword">private</span> Context context;
-    <span class="keyword">private</span> List&lt;String&gt; list;
-    <span class="keyword">private</span> LayoutInflater inflater;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">MyAdapter</span><span class="params">(Context context, List&lt;String&gt; list)</span> </span>{
-        <span class="keyword">this</span>.context = context;
-        <span class="keyword">this</span>.list = list;
-        inflater = LayoutInflater.from(context);
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> MyViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>{
-        View view = inflater.inflate(R.layout.item_recyclerview, parent, <span class="keyword">false</span>);
-        MyViewHolder holder = <span class="keyword">new</span> MyViewHolder(view);
-        <span class="keyword">return</span> holder;
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>{
-        holder.textView.setText(list.get(position));
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>{
-        <span class="keyword">return</span> list.size();
-    }
-
-    <span class="class"><span class="keyword">class</span> <span class="title">MyViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>{
-        TextView textView;
-        <span class="function"><span class="keyword">public</span> <span class="title">MyViewHolder</span><span class="params">(View itemView)</span> </span>{
-            <span class="keyword">super</span>(itemView);
-            textView = (TextView) itemView.findViewById(R.id.item_textview);
-        }
-    }
-}
-</code></pre>
-<h4 id="LayoutManager"><a href="#LayoutManager" class="headerlink" title="LayoutManager"></a>LayoutManager</h4><p>　　RecyclerView通过布局管理器LayoutManager控制每一个item如何进行排列摆放，何时展示和隐藏。回收或重用一个View时LayoutManager会向适配器请求新的数据来替换旧的数据，这种机制避免了创建过多的View和频繁的调用findViewById方法，目前其自带的主要有以下三种：<br>　　- LinearLayoutManager：ListView样式<br>　　- GridLayoutManager：GridView样式<br>　　- StaggeredGridLayoutManager：瀑布流样式  </p>
-<h4 id="ItemDecoration"><a href="#ItemDecoration" class="headerlink" title="ItemDecoration"></a>ItemDecoration</h4><p>　　RecyclerView并不能像ListView一样直接在xml布局中修改item分割线样式。需要在Activity动态设置，当然更推荐在单个条目布局中设置margin或者padding来实现分割线效果，这里提供一个分割线。  </p>
-<pre><code class="java"><span class="keyword">import</span> android.content.Context;
-<span class="keyword">import</span> android.content.res.TypedArray;
-<span class="keyword">import</span> android.graphics.Canvas;
-<span class="keyword">import</span> android.graphics.Rect;
-<span class="keyword">import</span> android.graphics.drawable.Drawable;
-<span class="keyword">import</span> android.support.v7.widget.LinearLayoutManager;
-<span class="keyword">import</span> android.support.v7.widget.RecyclerView;
-<span class="keyword">import</span> android.view.View;
-
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DividerItemDecoration</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ItemDecoration</span> </span>{
-    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span>[] ATTRS = <span class="keyword">new</span> <span class="keyword">int</span>[]{
-            android.R.attr.listDivider
-    };
-    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
-    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> VERTICAL_LIST = LinearLayoutManager.VERTICAL;
-    <span class="keyword">private</span> Drawable mDivider;
-    <span class="keyword">private</span> <span class="keyword">int</span> mOrientation;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">DividerItemDecoration</span><span class="params">(Context context, <span class="keyword">int</span> orientation)</span> </span>{
-        <span class="keyword">final</span> TypedArray a = context.obtainStyledAttributes(ATTRS);
-        mDivider = a.getDrawable(<span class="number">0</span>);
-        a.recycle();
-        setOrientation(orientation);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOrientation</span><span class="params">(<span class="keyword">int</span> orientation)</span> </span>{
-        <span class="keyword">if</span> (orientation != HORIZONTAL_LIST &amp;&amp; orientation != VERTICAL_LIST) {
-            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"invalid orientation"</span>);
-        }
-        mOrientation = orientation;
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas c, RecyclerView parent)</span> </span>{
-        <span class="keyword">if</span> (mOrientation == VERTICAL_LIST) {
-            drawVertical(c, parent);
-        } <span class="keyword">else</span> {
-            drawHorizontal(c, parent);
-        }
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawVertical</span><span class="params">(Canvas c, RecyclerView parent)</span> </span>{
-        <span class="keyword">final</span> <span class="keyword">int</span> left = parent.getPaddingLeft();
-        <span class="keyword">final</span> <span class="keyword">int</span> right = parent.getWidth() - parent.getPaddingRight();
-        <span class="keyword">final</span> <span class="keyword">int</span> childCount = parent.getChildCount();
-        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) {
-            <span class="keyword">final</span> View child = parent.getChildAt(i);
-            <span class="keyword">final</span> RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
-            <span class="keyword">final</span> <span class="keyword">int</span> top = child.getBottom() + params.bottomMargin;
-            <span class="keyword">final</span> <span class="keyword">int</span> bottom = top + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
-        }
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawHorizontal</span><span class="params">(Canvas c, RecyclerView parent)</span> </span>{
-        <span class="keyword">final</span> <span class="keyword">int</span> top = parent.getPaddingTop();
-        <span class="keyword">final</span> <span class="keyword">int</span> bottom = parent.getHeight() - parent.getPaddingBottom();
-        <span class="keyword">final</span> <span class="keyword">int</span> childCount = parent.getChildCount();
-        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) {
-            <span class="keyword">final</span> View child = parent.getChildAt(i);
-            <span class="keyword">final</span> RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child                     .getLayoutParams();
-            <span class="keyword">final</span> <span class="keyword">int</span> left = child.getRight() + params.rightMargin;
-            <span class="keyword">final</span> <span class="keyword">int</span> right = left + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
-        }
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getItemOffsets</span><span class="params">(Rect outRect, <span class="keyword">int</span> itemPosition, RecyclerView parent)</span> </span>{
-        <span class="keyword">if</span> (mOrientation == VERTICAL_LIST) {
-            outRect.set(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, mDivider.getIntrinsicHeight());
-        } <span class="keyword">else</span> {
-            outRect.set(<span class="number">0</span>, <span class="number">0</span>, mDivider.getIntrinsicWidth(), <span class="number">0</span>);
-            }
-    }
-}
-</code></pre>
-<h4 id="ItemAnimator"><a href="#ItemAnimator" class="headerlink" title="ItemAnimator"></a>ItemAnimator</h4><p>　　ItemAnimator会根据适配器上收到的通知来动画显示视图组的修改，比如item的添加与删除。DefaultItemAnimator已经能很好的展现动画效果了。  </p>
-<h4 id="RecyclerView初始化"><a href="#RecyclerView初始化" class="headerlink" title="RecyclerView初始化"></a>RecyclerView初始化</h4><p>　　若想初始化一个RecyclerView使其进入工作状态，你需要在Activity中做以下的操作：  </p>
-<pre><code class="java">RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view_main);
-MyAdapter adapter = <span class="keyword">new</span> MyAdapter(<span class="keyword">this</span>, list);
-<span class="comment">//设置RecyclerView保持固定的大小</span>
-recyclerView.setHasFixedSize(<span class="keyword">true</span>);
-<span class="comment">//设置适配器</span>
-recyclerView.setAdapter(adapter);
-<span class="comment">//设置RecyclerView ListView样式布局管理</span>
-recyclerView.setLayoutManager(<span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>, LinearLayoutManager.VERTICAL, <span class="keyword">false</span>));
-<span class="comment">//设置RecyclerView的Item分割线</span>
-recyclerView.addItemDecoration(<span class="keyword">new</span> DividerItemDecoration(<span class="keyword">this</span>, DividerItemDecoration.VERTICAL_LIST));
-<span class="comment">//设置RecyclerView的动画</span>
-recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimator());
-
-<span class="comment">//设置RecyclerView GridView样式</span>
-<span class="comment">//recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 3));</span>
-<span class="comment">//设置RecyclerView 水平GridView样式</span>
-<span class="comment">//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(5, StaggeredGridLayoutManager.HORIZONTAL));</span>
-<span class="comment">//设置RecyclerView 瀑布流样式</span>
-<span class="comment">//recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));</span>
-</code></pre>
-<h3 id="点击事件与添加删除Item"><a href="#点击事件与添加删除Item" class="headerlink" title="点击事件与添加删除Item"></a>点击事件与添加删除Item</h3><p>　　美中不足的是RecyclerView并没有提供像ListView一样的Item点击与Item长点击事件，不提供咱们就自己造，通过接口回调来实现。  </p>
-<h4 id="Adapter中"><a href="#Adapter中" class="headerlink" title="Adapter中"></a>Adapter中</h4><pre><code class="java"><span class="keyword">import</span> android.content.Context;
-<span class="keyword">import</span> android.support.v7.widget.RecyclerView;
-<span class="keyword">import</span> android.view.LayoutInflater;
-<span class="keyword">import</span> android.view.View;
-<span class="keyword">import</span> android.view.ViewGroup;
-<span class="keyword">import</span> android.widget.TextView;
-
-<span class="keyword">import</span> java.util.ArrayList;
-
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">MyAdapter</span>.<span class="title">MyViewHolder</span>&gt; </span>{
-    <span class="keyword">private</span> Context context;
-    <span class="keyword">private</span> LayoutInflater inflater;
-    <span class="keyword">protected</span> ArrayList&lt;String&gt; datas;
-    <span class="keyword">private</span> onItemClickedListener onItemClickedListener;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">MyAdapter</span><span class="params">(Context context, ArrayList&lt;String&gt; datas)</span> </span>{
-        <span class="keyword">this</span>.context = context;
-        <span class="keyword">this</span>.datas = datas;
-        inflater = LayoutInflater.from(context);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnItemClickedListener</span><span class="params">(MyAdapter.onItemClickedListener onItemClickedListener)</span> </span>{
-        <span class="keyword">this</span>.onItemClickedListener = onItemClickedListener;
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>{
-        holder.textView.setText(datas.get(position));
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> MyViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>{
-    View view = inflater.inflate(R.layout.item_recycler_view, parent, <span class="keyword">false</span>);
-        MyViewHolder myViewHolder = <span class="keyword">new</span> MyViewHolder(view);
-        <span class="keyword">return</span> myViewHolder;
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>{
-        <span class="keyword">return</span> datas.size();
-    }
-
-   <span class="comment">/**
-    * 添加条目
-    */</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>{
-        datas.add(position, <span class="string">"xulei"</span>);
-    <span class="comment">//        notifyDataSetChanged();</span>
-        notifyItemInserted(position);<span class="comment">//调用这个才有动画效果</span>
-    }
-
-   <span class="comment">/**
-    * 移除条目
-    */</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>{
-        datas.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    <span class="class"><span class="keyword">class</span> <span class="title">MyViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>{
-        TextView textView;
-
-        <span class="function"><span class="keyword">public</span> <span class="title">MyViewHolder</span><span class="params">(View itemView)</span> </span>{
-            <span class="keyword">super</span>(itemView);
-            <span class="comment">//初始化控件</span>
-            textView = (TextView) itemView.findViewById(R.id.item_textview);
-            <span class="comment">//设置当前条目单击监听</span>
-            itemView.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() {
-                <span class="meta">@Override</span>
-                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>{
-                    <span class="keyword">if</span> (onItemClickedListener != <span class="keyword">null</span>)
-                        onItemClickedListener.onClick(view, getAdapterPosition());<span class="comment">//可立刻获取到当前position</span>
-<span class="comment">//                        onItemClickedListener.onClick(view, getLayoutPosition());//需等当前视图更新完才能获取到当前position，&lt;16ms。</span>
-                }
-            });
-            <span class="comment">//设置当前条目长按监听</span>
-            itemView.setOnLongClickListener(<span class="keyword">new</span> View.OnLongClickListener() {
-                <span class="meta">@Override</span>
-                <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onLongClick</span><span class="params">(View view)</span> </span>{
-                    <span class="keyword">if</span> (onItemClickedListener != <span class="keyword">null</span>)
-                        onItemClickedListener.onLongClick(view, getAdapterPosition());
-                    <span class="keyword">return</span> <span class="keyword">false</span>;
-                }
-            });
-        }
-    }
-
-   <span class="comment">/**
-    * 点击回调的接口
-    */</span>
-    <span class="class"><span class="keyword">interface</span> <span class="title">onItemClickedListener</span> </span>{
-        <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span></span>;
-
-        <span class="function"><span class="keyword">void</span> <span class="title">onLongClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span></span>;
-    }
-}
-</code></pre>
-<h4 id="Activity中"><a href="#Activity中" class="headerlink" title="Activity中"></a>Activity中</h4><p>　　在Activity中实例化Adapter之后添加如下代码：</p>
-<pre><code class="java">adapter.setOnItemClickedListener(<span class="keyword">new</span> MyAdapter.onItemClickedListener() {
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span> </span>{
-        adapter.addItem(position);
-        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"点击click:"</span> + position, Toast.LENGTH_SHORT).show();
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLongClick</span><span class="params">(View view, <span class="keyword">int</span> position)</span> </span>{
-        adapter.removeItem(position);
-        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"长按click:"</span> + position, Toast.LENGTH_SHORT).show();
-    }
-});
-</code></pre>
-<h3 id="瀑布流的实现"><a href="#瀑布流的实现" class="headerlink" title="瀑布流的实现"></a>瀑布流的实现</h3><p>　　想实现瀑布流的样式通过使用RecyclerView也很容易就能实现。</p>
-<h4 id="首先在Activity中设置LayoutManager时选择："><a href="#首先在Activity中设置LayoutManager时选择：" class="headerlink" title="首先在Activity中设置LayoutManager时选择："></a>首先在Activity中设置LayoutManager时选择：</h4><pre><code class="java">recyclerView.setLayoutManager(<span class="keyword">new</span> StaggeredGridLayoutManager(<span class="number">3</span>,StaggeredGridLayoutManager.VERTICAL));
-</code></pre>
-<h4 id="修改Adapter"><a href="#修改Adapter" class="headerlink" title="修改Adapter"></a>修改Adapter</h4><p>　　瀑布流自然是每个条目的高度不同才能出现瀑布的效果（水平布局则是宽度不同），那么只需在每个条目绑定数据时动态改变下其高度即可，贴出瀑布流Adapter代码：</p>
-<pre><code class="java"><span class="keyword">import</span> android.content.Context;
-<span class="keyword">import</span> android.view.ViewGroup;
-
-<span class="keyword">import</span> java.util.ArrayList;
-<span class="keyword">import</span> java.util.List;
-
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaggerAdapter</span> <span class="keyword">extends</span> <span class="title">MyAdapter</span> </span>{
-    <span class="keyword">private</span> List&lt;Integer&gt; heights;
-    <span class="function"><span class="keyword">public</span> <span class="title">StaggerAdapter</span><span class="params">(Context context, ArrayList&lt;String&gt; datas)</span> </span>{
-        <span class="keyword">super</span>(context, datas);
-        heights = <span class="keyword">new</span> ArrayList&lt;&gt;();
-        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; datas.size(); i++) {
-            heights.add((<span class="keyword">int</span>) (<span class="number">100</span> + Math.random() * <span class="number">300</span>));
-        }
-    }
-
-    <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>{
-        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-        layoutParams.height = heights.get(position);
-<span class="comment">//        layoutParams.width = heights.get(position);</span>
-        holder.itemView.setLayoutParams(layoutParams);
-        holder.textView.setText(datas.get(position));
-    }
-}
-</code></pre>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　通过实践发现RecyclerView相较于ListView与GridView确实强大很多，更加的灵活与方便，提高了开发效率。但也有不足之处，如并未封装点击事件的回调，确实是比较头疼。期待Google的完善。<br>附上GitHub源码：<br><a href="https://github.com/ShylockXu/RecyclerViewDemo" target="_blank" rel="external">RecyclerViewDemo</a><br><a href="https://github.com/ShylockXu/RecyclerViewDevelop" target="_blank" rel="external">RecyclerViewDevelop</a>  </p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;RecyclerView简介&quot;&gt;&lt;a href=&quot;#RecyclerView简介&quot; class=&quot;headerlink&quot; title=&quot;RecyclerView简介&quot;&gt;&lt;/a&gt;RecyclerView简介&lt;/h3&gt;&lt;p&gt;　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="Android" scheme="http://LeiHolmes.github.io/categories/Android/"/>
-    
-    
-      <category term="RecyclerView" scheme="http://LeiHolmes.github.io/tags/RecyclerView/"/>
     
   </entry>
   
