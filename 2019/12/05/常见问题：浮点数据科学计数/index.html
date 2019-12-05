@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Bug," />
 
 
 
@@ -79,15 +79,17 @@
 
 
 
-<meta name="description" content="不忘初心，淡然前行">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Lei’s Blog">
-<meta property="og:url" content="http://LeiHolmes.github.io/categories/Java/index.html">
+<meta name="description" content="前言　　在项目开发中发现当Double类型的小数整数部分超过8位时，会自动转换为科学计数来展示，这肯定是不符合需求的，通过下面的方法可轻松搞定科学计数的问题，并进行保留2位小数与去除无用0的处理。">
+<meta name="keywords" content="Bug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见问题：浮点数据超长变科学计数">
+<meta property="og:url" content="http://LeiHolmes.github.io/2019/12/05/常见问题：浮点数据科学计数/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
-<meta property="og:description" content="不忘初心，淡然前行">
+<meta property="og:description" content="前言　　在项目开发中发现当Double类型的小数整数部分超过8位时，会自动转换为科学计数来展示，这肯定是不符合需求的，通过下面的方法可轻松搞定科学计数的问题，并进行保留2位小数与去除无用0的处理。">
+<meta property="og:updated_time" content="2019-12-05T09:30:20.293Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lei’s Blog">
-<meta name="twitter:description" content="不忘初心，淡然前行">
+<meta name="twitter:title" content="常见问题：浮点数据超长变科学计数">
+<meta name="twitter:description" content="前言　　在项目开发中发现当Double类型的小数整数部分超过8位时，会自动转换为科学计数来展示，这肯定是不符合需求的，通过下面的方法可轻松搞定科学计数的问题，并进行保留2位小数与去除无用0的处理。">
 
 
 
@@ -117,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://LeiHolmes.github.io/categories/Java/"/>
+  <link rel="canonical" href="http://LeiHolmes.github.io/2019/12/05/常见问题：浮点数据科学计数/"/>
 
 
 
 
 
-  <title>分类: Java | Lei’s Blog</title>
+  <title>常见问题：浮点数据超长变科学计数 | Lei’s Blog</title>
   
 
 
@@ -142,7 +144,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -396,55 +398,238 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block category">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>Java<small>分类</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://LeiHolmes.github.io/2019/12/05/常见问题：浮点数据科学计数/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐雷">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ozpdwks0y.bkt.clouddn.com/17-11-20/96174758.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lei’s Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2017/12/25/Java面试技术点总结/" itemprop="url">
-              
-                <span itemprop="name">Java面试技术点总结</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">常见问题：浮点数据超长变科学计数</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-12-25T00:00:00+08:00"
-              content="2017-12-25" >
-          12-25
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-05T00:00:00+08:00">
+                2019-12-05
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　在项目开发中发现当Double类型的小数整数部分超过8位时，会自动转换为科学计数来展示，这肯定是不符合需求的，通过下面的方法可轻松搞定科学计数的问题，并进行保留2位小数与去除无用0的处理。<br>　　<a id="more"></a></p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><p>　　抽出一个文本格式化工具类TextFormatUtil。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TextFormatUtil</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> DecimalFormat mDecimalFormat = <span class="keyword">new</span> DecimalFormat(<span class="string">"0.##"</span>);</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 格式化小数</div><div class="line">     * 保留两位，并做位数过大处理</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">formatDouble</span><span class="params">(<span class="keyword">double</span> number)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (number != <span class="number">0.00</span>) <span class="keyword">return</span> mDecimalFormat.format(number);</div><div class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="string">"0"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>　　使用时直接调用即可：<code>TextFormatUtil.formatDouble(formatNumber)</code>。简单解释一下，DecimalFormat是由Java提供的用于对十进制数字进行格式化的工具，按照符号进行填充，区分整数部分与小数部分：</p>
+<ul>
+<li>整数：从个位向高位填充，若位上有值则为原来的值，无值则看符号，符号为“0”则以“0”填充，符号为“#”则空着不填充。</li>
+<li>小数：符号为“0”或者“#”的个数都代表保留小数点后的几位，区别是“0”代表小数不足的部分以“0”填充，“#”代表小数不足的部分空着不填充。  </li>
+</ul>
+<p>　　当然DecimalFormat还有更多的符号用法，需要的大家自行百度啦，这里就不赘述了。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　博客好久没更新了，近期准备整理一下平时遇到的常见问题分享出来，有问题的话欢迎大家指正。</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持是我前进的动力，谢谢！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="http://ozpdwks0y.bkt.clouddn.com/17-11-20/3899504.jpg" alt="徐雷 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="http://ozpdwks0y.bkt.clouddn.com/17-11-20/43667325.jpg" alt="徐雷 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Bug/" rel="tag"># Bug</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/29/Android面试技术点总结/" rel="next" title="Android面试技术点总结">
+                <i class="fa fa-chevron-left"></i> Android面试技术点总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+        
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "1",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      },
+      "slide": {
+        "bdImg": "5",
+        "bdPos": "left",
+        "bdTop": "100"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -452,6 +637,15 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTkzMi84NDk2"></div>
+    </div>
+
+  
+
+
 
         </div>
         
@@ -472,8 +666,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -595,6 +798,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方法"><span class="nav-number">2.</span> <span class="nav-text">解决方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -755,6 +974,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
@@ -783,6 +1006,17 @@
 
 
 
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 
