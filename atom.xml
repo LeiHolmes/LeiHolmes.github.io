@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://LeiHolmes.github.io/"/>
-  <updated>2019-12-05T09:30:20.293Z</updated>
+  <updated>2019-12-05T09:32:03.005Z</updated>
   <id>http://LeiHolmes.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://LeiHolmes.github.io/2019/12/05/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%EF%BC%9A%E6%B5%AE%E7%82%B9%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E8%AE%A1%E6%95%B0/"/>
     <id>http://LeiHolmes.github.io/2019/12/05/常见问题：浮点数据科学计数/</id>
     <published>2019-12-04T16:00:00.000Z</published>
-    <updated>2019-12-05T09:30:20.293Z</updated>
+    <updated>2019-12-05T09:32:03.005Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>　　在项目开发中发现当Double类型的小数整数部分超过8位时，会自动转换为科学计数来展示，这肯定是不符合需求的，通过下面的方法可轻松搞定科学计数的问题，并进行保留2位小数与去除无用0的处理。<br>　　<a id="more"></a></p>
 <h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><p>　　抽出一个文本格式化工具类TextFormatUtil。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TextFormatUtil</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> DecimalFormat mDecimalFormat = <span class="keyword">new</span> DecimalFormat(<span class="string">"0.##"</span>);</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 格式化小数</div><div class="line">     * 保留两位，并做位数过大处理</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">formatDouble</span><span class="params">(<span class="keyword">double</span> number)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (number != <span class="number">0.00</span>) <span class="keyword">return</span> mDecimalFormat.format(number);</div><div class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="string">"0"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
