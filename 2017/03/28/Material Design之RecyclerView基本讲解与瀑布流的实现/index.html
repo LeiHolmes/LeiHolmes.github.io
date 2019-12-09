@@ -56,10 +56,10 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
 
 
-  <link rel="icon" type="image/png" sizes="32x32" href="http://ozpdwks0y.bkt.clouddn.com/17-11-20/42710151.jpg?v=5.1.3">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_48.ico?v=5.1.3">
 
 
-  <link rel="icon" type="image/png" sizes="16x16" href="http://ozpdwks0y.bkt.clouddn.com/17-11-20/20306051.jpg?v=5.1.3">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=5.1.3">
 
 
   <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
@@ -86,7 +86,7 @@
 <meta property="og:url" content="http://LeiHolmes.github.io/2017/03/28/Material Design之RecyclerView基本讲解与瀑布流的实现/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
-<meta property="og:updated_time" content="2017-09-28T08:57:03.000Z">
+<meta property="og:updated_time" content="2019-12-09T08:28:30.404Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Material Design之RecyclerView基本讲解与瀑布流的实现">
 <meta name="twitter:description" content="RecyclerView简介　　RecyclerView是一种新的视图组，目标是为任何基于适配器的视图提供相似的渲染方式。它被作为ListView和GridView控件的继承者，具有更优的灵活性与可替代性。在最新的support-v7版本中提供支持。本文将讲解RecyclerView的简单实现，添加删除条目，点击事件添加与瀑布流的实现。">
@@ -417,7 +417,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐雷">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ozpdwks0y.bkt.clouddn.com/17-11-20/96174758.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/12/09/Qws5DJ.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -565,7 +565,12 @@
     }
 }
 </code></pre>
-<h4 id="LayoutManager"><a href="#LayoutManager" class="headerlink" title="LayoutManager"></a>LayoutManager</h4><p>　　RecyclerView通过布局管理器LayoutManager控制每一个item如何进行排列摆放，何时展示和隐藏。回收或重用一个View时LayoutManager会向适配器请求新的数据来替换旧的数据，这种机制避免了创建过多的View和频繁的调用findViewById方法，目前其自带的主要有以下三种：<br>　　- LinearLayoutManager：ListView样式<br>　　- GridLayoutManager：GridView样式<br>　　- StaggeredGridLayoutManager：瀑布流样式  </p>
+<h4 id="LayoutManager"><a href="#LayoutManager" class="headerlink" title="LayoutManager"></a>LayoutManager</h4><p>　　RecyclerView通过布局管理器LayoutManager控制每一个item如何进行排列摆放，何时展示和隐藏。回收或重用一个View时LayoutManager会向适配器请求新的数据来替换旧的数据，这种机制避免了创建过多的View和频繁的调用findViewById方法，目前其自带的主要有以下三种：  </p>
+<ul>
+<li>LinearLayoutManager：ListView样式</li>
+<li>GridLayoutManager：GridView样式</li>
+<li>StaggeredGridLayoutManager：瀑布流样式  </li>
+</ul>
 <h4 id="ItemDecoration"><a href="#ItemDecoration" class="headerlink" title="ItemDecoration"></a>ItemDecoration</h4><p>　　RecyclerView并不能像ListView一样直接在xml布局中修改item分割线样式。需要在Activity动态设置，当然更推荐在单个条目布局中设置margin或者padding来实现分割线效果，这里提供一个分割线。  </p>
 <pre><code class="java"><span class="keyword">import</span> android.content.Context;
 <span class="keyword">import</span> android.content.res.TypedArray;
@@ -832,14 +837,14 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
 
     
       <div id="wechat" style="display: inline-block">
-        <img id="wechat_qr" src="https://s2.ax1x.com/2019/12/06/QYAgCq.jpg" alt="徐雷 微信支付"/>
+        <img id="wechat_qr" src="/images/wechat.JPG" alt="徐雷 微信支付"/>
         <p>微信支付</p>
       </div>
     
 
     
       <div id="alipay" style="display: inline-block">
-        <img id="alipay_qr" src="https://s2.ax1x.com/2019/12/06/QYAyUs.jpg" alt="徐雷 支付宝"/>
+        <img id="alipay_qr" src="/images/alipay.JPG" alt="徐雷 支付宝"/>
         <p>支付宝</p>
       </div>
     
@@ -982,7 +987,7 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image"
-                src="http://ozpdwks0y.bkt.clouddn.com/17-11-20/96174758.jpg"
+                src="https://s2.ax1x.com/2019/12/09/Qws5DJ.jpg"
                 alt="徐雷" />
             
               <p class="site-author-name" itemprop="name">徐雷</p>
@@ -996,7 +1001,7 @@ recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimato
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
