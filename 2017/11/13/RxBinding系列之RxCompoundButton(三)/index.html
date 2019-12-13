@@ -86,12 +86,12 @@
 <meta property="og:url" content="http://LeiHolmes.github.io/2017/11/13/RxBinding系列之RxCompoundButton(三)/index.html">
 <meta property="og:site_name" content="Lei’s Blog">
 <meta property="og:description" content="前言　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件及动作加以RxJava的观察者模式并封装了起来就形成了RxCompoundButton，使用起来也很简单。">
-<meta property="og:image" content="http://ozpdwks0y.bkt.clouddn.com/17-11-26/18671102.jpg">
-<meta property="og:updated_time" content="2017-11-26T11:25:05.000Z">
+<meta property="og:image" content="http://leiholmes.github.io/images/gif/CompoundButton.gif">
+<meta property="og:updated_time" content="2019-12-13T06:58:24.047Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxBinding系列之RxCompoundButton(三)">
 <meta name="twitter:description" content="前言　　本篇将通过一个实际场景来学习RxBinding中的RxCompoundButton，J大神将Android中CompoundButton的一些事件及动作加以RxJava的观察者模式并封装了起来就形成了RxCompoundButton，使用起来也很简单。">
-<meta name="twitter:image" content="http://ozpdwks0y.bkt.clouddn.com/17-11-26/18671102.jpg">
+<meta name="twitter:image" content="http://leiholmes.github.io/images/gif/CompoundButton.gif">
 
 
 
@@ -515,7 +515,7 @@
 <p>　　默认注册按钮不可点击，当CheckBox被选中后则可点击注册，并修改注册按钮的样式。</p>
 <h3 id="View操作"><a href="#View操作" class="headerlink" title="View操作"></a>View操作</h3><p>　　RxCompoundButton中也封装了CompoundButton中例如<code>setchecked()</code>、<code>toggle()</code>等常用的操作，使用方式如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">addDisposable(RxView.clicks(btnLogin)</div><div class="line">        .subscribe(o -&gt; &#123;</div><div class="line">            RxCompoundButton.checked(cbContract).accept(<span class="keyword">true</span>);</div><div class="line">            RxCompoundButton.toggle(cbContract).accept(<span class="keyword">null</span>);</div><div class="line">        &#125;));</div></pre></td></tr></table></figure></p>
 <h3 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h3><p>　　最后看一下运行效果Gif。</p>
-<p><div align="center"><br>　　<img src="http://ozpdwks0y.bkt.clouddn.com/17-11-26/18671102.jpg" alt="运行效果"><br></div></p>
+<p><div align="center"><br>　　<img src="/images/gif/CompoundButton.gif" alt="运行效果"><br></div></p>
 <h3 id="本文疑问"><a href="#本文疑问" class="headerlink" title="本文疑问"></a>本文疑问</h3><h4 id="addDisposable-方法什么鬼？"><a href="#addDisposable-方法什么鬼？" class="headerlink" title="addDisposable()方法什么鬼？"></a>addDisposable()方法什么鬼？</h4><p>飞机到本系列第一篇有讲解：<br><a href="http://xulei.tech/2017/11/09/RxBinding系列之RxView(一)" target="_blank" rel="external">RxBinding系列之RxView(一)</a></p>
 <h4 id="Lambda表达式什么鬼？"><a href="#Lambda表达式什么鬼？" class="headerlink" title="Lambda表达式什么鬼？"></a>Lambda表达式什么鬼？</h4><p>飞机到我写的Lambda表达式教程：<br><a href="http://xulei.tech/2017/07/24/Lambda表达式基本语法与应用" target="_blank" rel="external">Lambda表达式基本语法与应用</a></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>　　通过实际场景来学习新知识掌握起来肯定比死啃理论快，建议码友们都上手试试。<br>　　进阶中的码猿一枚，写的不对的地方欢迎大神们留言指正，有什么疑惑或者建议也可以在我Github上RxBindingDemo项目Issues中提出，我会及时回复。<br>　　附上Demo的地址：<br>　　<a href="https://github.com/LeiHolmes/RxBindingDemo" target="_blank" rel="external">RxBindingDemo</a>  </p>
