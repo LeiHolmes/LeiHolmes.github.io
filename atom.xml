@@ -51,7 +51,7 @@
     <link href="http://LeiHolmes.github.io/2019/01/29/Android%E9%9D%A2%E8%AF%95%E6%8A%80%E6%9C%AF%E7%82%B9%E6%80%BB%E7%BB%93/"/>
     <id>http://LeiHolmes.github.io/2019/01/29/Android面试技术点总结/</id>
     <published>2019-01-28T16:00:00.000Z</published>
-    <updated>2019-01-29T07:22:27.000Z</updated>
+    <updated>2020-09-01T14:30:23.127Z</updated>
     
     <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>　　年末一周不忙了，总结了下在Android开发面试中易问的一些Android相关基础知识与面试题，不太全，大家查缺补漏吧。开始Review！<br>　　<a id="more"></a></p>
 <h2 id="Android组件"><a href="#Android组件" class="headerlink" title="Android组件"></a>Android组件</h2><h3 id="Android四大组件"><a href="#Android四大组件" class="headerlink" title="Android四大组件"></a>Android四大组件</h3><ul>
@@ -259,37 +259,119 @@
 </ul>
 </li>
 </ul>
-<h2 id="面试问题"><a href="#面试问题" class="headerlink" title="面试问题"></a>面试问题</h2><h3 id="资源及状态的操作保存，最好保存在生命周期的哪个函数里？"><a href="#资源及状态的操作保存，最好保存在生命周期的哪个函数里？" class="headerlink" title="资源及状态的操作保存，最好保存在生命周期的哪个函数里？"></a>资源及状态的操作保存，最好保存在生命周期的哪个函数里？</h3><p>　　保存在onPause()中</p>
+<h2 id="面试问题"><a href="#面试问题" class="headerlink" title="面试问题"></a>面试问题</h2><h3 id="ScrollView嵌套ListView问题"><a href="#ScrollView嵌套ListView问题" class="headerlink" title="ScrollView嵌套ListView问题"></a>ScrollView嵌套ListView问题</h3><p>　　原因：ScrollView拦截了ListView的Move事件。 </p>
+<ul>
+<li>动态计算ListView高度。 </li>
+<li>自定义ScrollView重写onInterceptTouchEvent返回false，不拦截ListView的Move事件。 </li>
+<li>在listView的dispatchTouchEvent方法中调用requestDisallowInterceptTouchEvent(true)申请不被拦截触摸事件。 </li>
+</ul>
+<h3 id="RecyclerView有几种Manager，如何实现瀑布流"><a href="#RecyclerView有几种Manager，如何实现瀑布流" class="headerlink" title="RecyclerView有几种Manager，如何实现瀑布流"></a>RecyclerView有几种Manager，如何实现瀑布流</h3><ul>
+<li>LinearLayoutManager： 线性布局管理器，呈现线性布局的RecyclerView，实现ListView效果。 </li>
+<li>GridLayoutManager：网格布局管理器，呈现网格布局的RecyclerView，实现GridView效果。 </li>
+<li>StaggeredGridLayoutManager：交错网格布局管理器，呈现交错网格布局的RecyclerView，它是一种特殊的GridLayoutManager，区别在于，它允许每个Item的长度或高度不一致，实现瀑布流效果。</li>
+</ul>
+<h3 id="资源及状态的操作保存，最好保存在生命周期的哪个函数里？"><a href="#资源及状态的操作保存，最好保存在生命周期的哪个函数里？" class="headerlink" title="资源及状态的操作保存，最好保存在生命周期的哪个函数里？"></a>资源及状态的操作保存，最好保存在生命周期的哪个函数里？</h3><p>　　保存在onPause()中 </p>
+<h3 id="Handler机制，实现原理是什么？"><a href="#Handler机制，实现原理是什么？" class="headerlink" title="Handler机制，实现原理是什么？"></a>Handler机制，实现原理是什么？</h3><p>　　Handler是线程之间的消息机制，主要作用是将一个任务切换到指定线程中去执行。Handler的运行需要底层的MessageQueue与Looper做支撑。 </p>
+<ul>
+<li><strong>MessageQueue</strong>：Messagequeue是一个消息队列 ，它是采用单链表的数据结构来存储消息，插入删除上的效率非常高。Meaasgequeue主要包含一个插入消息的enqueueMessage方法，和取出一条消息的next方法。 </li>
+<li><strong>Looper</strong>：Looper承担消息调度的作用，在其构造中创建一个MessageQueue消息队列并绑定当前线程，Looper的方法主要为prepare()与loop()，prepare()方法中Looper对象通过使用ThreadLocal进行初始化，loop()方法则无线循环从MessageQueue中读取消息，没有则线程阻塞等待。 </li>
+<li><strong>Handler</strong>：它的内部通过Looper.myLooper()获取了当前线程保存的Looper实例并与其MessageQueue进行关联，通过Handler的send (message)方法向其关联的MessageQueue消息队列发送Message，并插入MessageQueue中。Looper就会从MessageQueue中读取到这条消息并调用消息来源Handler中的dispathMessage()方法来处理这条消息，最终通过调用handleMessage()方法来回传消息。 </li>
+</ul>
+<h3 id="为何要在主线程处理UI？"><a href="#为何要在主线程处理UI？" class="headerlink" title="为何要在主线程处理UI？"></a>为何要在主线程处理UI？</h3><ul>
+<li>首先官方的解释是Android UI操作不是线程安全的，并且这些操作必须在UI线程执行。 </li>
+<li>View的刷新操作触发时，会统一注册到ViewRootImpl中，然后在屏幕刷新时通知ViewRootImpl中实际执行View的测量，绘制的一系列操作。而ViewRootImpl是指向主线程的，其会通过Thread.currentThread()来判断是否在主线程，若不在则会报错。 </li>
+</ul>
+<h3 id="子线程处理UI为何会报错？"><a href="#子线程处理UI为何会报错？" class="headerlink" title="子线程处理UI为何会报错？"></a>子线程处理UI为何会报错？</h3><p>　　由于Android UI操作不是线程安全的，若在子线程操作UI，无法保证同一帧数据的完整性。 </p>
+<h3 id="主线程与子线程创建使用Handler有何区别？"><a href="#主线程与子线程创建使用Handler有何区别？" class="headerlink" title="主线程与子线程创建使用Handler有何区别？"></a>主线程与子线程创建使用Handler有何区别？</h3><ul>
+<li>主线程创建Handler时无需调用Looper的prepare与loop方法，因为App初始化时已经通过执行ActivityThread的main方法调用Looper的prepareMainLooper()与loop方法了。 </li>
+<li>子线程创建Handler时则需要调用Looper的prepare方法来通过ThreadLocal初始化Looper对象，调用loop方法开启循环读取消息。 </li>
+</ul>
+<h3 id="项目使用Handler的场景？"><a href="#项目使用Handler的场景？" class="headerlink" title="项目使用Handler的场景？"></a>项目使用Handler的场景？</h3><ul>
+<li>子线程做耗时操作后通过Handler通知主线程操作UI的更新。 </li>
+<li>通过Handler进行延时操作。 </li>
+</ul>
+<h3 id="使用Handler注意事项"><a href="#使用Handler注意事项" class="headerlink" title="使用Handler注意事项"></a>使用Handler注意事项</h3><ul>
+<li>注意内存泄漏问题，Handler是用来进行线程间的通信的，故新开的线程会持有Handler的引用，若在Activity中使用非静态内部类的方式创建Handler，会导致Activity一直被Handler持有引用而无法被回收，从而导致内存泄漏。 </li>
+<li>MessageQueue中若有未处理完的Message，其target也会对Activity持有引用导致内存泄漏。 </li>
+<li>最好是使用静态内部类+弱引用的方式创建Handler。静态内部类不会持有外部类的引用，弱引用可获取外部类的对象，不会造成对象无法回收的问题。 </li>
+</ul>
+<h3 id="Service的两种方式及区别。"><a href="#Service的两种方式及区别。" class="headerlink" title="Service的两种方式及区别。"></a>Service的两种方式及区别。</h3><ul>
+<li><strong>通过startService</strong>，Service未运行则执行onCreate-&gt;onStartCommand，若已运行则只执行onStartCommand，stopService的时候直接onDestroy，生命周期不受组件销毁影响，若不主动调用stopService则会一直在后台运行。 </li>
+<li><strong>通过bindService</strong>，Service运行会执行onCreate-&gt;onBind，onBind会返回给调用者一个IBinder接口实例，可通过其调用Service的方法，与调用者组件绑定在一起，生命周期与其绑定的组件同生死。 </li>
+</ul>
+<h3 id="什么情况下用Binder式的Service？"><a href="#什么情况下用Binder式的Service？" class="headerlink" title="什么情况下用Binder式的Service？"></a>什么情况下用Binder式的Service？</h3><p>　　需要调用Service中方法时 </p>
+<h3 id="Service中可以进行耗时操作吗？"><a href="#Service中可以进行耗时操作吗？" class="headerlink" title="Service中可以进行耗时操作吗？"></a>Service中可以进行耗时操作吗？</h3><p>　　不可以，Service，Activity等组件都是运行在UI主线程的，而主线程中进行耗时操作会阻塞主线程导致ANR。 </p>
+<h3 id="Bitmap加载图片的注意点。"><a href="#Bitmap加载图片的注意点。" class="headerlink" title="Bitmap加载图片的注意点。"></a>Bitmap加载图片的注意点。</h3><ul>
+<li>使用BitmapFactory.decodeStream生成Bitmap比Bitmap.createBitmap更节约内存。 </li>
+<li>Bitmap使用完后需要手动recycle回收。 </li>
+</ul>
+<h3 id="Bitmap如何压缩图片？"><a href="#Bitmap如何压缩图片？" class="headerlink" title="Bitmap如何压缩图片？"></a>Bitmap如何压缩图片？</h3><ul>
+<li>采样率压缩：通过配置BitmapFactory.Options参数的inSampleSize采样率参数来实现采样率压缩。此方法可将图片压缩到足够小，可缩小内存占用，但采样率是整数，无法精确。 </li>
+<li>质量压缩：通过Bitmap的compress方法，根据字节数组长度压缩图片。此方法不会改变图片的像素，通过改变图片的位深及透明度达到压缩的目的，到达一个值后就不会再继续变小了。因为图片所占内存不会减小，所以不适用于缩略图等场景，仅适用于想在保证图片质量的同时减少文件大小的情况。 </li>
+<li>缩放法压缩：通过配置Matrix的缩放比例，再createBitmap达到缩放图片的目的。 </li>
+</ul>
+<h3 id="Serializable与Parcelable序列化的区别，Parcelable优势在哪儿？"><a href="#Serializable与Parcelable序列化的区别，Parcelable优势在哪儿？" class="headerlink" title="Serializable与Parcelable序列化的区别，Parcelable优势在哪儿？"></a>Serializable与Parcelable序列化的区别，Parcelable优势在哪儿？</h3><ul>
+<li><strong>Serializable</strong>：Java中序列化方式；使用简单；开销大，过程需大量I/O操作；用于序列化到存储设备或序列化后通过网络传输时，更推荐使用这种方式。 </li>
+<li><strong>Parcelable</strong>：Android中序列化方式；使用麻烦；开销小，效率高，在native层通过内存操作实现；用于内存序列化时（Intent传值），更推荐使用这种方式。 </li>
+</ul>
+<h3 id="自定义View的流程？"><a href="#自定义View的流程？" class="headerlink" title="自定义View的流程？"></a>自定义View的流程？</h3><ul>
+<li>onFinishInflate()：初始准备完毕。 </li>
+<li>onAttachedToWindow()：将View绑定到Activity所在Window上。 </li>
+<li>onMeasure()：计算当前View的宽高大小。 </li>
+<li>onLayout()：计算当前View的位置。 </li>
+<li>onDraw()：绘制View。 </li>
+<li>onWindowFocusChanged()：View焦点变化。 </li>
+<li>onDetachedFromWindow()：Activity销毁后，View会从Window上剥离。</li>
+</ul>
 <h3 id="哪些情况内存会被垃圾回收机制处理掉？"><a href="#哪些情况内存会被垃圾回收机制处理掉？" class="headerlink" title="哪些情况内存会被垃圾回收机制处理掉？"></a>哪些情况内存会被垃圾回收机制处理掉？</h3><ul>
-<li>对象引用超过其作用范围。</li>
-<li>将对象赋值为null。</li>
+<li>对象引用超过其作用范围。 </li>
+<li>将对象赋值为null。 </li>
 <li>实体不再被任何对象所引用。</li>
 </ul>
-<h3 id="数据库升级方法及注意事项"><a href="#数据库升级方法及注意事项" class="headerlink" title="数据库升级方法及注意事项"></a>数据库升级方法及注意事项</h3><p>　　应用版本更新前若数据库结构有改变，则需更改数据库版本号。新版本运行后需在onUpgrade()中根据数据库版本号判断是否要升级数据库，若版本号大于旧版本号则需要升级，一为了保证旧数据的不丢失，二是为了进行数据库结构的更新。  </p>
+<h3 id="数据库SQLite实现创建步骤？"><a href="#数据库SQLite实现创建步骤？" class="headerlink" title="数据库SQLite实现创建步骤？"></a>数据库SQLite实现创建步骤？</h3><ol>
+<li>新建类继承SQLiteOpenHelper； </li>
+<li>实现构造方法，传入数据库名称，版本号； </li>
+<li>重写onCreate方法，创建数据库，插入表； </li>
+<li>重写onUpgrade方法，做数据库版本升级检测与处理； </li>
+<li>实例化SQLiteOpenHelper的子类对象-MyDataBaseHelper； </li>
+<li>调用helper的getReadableDatabase方法或getWritableDatabase方法获取SQLiteDatabase对象进行相关操作； </li>
+</ol>
+<h3 id="Android中SQLite操作相关的类。"><a href="#Android中SQLite操作相关的类。" class="headerlink" title="Android中SQLite操作相关的类。"></a>Android中SQLite操作相关的类。</h3><ul>
+<li>SQLiteOpenHelper </li>
+<li>SQLiteDatabase </li>
+</ul>
+<h3 id="SQLite数据库升级方法及注意事项"><a href="#SQLite数据库升级方法及注意事项" class="headerlink" title="SQLite数据库升级方法及注意事项"></a>SQLite数据库升级方法及注意事项</h3><p>　　应用版本更新前若数据库结构有改变，则需更改数据库版本号。新版本运行后需在onUpgrade()中根据数据库版本号判断是否要升级数据库，若版本号大于旧版本号则需要升级，一为了保证旧数据的不丢失，二是为了进行数据库结构的更新。</p>
 <ul>
-<li>表结构有更改<ol>
+<li>表结构有更改</li>
+</ul>
+<ol>
 <li>首先将旧数据库的表A重名为A_temp。</li>
 <li>创建满足新版本数据库结构的新表A（增加与修改的字段）。</li>
 <li>将表A_temp中数据插入到表A中。</li>
 </ol>
-</li>
-<li>加入新表<ol>
+<ul>
+<li>加入新表</li>
+</ul>
+<ol>
 <li>只需在新版本运行后插入新的表，并给相应字段附上默认值即可。</li>
 </ol>
-</li>
+<ul>
 <li><strong>注意</strong>：跨版本升级需要先确定相邻版本的差别，从版本1开始依次迭代更新，先执行v1到v2，再v2到v3等等。或根据版本差别，编写对应的升级代码。</li>
 </ul>
-<h3 id="ScrollView嵌套ListView问题"><a href="#ScrollView嵌套ListView问题" class="headerlink" title="ScrollView嵌套ListView问题"></a>ScrollView嵌套ListView问题</h3><p>　　原因：ScrollView拦截了ListView的Move事件。 </p>
+<h3 id="SharePreference使用场景是什么？"><a href="#SharePreference使用场景是什么？" class="headerlink" title="SharePreference使用场景是什么？"></a>SharePreference使用场景是什么？</h3><p>　　SharePreference是一种轻量级数据存储，数据会写在本地的一个xml文件中，以键值对的形式存在，如果程序卸载，此数据也跟着清除。<br>　　主要用途：</p>
 <ul>
-<li>动态计算ListView高度。</li>
-<li>自定义ScrollView重写onInterceptTouchEvent返回false，不拦截ListView的Move事件。</li>
-<li>在listView的dispatchTouchEvent方法中调用requestDisallowInterceptTouchEvent(true)申请不被拦截触摸事件。</li>
+<li>保存应用的配置信息 </li>
+<li>保存用户登录信息 </li>
+<li>判断是否首次登陆 </li>
 </ul>
-<h3 id="RecyclerView有几种Manager，如何实现瀑布流"><a href="#RecyclerView有几种Manager，如何实现瀑布流" class="headerlink" title="RecyclerView有几种Manager，如何实现瀑布流"></a>RecyclerView有几种Manager，如何实现瀑布流</h3><ul>
-<li>LinearLayoutManager： 线性布局管理器，呈现线性布局的RecyclerView，实现ListView效果。</li>
-<li>GridLayoutManager：网格布局管理器，呈现网格布局的RecyclerView，实现GridView效果。</li>
-<li>StaggeredGridLayoutManager：交错网格布局管理器，呈现交错网格布局的RecyclerView，它是一种特殊的GridLayoutManager，区别在于，它允许每个Item的长度或高度不一致，实现瀑布流效果。</li>
-</ul>
+<h3 id="SharePreference的apply与commit的区别？"><a href="#SharePreference的apply与commit的区别？" class="headerlink" title="SharePreference的apply与commit的区别？"></a>SharePreference的apply与commit的区别？</h3><ol>
+<li>apply方法没有返回值；commit方法返回Boolean值，表明修改是否提交成功。 </li>
+<li>apply方法是将数据原子提交到内存，然后再异步提交到硬件磁盘；而commit方法是直接同步提交到硬件磁盘。 </li>
+<li>因此，Editor多并发提交commit时，系统会等待正在处理的commit保存到磁盘后再继续操作，降低了效率。 </li>
+<li>而多并发提交apply时，会直接覆盖前面的内存数据，再提交到硬件磁盘，提高了效率。 </li>
+<li>总的来说，apply是异步提交，效率高一些，但无法知道提交成功与否；commit是同步提交，且有返回值告知我们是否真的提交成功。 </li>
+<li>由于在一个进程中，sharedPreference是单例存在，一般不会出现并发冲突，如果对提交的结果不关心的话，建议使用apply，当然需要确保提交成功且有后续操作的话，还是需要用commit的。 </li>
+</ol>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>　　目前Android面试技术点总结的还不太全，我会持续更新，也欢迎码友们指出文中写的不对的地方，或者有遗漏的知识点也可以联系我，咱们一起来维护，方便你我他。最后祝各位求职顺利，入职满意的公司。</p>
 ]]></content>
     
