@@ -251,7 +251,15 @@
 <li>GridLayoutManager：网格布局管理器，呈现网格布局的RecyclerView，实现GridView效果。 </li>
 <li>StaggeredGridLayoutManager：交错网格布局管理器，呈现交错网格布局的RecyclerView，它是一种特殊的GridLayoutManager，区别在于，它允许每个Item的长度或高度不一致，实现瀑布流效果。</li>
 </ul>
+<h3 id="广播注册方式"><a href="#广播注册方式" class="headerlink" title="广播注册方式"></a>广播注册方式</h3><ul>
+<li>静态注册：在清单文件中配置receiver的intent-filter来注册，这种方式不管应用是否处于运行状态，接收器都会进行监听。 </li>
+<li>动态注册：在代码中动态配置IntentFilter来注册，这用方式下，可以手动解除监听，在应用程序关闭后也就不再进行监听。 </li>
+</ul>
 <h3 id="资源及状态的操作保存，最好保存在生命周期的哪个函数里？"><a href="#资源及状态的操作保存，最好保存在生命周期的哪个函数里？" class="headerlink" title="资源及状态的操作保存，最好保存在生命周期的哪个函数里？"></a>资源及状态的操作保存，最好保存在生命周期的哪个函数里？</h3><p>　　保存在onPause()中 </p>
+<h3 id="Activity在哪儿保存当前页面数据"><a href="#Activity在哪儿保存当前页面数据" class="headerlink" title="Activity在哪儿保存当前页面数据"></a>Activity在哪儿保存当前页面数据</h3><ul>
+<li>onSaveInstanceState中保存当前页面数据，onPaused之后onStop之前 </li>
+<li>onRestoreInstanceState中恢复之前保存的数据，onStart之后onResume之前 </li>
+</ul>
 <h3 id="Handler机制，实现原理是什么？"><a href="#Handler机制，实现原理是什么？" class="headerlink" title="Handler机制，实现原理是什么？"></a>Handler机制，实现原理是什么？</h3><p>　　Handler是线程之间的消息机制，主要作用是将一个任务切换到指定线程中去执行。Handler的运行需要底层的MessageQueue与Looper做支撑。 </p>
 <ul>
 <li><strong>MessageQueue</strong>：Messagequeue是一个消息队列 ，它是采用单链表的数据结构来存储消息，插入删除上的效率非常高。Meaasgequeue主要包含一个插入消息的enqueueMessage方法，和取出一条消息的next方法。 </li>
@@ -353,6 +361,38 @@
 <li>总的来说，apply是异步提交，效率高一些，但无法知道提交成功与否；commit是同步提交，且有返回值告知我们是否真的提交成功。 </li>
 <li>由于在一个进程中，sharedPreference是单例存在，一般不会出现并发冲突，如果对提交的结果不关心的话，建议使用apply，当然需要确保提交成功且有后续操作的话，还是需要用commit的。 </li>
 </ol>
+<h3 id="项目中遇到的OOM及解决方法"><a href="#项目中遇到的OOM及解决方法" class="headerlink" title="项目中遇到的OOM及解决方法"></a>项目中遇到的OOM及解决方法</h3><ul>
+<li>大量使用Bitmap未及时回收：通过recycle主动回收 </li>
+<li>超大图片的使用：加载到内存前，算出Bitmap大小，适当调节采样率进行压缩 </li>
+<li>循环中大量创建对象：使用全局变量，尽量避免循环创建对象 </li>
+<li>大量使用static修饰成员变量，生命周期长，若引用内存占用大的实例，会导致OOM </li>
+</ul>
+<h3 id="MVC，MVP，MVVVM-1"><a href="#MVC，MVP，MVVVM-1" class="headerlink" title="MVC，MVP，MVVVM"></a>MVC，MVP，MVVVM</h3><ul>
+<li>MVC：通过Controller的控制去操作Model层的数据并交给View层展示。xml布局文件相当于View层，JavaBean类相当于Model层，Activity相当于Controller层。Activity会比较臃肿。 </li>
+<li>MVP：MVC升级版，Activity与Fragment只作为View层，Model层处理数据，而数据与View的交互都交给Presenter层，实现View与Model的解耦。给Activity减压，后期维护与测试更为便利。逻辑复杂的界面会导致接口过多。 </li>
+<li>MVVM：与MVP区别不大，Presenter层替换为ViewModel层，View层与ViewModel层是绑定关系，当更新ViewModel层数据时，View层ui会自动更新。绑定可使用DataBinding实现。View层还是会过重。publishProgress(Progress…)，可进行进度条进度更新<br>MVP+DataBinding：使用DataBinding节省数据绑定的时间，又使用Presenter将业务逻辑和view层分离。 </li>
+</ul>
+<h3 id="RxJava的主要设计模式"><a href="#RxJava的主要设计模式" class="headerlink" title="RxJava的主要设计模式"></a>RxJava的主要设计模式</h3><p>　　观察者模式，被观察者Observables与观察者Observer，由Observables发出一系列的事件，Observer通过subscribe()方法进行订阅接收事件并进行处理，与观察者模式不同之处在于，若没有观察者，被观察者是不会发出任何事件的。 </p>
+<h3 id="OkHttp网络并发最高是多少"><a href="#OkHttp网络并发最高是多少" class="headerlink" title="OkHttp网络并发最高是多少"></a>OkHttp网络并发最高是多少</h3><ul>
+<li>maxRequests = 64: 最大并发请求数为64 </li>
+<li>maxRequestsPerHost = 5: 每个主机最大请求数为5 </li>
+<li>通过<code>OkHttpClient().dispatcher().setMaxRequestsPerHost(8)</code>来修改主机最大请求数 </li>
+</ul>
+<h3 id="项目中设置字体大小"><a href="#项目中设置字体大小" class="headerlink" title="项目中设置字体大小"></a>项目中设置字体大小</h3><p>　　使用sp设置字体大小 </p>
+<h3 id="图片资源文件放在哪里"><a href="#图片资源文件放在哪里" class="headerlink" title="图片资源文件放在哪里"></a>图片资源文件放在哪里</h3><ul>
+<li>应用图标放在mitmap对应分辨率文件夹下 </li>
+<li>小图片放在drawable对应分辨率文件夹下 </li>
+<li>大型高清壁纸类图片放在asserts下 </li>
+</ul>
+<h3 id="如何实现轮播图片"><a href="#如何实现轮播图片" class="headerlink" title="如何实现轮播图片"></a>如何实现轮播图片</h3><p>　　ViewPager搭配循环定时实现 </p>
+<h3 id="Android的动态权限从什么版本开始"><a href="#Android的动态权限从什么版本开始" class="headerlink" title="Android的动态权限从什么版本开始"></a>Android的动态权限从什么版本开始</h3><p>　　Android6.0开始，普通权限在清单申请即可，许可权限需要主动申请。 </p>
+<h3 id="字符串处理常用方法"><a href="#字符串处理常用方法" class="headerlink" title="字符串处理常用方法"></a>字符串处理常用方法</h3><ul>
+<li>trim：取出前后空格 </li>
+<li>split：字符串分段 </li>
+<li>subString：截取字符串 </li>
+<li>indexOf：索引 </li>
+<li>replace：替换字符 </li>
+</ul>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>　　目前Android面试技术点总结的还不太全，我会持续更新，也欢迎码友们指出文中写的不对的地方，或者有遗漏的知识点也可以联系我，咱们一起来维护，方便你我他。最后祝各位求职顺利，入职满意的公司。</p>
 ]]></content>
       
